@@ -1,0 +1,3 @@
+Week 1
+Discussed with the group during lab about the requirements of the proposal and worked together to form draft user stories from the project objectives. During the week, I researched on existing systems similar to Recruit Assistant and their drawbacks for the proposal and helped refined the final user stories. I also worked with Rebecca Diaz on the wireframes.
+
