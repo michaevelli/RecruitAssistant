@@ -1,0 +1,3 @@
+Week 1
+
+In the first week I had two meetings with the team, one during the first tutorial and one on the first Sunday, in which we started discussing and working on the proposal for the project. I helped contributed to a draft background section of the proposal which is under review and could still be refined, and also assisted in discussing and creating the user stories. I helped with the epic story and user story documentation in JIRA, and we decided on the system architecture with a general tech stack to use for the website.
