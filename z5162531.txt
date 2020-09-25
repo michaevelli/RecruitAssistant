@@ -1,0 +1,12 @@
+Rebecca Diaz (z5162531) Diary
+
+--week 1--
+I created a jira board for the team and a google doc for our project proposal.
+We had team meeting and chose our project - Recruit Assistant.
+We also decided on using python for the backend and React for the frontend.
+I created some user stories for the product backlog, and outlined 
+possible pages for our website.
+
+--week 2---
+I created wireframes along with Cattleya using Balsamiq including: employer dashboard, job seeker dashboard,
+create new job advert pages, login and sign up pages, and admin pages to delete jobs or users.
