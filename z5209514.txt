@@ -1,0 +1,3 @@
+Week 1
+Group was formed. Started work on the proposal. Discussed technology stack with other members of the team. Wrote acceptance criteria for user stories. Completed flow chart outlining the login and registration system. 
+
