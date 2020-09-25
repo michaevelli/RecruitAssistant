@@ -1,3 +1,5 @@
 Week 1
-Discussed with the group during lab about the requirements of the proposal and worked together to form draft user stories from the project objectives. During the week, I researched on existing systems similar to Recruit Assistant and their drawbacks for the proposal and helped refined the final user stories. I also worked with Rebecca Diaz on the wireframes.
+Discussed with the group during lab about the requirements of the proposal and worked together to form draft user stories from the project objectives. During the week, I researched on existing systems similar to Recruit Assistant and their drawbacks for the proposal and helped refined the final user stories. I also worked with Rebecca Diaz on the wireframes for the recruiter and job seeker dashboard flow.
 
+Week 2
+Continued refining the wireframes for the recruiter and job seeker as well as contributed to the flow diagram. We added a new external actor, the admin, to help manage the system and had to create new user stories for the admin, adding it to the flow diagram and creating a wirefram for the admin dashboard too. I was tasked to moving and formatting the diagrams into the project proposal as well as describing the novel functionalities.
