@@ -1,3 +1,5 @@
 Week 1
 Group was formed. Started work on the proposal. Discussed technology stack with other members of the team. Wrote acceptance criteria for user stories. Completed flow chart outlining the login and registration system. 
 
+Week 2
+Completed the system flow diagram with Calvin and Cattleya. Made minor additions to employer wireframe. Made edits to stories and created new epics in Jira. Reformatted stories and acceptance criteria in the project proposal with Calvin.
