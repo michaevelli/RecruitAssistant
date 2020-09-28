@@ -1,0 +1,13 @@
+Week 0
+	Group Formed
+	Team Name Decided
+
+Week 1
+	Scrum Master Decided
+	Project Decided: Recruit Assistant
+	Progressive Demo Time Decided: 1150-1210
+	Proposal progress: Small work on Background, Transferred User Stories to Jira
+
+Week 2
+	Github joined
+	Proposal progress: System Architecture, BG
