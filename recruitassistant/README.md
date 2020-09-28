@@ -1,11 +1,13 @@
-
 Running Frontend:
 (in project directory "recruitassistant")
 npm start 
 
-Running Backend:
+Running Backend (FOR UNIX SYSTEMS):
 (in project directory "recruitassistant")
 yarn start-flask
+
+Running Backend (FOR WINDOWS):
+yarn start-flask-w
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
