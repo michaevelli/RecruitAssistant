@@ -1,4 +1,17 @@
+Installing and running flask
+
 pip3 install flask
+export FLASK_APP = app.py
+flask run
+
+Running Frontend:
+(in project directory "recruitassistant")
+npm start 
+
+Running Backend:
+(in project directory "recruitassistant")
+yarn start-flask
+
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
