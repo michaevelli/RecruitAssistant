@@ -17,7 +17,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "start-flask": "flask run",
+    "start-flask": "pip3 install flask && export FLASK_APP=app.py && export FLASK_ENV=development && flask run",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
