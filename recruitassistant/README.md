@@ -1,8 +1,3 @@
-Installing and running flask
-
-pip3 install flask
-export FLASK_APP = app.py
-flask run
 
 Running Frontend:
 (in project directory "recruitassistant")
