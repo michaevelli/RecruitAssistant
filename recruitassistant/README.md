@@ -7,7 +7,7 @@ Running Backend (FOR UNIX SYSTEMS):
 yarn start-flask
 
 Running Backend (FOR WINDOWS):
-yarn start-flask-w
+yarn start-flask-w OR npm run-script start-flask-w
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
