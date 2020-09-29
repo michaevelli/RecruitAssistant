@@ -1,9 +1,9 @@
 Running Frontend:
-(in project directory "recruitassistant")
+(in project directory "recruitassistant/frontend")
 npm start 
 
 Running Backend (FOR UNIX SYSTEMS):
-(in project directory "recruitassistant")
+(in project directory "recruitassistant/backend")
 yarn start-flask
 
 Running Backend (FOR WINDOWS):
