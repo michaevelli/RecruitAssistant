@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {Router,Route} from 'react-router-dom';
 import history from './History';
 import Login from './Login/Login';
+import SignUp from './SignUp/SignUp';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       <p>The current time is {currentTime}.</p>
       <Router history={history}>
         <Route path="/login" component={Login}/>
+        <Route path="/SignUp" component={SignUp}/>
       </Router>
     </div>
     
