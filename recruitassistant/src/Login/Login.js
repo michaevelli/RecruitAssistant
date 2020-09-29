@@ -21,7 +21,6 @@ function Login() {
 		
 		
 			Don't have an account? <a href="/signup">Sign Up</a>
-			test
 		</div>
 	)
 }
