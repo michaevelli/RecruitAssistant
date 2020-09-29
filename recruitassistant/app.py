@@ -8,3 +8,4 @@ app = Flask(__name__)
 def get_current_time():
     data = {'time': 10000}
     return jsonify(data)
+
