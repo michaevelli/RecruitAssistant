@@ -10,22 +10,21 @@ export default function SignUp() {
 	return (
         <div>
         <h1 style={{'margin-left': 50}} > RecruitAssistant </h1>
-		<Container style={{'textAlign': 'center', 'margin':100}}>
+        <h> Sign Up </h>
+	<Container style={{'textAlign': 'center', 'margin':100}}>
             
-             <div >
-                    
-                    <h> Sign Up </h>
+             <div >       
                     <p> I am a ...</p>
             </div>
             <form>
-            <Button 
-            component={Link} to='/RecruiterSignUp' 
-            variant="contained"
-            style={{"margin":10}}>Recruiter</Button>
-            <Button 
-            component={Link} to='/JobSeekerSignUp' 
-            variant="contained"
-            style={{"margin":10}}>Job Seeker</Button>
+                <Button 
+                component={Link} to='/RecruiterSignUp' 
+                variant="contained"
+                style={{"margin":10}}>Recruiter</Button>
+                <Button 
+                component={Link} to='/JobSeekerSignUp' 
+                variant="contained"
+                style={{"margin":10}}>Job Seeker</Button>
 
             </form> 
         </Container>
