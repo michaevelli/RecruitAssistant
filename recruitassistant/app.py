@@ -15,21 +15,25 @@ firebase = firebase_admin.initialize_app(cred, {"databaseURL": "https://recruita
 pb = pyrebase.initialize_app(json.load(open('./backend/firebase_config.json')))
 ref = db.reference('/')
 
-
 # test
 @app.route('/time')
 def get_current_time():
     data = {'time': 10000}
     return jsonify(data)
 
+#@app.route('/api/signup', methods=["POST"])
 @app.route('/api/signup')
 def seeker_signup():
     email = request.form.get('email')
     password = request.form.get('password')
 
-   
+    #data = request.json
+    #email = data["email"]
+    #password = data["password"]
 
-
+    # frontend 
+    # type: (admin/user/recruiter)
+    
     if email is None or password is None:
         return jsonify({'message': 'Error missing email or password'}),400
     try:
@@ -39,13 +43,29 @@ def seeker_signup():
         )
         # set information for users i.e. fullname, company etc.
         # currently with temp data
-        users_ref = ref.child('users')
+        users_ref = ref.child('jobseeker')
         users_ref.set({
             user.uid: {
-                'date_of_birth': 'June 23, 1912',
-                'full_name': 'Alan Turing'
+                'date_of_birth': 'I AM TEMP DATA',
+                'full_name': 'I AM TEMP DATA'
             },
         })
+
+        # if data["type"] == "user":
+        #     users_ref = ref.child('jobseeker')
+        #     users_ref.set({
+        #         user.uid: {
+        #             'full_name': data["full_name"],
+        #         },
+        #     })
+        # else:
+        #     users_ref = ref.child('recruiter')
+        #     users_ref.set({
+        #         user.uid: {
+        #             'full_name': data["full_name"],
+        #             'company': data["company"]
+        #         },
+            
         return jsonify({'message': f'Successfully created user {user.uid}'}),200
     except:
         return jsonify({'message': 'Error creating user'}),400
