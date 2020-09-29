@@ -1,44 +1,46 @@
 import React, { useState } from "react";
 import { TextField, Button } from "@material-ui/core";
 import {Card, Container} from 'react-bootstrap';
+import axios from "axios";
 
+export const submitApp="localhost:8080/submitapp"
 
 function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
-	const handleSubmit = (event) => {
-		event.preventDefault();
 
-		/*
-		Send to backend:
-			${email}
-			${password}	
-		Expect to receive a token to store in browser followed by redirection to home page
-		*/
-	}
-
+	async function handleSubmit(e) {
+		e.preventDefault()
+		const ndata = {
+			email: {email},
+			password: {password}
+		}
+		console.log(ndata)
+		axios.post(submitApp, ndata).then(
+		  console.log('well something should have been received by the backend at this point')
+		)
+	  }
 	
 
 
 	return (
 		<div>
-			<h1>Recruit Assistant</h1>
-		
-			Sign In
+			<Container style={{'textAlign': 'center'}}>
+				<h1>Recruit Assistant</h1>
+				<b>Sign In</b>
 
-			<form onSubmit={handleSubmit}>
-				<label>Email</label>
-				<input id="email" type="text" value={email} onChange={e=>setEmail(e.target.value)}></input>
+				<form onSubmit={handleSubmit}>
+					<TextField label="Email" value={email} onChange={e=>setEmail(e.target.value)}></TextField>
+					<br></br>
+					<TextField label="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)}></TextField>
+					<br></br>
+					<Button type="submit">Log In</Button>
+				</form>
 				<br></br>
-				<label>Password</label>
-				<input id="password" type="password" value={password} onChange={e=>setPassword(e.target.value)}></input>
-				<br></br>
-				<input type="submit" value="Log In"></input>
-			</form>
-		
-		
-			Don't have an account? <a href="/signup">Sign Up</a>
+			
+				Don't have an account? <a href="/signup">Sign Up</a>
+			</Container>
 		</div>
 	)
 }
