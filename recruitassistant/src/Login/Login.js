@@ -8,7 +8,20 @@ function Login() {
   const [password, setPassword] = useState("");
 
 	return (
-		<div>hello</div>
+		<div>
+			<h1>Recruit Assistant</h1>
+		
+			Sign In
+
+			<form>
+				Email <input type="text"></input><br></br>
+				Password <input type="password"></input><br></br>
+				<button>Sign In</button>
+			</form>
+		
+		
+			Don't have an account? <a href="/SignUp">Sign Up</a>
+		</div>
 	)
 }
 
