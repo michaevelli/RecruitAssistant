@@ -5,7 +5,7 @@ import {Card, Container} from 'react-bootstrap';
 
 function Login() {
 	const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+	const [password, setPassword] = useState("");
 
 	return (
 		<div>
@@ -20,7 +20,7 @@ function Login() {
 			</form>
 		
 		
-			Don't have an account? <a href="/SignUp">Sign Up</a>
+			Don't have an account? <a href="/signup">Sign Up</a>
 		</div>
 	)
 }
