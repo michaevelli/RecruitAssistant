@@ -75,15 +75,22 @@ def seeker_signup():
 def login():
 	try:
 		fAuth = pb.auth()
+		db = pb.database()
 		
 		# password = request.form.get("password")
     # email = request.form.get("email")
-		password = 'password1234'
+		password = 'hello123'
 		email = 'a@a.com'
 
-		user = fAuth.sign_in_with_email_and_password(email, password)
-		user = fAuth.refresh(user['refreshToken'])
+		response = fAuth.sign_in_with_email_and_password(email, password)
+		token = fAuth.refresh(response['refreshToken'])['idToken']
+		user = db.child("user").order_by_child("email").equal_to(email).get().val()
+		# user = "user"
+		# users = ref.child("user")
+		# print(users)
+		# user = users.order_by_child("email").equal_to(email).get()
 
-		return jsonify({"success": True, "token": user['idToken']}), 200
-	except:
+		return jsonify({"success": True, "token": token, "user": user}), 200
+	except Exception as e:
+		print(e)
 		return jsonify({'message': 'Failed login'}), 400
