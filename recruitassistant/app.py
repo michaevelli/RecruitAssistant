@@ -41,31 +41,19 @@ def seeker_signup():
                 email=email,
                 password=password
         )
-        # set information for users i.e. fullname, company etc.
+        # data structure
         # currently with temp data
-        users_ref = ref.child('jobseeker')
-        users_ref.set({
+        users_ref = ref.child('user')
+        users_ref.update({
             user.uid: {
-                'date_of_birth': 'I AM TEMP DATA',
-                'full_name': 'I AM TEMP DATA'
+                'first_name': 'I AM TEMP DATA',
+                'last_name' : 'I AM TEMP DATA',
+                'company' : 'null/filled',
+                'email' : 'test@a.com',
+                'type' : 'JobSeeker/Recruiter'
             },
         })
-
-        # if data["type"] == "user":
-        #     users_ref = ref.child('jobseeker')
-        #     users_ref.set({
-        #         user.uid: {
-        #             'full_name': data["full_name"],
-        #         },
-        #     })
-        # else:
-        #     users_ref = ref.child('recruiter')
-        #     users_ref.set({
-        #         user.uid: {
-        #             'full_name': data["full_name"],
-        #             'company': data["company"]
-        #         },
-            
+                  
         return jsonify({'message': f'Successfully created user {user.uid}'}),200
     except:
         return jsonify({'message': 'Error creating user'}),400
@@ -77,7 +65,7 @@ def login():
 		fAuth = pb.auth()
 		
 		# password = request.form.get("password")
-    # email = request.form.get("email")
+        # email = request.form.get("email")
 		password = 'password1234'
 		email = 'a@a.com'
 
