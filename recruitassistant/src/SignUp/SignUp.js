@@ -9,12 +9,12 @@ export default function SignUp() {
 
 	return (
                 <Container style={{'textAlign': 'center'}}>
-               <Typography variant="h3" component="h2" gutterBottom>
+               <Typography variant="h3"  style={{color: '#348360' }}>
                  RecruitAssistant
                 </Typography>
                 <p>Sign Up</p>
 
-                <Container style={{'textAlign': 'center', 'margin':70}}>
+                <Container style={{'textAlign': 'center'}}>
                 
                 <div >       
                         <p> I am a ...</p>
@@ -23,11 +23,11 @@ export default function SignUp() {
                 <Button 
                 component={Link} to='/RecruiterSignUp' 
                 variant="contained"
-                style={{"margin":10}}>Recruiter</Button>
+                style={{"margin":10 }}>Recruiter</Button>
                 <Button 
                 component={Link} to='/JobSeekerSignUp' 
                 variant="contained"
-                style={{"margin":10}}>Job Seeker</Button>
+                style={{"margin":10 }}>Job Seeker</Button>
 
                 </Container>
         </Container>
