@@ -70,6 +70,20 @@ def seeker_signup():
     except:
         return jsonify({'message': 'Error creating user'}),400
 
-@app.route('/api/login')
+# @app.route('/login', methods=['POST'])
+@app.route('/login')
 def login():
-    return 
+	try:
+		fAuth = pb.auth()
+		
+		# password = request.form.get("password")
+    # email = request.form.get("email")
+		password = 'password1234'
+		email = 'a@a.com'
+
+		user = fAuth.sign_in_with_email_and_password(email, password)
+		user = fAuth.refresh(user['refreshToken'])
+
+		return jsonify({"success": True, "token": user['idToken']}), 200
+	except:
+		return jsonify({'message': 'Failed login'}), 400
