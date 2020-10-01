@@ -3,7 +3,7 @@ import { TextField, Button } from "@material-ui/core";
 import {Card, Container} from 'react-bootstrap';
 import axios from "axios";
 
-export const submitLogin="127.0.0.1:5000/login"
+export const submitLogin="http://127.0.0.1:5000/login"
 
 function Login() {
 	const [email, setEmail] = useState("");
