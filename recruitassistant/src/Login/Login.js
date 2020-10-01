@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { TextField, Button } from "@material-ui/core";
+import { withStyles } from '@material-ui/core/styles';
 import {Card, Container} from 'react-bootstrap';
 import { Redirect } from "react-router-dom";
 import axios from "axios";
@@ -12,8 +13,11 @@ function Login() {
 	const [user, setUser] = useState("");
 	const [redirect, setRedirect] = useState(false);
 	const [error, setError] = useState(false);
+	const [errorStatus, setErrorStatus] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
 
 	async function handleSubmit(e) {
+		e.preventDefault()
 		const ndata = {
 			email: email,
 			password: password
@@ -32,14 +36,12 @@ function Login() {
 			})
 			.catch(() => {
 				setError(true)
+				console.log(error.response)
+				setErrorMessage(error.response.data.message)
+				setErrorStatus("True")
 			})		
 	}
 
-	let errorMessage;
-	if(error) {
-		errorMessage = <p style={{color:'red'}}>Username or password incorrect</p>
-	}
-	
 
 
 	return redirect ? (
@@ -54,7 +56,7 @@ function Login() {
 				<br></br>
 				<TextField label="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)}></TextField>
 				<br></br>
-				{errorMessage}
+				<div id="error" style={{color: 'red'}}>{errorMessage}</div>
 				<Button onClick={handleSubmit}>Log In</Button>
 				<br/>
 			
