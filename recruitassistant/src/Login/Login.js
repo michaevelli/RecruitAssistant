@@ -3,6 +3,7 @@ import { TextField, Button } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles';
 import {Card, Container} from 'react-bootstrap';
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 export const submitLogin="http://localhost:5000/login"
 
@@ -11,6 +12,7 @@ function Login() {
 	const [password, setPassword] = useState("");
 	const [errorStatus, setErrorStatus] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
+	const history = useHistory();
 
 
 	async function handleSubmit(e) {
@@ -21,13 +23,19 @@ function Login() {
 		}
 		console.log(ndata);
 		
-		
 		axios.post(submitLogin, ndata)
 			.then(function(response) {
 				console.log("response:")
 				console.log(response)
-				//push data to localstorage
-				browserHistory.push("/dashboard")
+				window.localStorage.setItem("RAToken", response.data.token)
+				window.localStorage.setItem("RAID", Object.keys(response.data.user)[0])
+				window.localStorage.setItem("RACompany", response.data.user[Object.keys(response.data.user)[0]].company)
+				window.localStorage.setItem("RAEmail", response.data.user[Object.keys(response.data.user)[0]].email)
+				window.localStorage.setItem("RAFirstName", response.data.user[Object.keys(response.data.user)[0]].first_name)
+				window.localStorage.setItem("RALastName", response.data.user[Object.keys(response.data.user)[0]].last_name)
+				window.localStorage.setItem("RAType", response.data.user[Object.keys(response.data.user)[0]].type)
+				history.push("/dashboard");
+				
 			})
 			.catch(function(error){
 				console.log("error:")
