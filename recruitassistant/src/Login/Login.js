@@ -18,7 +18,13 @@ function Login() {
 		}
 		console.log(ndata)
 		axios.post(submitApp, ndata).then(
-		  console.log('well something should have been received by the backend at this point')
+			console.log('well something should have been received by the backend at this point')
+			//if (/*data from backend has valid AuthToken*/){
+				//window.localStorage.setItem("recruitAssistantAuthToken", datafrombackend.AuthToken)
+			//	browserHistory.push("/dashboard")
+			//} else {
+				//render "invalid login" on the page
+			//}
 		)
 	  }
 	
@@ -26,6 +32,13 @@ function Login() {
 
 	return (
 		<div>
+			<script type="text/javascript">
+				function checkToken(){
+					//authToken = window.localStorage.getItem("recruitAssistantAuthToken")
+					// post token to backend
+					// if valid token then direct to dashbaord
+				}
+	  		</script>
 			<Container style={{'textAlign': 'center'}}>
 				<h1>Recruit Assistant</h1>
 				<b>Sign In</b>
