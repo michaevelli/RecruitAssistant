@@ -25,7 +25,7 @@ function App() {
         <Route path="/signuprecruiter" component={SignUpRecruiter}/>
         <Route path="/signupjobseeker" component={SignUpJobSeeker}/>
         <Route path="/SignUp" component={SignUp}/>
-        <Route path="/dashboard" component={DashBoardTemplate}/>
+        
 
       </Router>
     </div>

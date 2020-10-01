@@ -23,11 +23,11 @@ export default function SignUp() {
 		</div>
 	     
 		<Button 
-		component={Link} to='/RecruiterSignUp' 
+		component={Link} to='/signuprecruiter' 
 		variant="contained"
 		style={{"margin":10 }}>Recruiter</Button>
 		<Button 
-		component={Link} to='/JobSeekerSignUp' 
+		component={Link} to='/signupjobseeker' 
 		variant="contained"
 		style={{"margin":10 }}>Job Seeker</Button>
 
