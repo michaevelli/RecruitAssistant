@@ -5,9 +5,10 @@ import firebase_admin
 from firebase_admin import credentials, auth, db
 import pyrebase
 import json
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 
 # connect to firebase
 cred = credentials.Certificate('./backend/recruitassistant_cred.json')
@@ -58,18 +59,22 @@ def seeker_signup():
     except:
         return jsonify({'message': 'Error creating user'}),400
 
-# @app.route('/login', methods=['POST'])
-@app.route('/login')
+@app.route('/login', methods=['POST'])
+#@app.route('/login')
 def login():
 	print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 	try:
+		json_data = request.get_json()
+		print(json_data)
+
+
 		fAuth = pb.auth()
 		db = pb.database()
 		
 		# password = request.form.get("password")
 		# email = request.form.get("email")
 		password = 'hello123'
-		email = 'test1@gmail.com'
+		email = 'test5@gmail.com'
 
 		response = fAuth.sign_in_with_email_and_password(email, password)
 		token = fAuth.refresh(response['refreshToken'])['idToken']
