@@ -60,7 +60,11 @@ def seeker_signup():
         return jsonify({'message': 'Error creating user'}),400
 
 @app.route('/login', methods=['POST'])
+<<<<<<< HEAD
 #@app.route('/login')
+=======
+# @app.route('/login')
+>>>>>>> firebaseintegration
 def login():
 	try:
 		json_data = request.get_json()
