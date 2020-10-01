@@ -5,7 +5,7 @@ import Login from './Login/Login';
 import SignUpRecruiter from './SignUp/SignUpRecruiter';
 import SignUpJobSeeker from './SignUp/SignUpJobSeeker';
 import SignUp from './SignUp/SignUp';
-
+import DashBoardTemplate from './SharedComponents/Dashboard';
 
 function App() {
   const [currentTime, setCurrentTime] = useState(0);
@@ -24,6 +24,7 @@ function App() {
         <Route path="/signuprecruiter" component={SignUpRecruiter}/>
         <Route path="/signupjobseeker" component={SignUpJobSeeker}/>
         <Route path="/SignUp" component={SignUp}/>
+        <Route path="/dashboard" component={DashBoardTemplate}/>
       </Router>
     </div>
     
