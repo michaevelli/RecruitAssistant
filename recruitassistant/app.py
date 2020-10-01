@@ -62,19 +62,19 @@ def seeker_signup():
 @app.route('/login', methods=['POST'])
 #@app.route('/login')
 def login():
-	print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 	try:
 		json_data = request.get_json()
-		print(json_data)
-
+		email = json_data.get("email")
+		password = json_data.get("password")
+		print(email)
 
 		fAuth = pb.auth()
 		db = pb.database()
 		
 		# password = request.form.get("password")
 		# email = request.form.get("email")
-		password = 'hello123'
-		email = 'test5@gmail.com'
+		#password = 'hello123'
+		#email = 'test5@gmail.com'
 
 		response = fAuth.sign_in_with_email_and_password(email, password)
 		token = fAuth.refresh(response['refreshToken'])['idToken']
