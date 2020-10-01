@@ -3,7 +3,7 @@ import {Router,Route} from 'react-router-dom';
 import history from './History';
 import Login from './Login/Login';
 import SignUp from './SignUp/SignUp';
-import DashBoardTemplate from './SignUp/Dashboard';
+import DashBoardTemplate from './SharedComponents/Dashboard';
 
 function App() {
   const [currentTime, setCurrentTime] = useState(0);
