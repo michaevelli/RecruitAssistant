@@ -66,7 +66,7 @@ def login():
 		db = pb.database()
 		
 		# password = request.form.get("password")
-    # email = request.form.get("email")
+        # email = request.form.get("email")
 		password = 'hello123'
 		email = 'a@a.com'
 

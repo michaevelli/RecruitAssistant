@@ -3,7 +3,7 @@ import { TextField, Button } from "@material-ui/core";
 import {Card, Container} from 'react-bootstrap';
 import axios from "axios";
 
-export const submitApp="localhost:8080/submitapp"
+export const submitLogin="https://localhost:5000/login"
 
 function Login() {
 	const [email, setEmail] = useState("");
@@ -11,34 +11,21 @@ function Login() {
 
 
 	async function handleSubmit(e) {
-		e.preventDefault()
 		const ndata = {
-			email: {email},
-			password: {password}
+			email: email,
+			password: password
 		}
-		console.log(ndata)
-		axios.post(submitApp, ndata).then(
-			console.log('well something should have been received by the backend at this point')
-			//if (/*data from backend has valid AuthToken*/){
-				//window.localStorage.setItem("recruitAssistantAuthToken", datafrombackend.AuthToken)
-			//	browserHistory.push("/dashboard")
-			//} else {
-				//render "invalid login" on the page
-			//}
-		)
+		console.log(ndata);
+		let response = await axios.post(submitLogin, ndata);
+		
+		console.log(response);
+
 	  }
 	
 
 
 	return (
 		<div>
-			<script type="text/javascript">
-				function checkToken(){
-					//authToken = window.localStorage.getItem("recruitAssistantAuthToken")
-					// post token to backend
-					// if valid token then direct to dashbaord
-				}
-	  		</script>
 			<Container style={{'textAlign': 'center'}}>
 				<h1>Recruit Assistant</h1>
 				<b>Sign In</b>
