@@ -61,14 +61,15 @@ def seeker_signup():
 # @app.route('/login', methods=['POST'])
 @app.route('/login')
 def login():
+	print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 	try:
 		fAuth = pb.auth()
 		db = pb.database()
 		
 		# password = request.form.get("password")
-        # email = request.form.get("email")
+		# email = request.form.get("email")
 		password = 'hello123'
-		email = 'a@a.com'
+		email = 'test1@gmail.com'
 
 		response = fAuth.sign_in_with_email_and_password(email, password)
 		token = fAuth.refresh(response['refreshToken'])['idToken']
