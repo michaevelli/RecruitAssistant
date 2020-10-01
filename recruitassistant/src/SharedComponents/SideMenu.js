@@ -6,7 +6,7 @@ export default function SideMenu(props) {
    
     return(
         <div style={{'height': '100vh','backgroundColor': "#F8F8F8",outlineColor:'black' }}>
-                <nav class="navbar " style={{'position':'fixed'}}>
+                <nav class="navbar " style={{'position':'relative'}}>
                 <ul class="navbar-nav" >
 
                {

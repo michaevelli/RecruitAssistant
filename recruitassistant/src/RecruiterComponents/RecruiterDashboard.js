@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import 'bootstrap/dist/css/bootstrap.css';
-import { TextField, Button, Grid,Card,CardContent,CardActions } from "@material-ui/core";
-import { button,Container,Col,Row} from 'react-bootstrap';
+import  'bootstrap/dist/css/bootstrap.css';
+import { Button, Grid,Card,CardContent,CardActions } from "@material-ui/core";
+import {Container,Col,Row} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
@@ -13,13 +13,18 @@ export default function RecruiterDashboard() {
     return(
         <Grid fluid={true}>
 
-            <Container fluid>
-            <TitleBar/>
+            <Container fluid={true}>           
+                <TitleBar/>
             </Container>
 
-            <Container fluid={true}  >
+            <Container fluid={true}>
 
-                <Row noGutters  >
+                <Row noGutters  
+                    style={{
+                    height:'100vh',
+                    overflow: 'auto',
+                    paddingTop: 45}}>
+
                     <Col sm={2}  >
                     <SideMenu random={['Recruiter Dashboard']}/>
                     </Col >
