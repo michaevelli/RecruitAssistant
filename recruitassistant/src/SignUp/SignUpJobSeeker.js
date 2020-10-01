@@ -3,7 +3,7 @@ import { TextField, Button } from "@material-ui/core";
 import {Container} from 'react-bootstrap';
 import axios from "axios";
 
-export const submitApp="http://127.0.0.1:5000/signup"
+export const submitSignUp="http://localhost:5000/signup"
 
 function SignUpJobSeeker() {
     const [full_name, setName] = useState("");
@@ -21,17 +21,16 @@ function SignUpJobSeeker() {
                 type: "jobseeker"
             }
             console.log(ndata)
-            axios.post(submitApp, ndata).then(function(response) {
-				console.log("response:")
-				console.log(response)
-				//store appropriate response data in localstorage
-				//redirect to dashboard
-			})
-			.catch(function(error){
-				console.log("error:")
-				console.log(error.response)
-				//add to html to display error
-			})
+            axios.post(submitSignUp, ndata)
+                .then(function(response) {
+				    console.log("response:")
+                    console.log(response)
+                    console.log("success")
+			    })
+			    .catch(function(error){
+				    console.log("error:")
+				    console.log(error.response)
+			    })
         } else {
             alert('Passwords do not match.')
         } 

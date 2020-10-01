@@ -26,8 +26,8 @@ function Login() {
 			.then(function(response) {
 				console.log("response:")
 				console.log(response)
-				//store appropriate response data in localstorage
-				//redirect to dashboard
+				//push data to localstorage
+				browserHistory.push("/dashboard")
 			})
 			.catch(function(error){
 				console.log("error:")
