@@ -3,9 +3,7 @@ import { TextField, Button } from "@material-ui/core";
 import {Card, Container} from 'react-bootstrap';
 import axios from "axios";
 
-
 export const submitLogin="http://127.0.0.1:5000/login"
-
 
 function Login() {
 	const [email, setEmail] = useState("");
@@ -13,11 +11,11 @@ function Login() {
 
 
 	async function handleSubmit(e) {
+		e.preventDefault()
 		const ndata = {
 			email: email,
 			password: password
 		}
-
 		console.log(ndata);
 		
 		
@@ -35,7 +33,6 @@ function Login() {
 			})
 
 	  }
-
 	
 
 
@@ -52,7 +49,7 @@ function Login() {
 					<br></br>
 					<Button type="submit">Log In</Button>
 				</form>
-				<br/>
+				<br></br>
 			
 				Don't have an account? <a href="/signup">Sign Up</a>
 			</Container>
