@@ -22,20 +22,14 @@ def get_current_time():
     data = {'time': 10000}
     return jsonify(data)
 
-#@app.route('/api/signup', methods=["POST"])
 @app.route('/signup', methods=["POST"])
-def seeker_signup():
-    # email = request.form.get('email')
-    # password = request.form.get('password')
-	
+def user_signup():
 	json_data = request.get_json()
-	
+	email = json_data["email"]
+	password = json_data["password"]
+	u_type = json_data["type"]
+
 	print(json_data)
-	
-	email = json_data["email"]["email"]
-	password = json_data["password"]["password"]
-	print(email)
-	print(password)
     
 	if email is None or password is None:
 		return jsonify({'message': 'Error missing email or password'}),400
@@ -44,26 +38,34 @@ def seeker_signup():
 				email=email,
 				password=password
 		)
-		# data structure
-		# currently with temp data
 		users_ref = ref.child('user')
-		users_ref.update({
-			user.uid: {
-				'first_name': 'I AM TEMP DATA',
-				'last_name' : 'I AM TEMP DATA',
-				'company' : 'null/filled',
-				'email' : 'test@a.com',
-				'type' : "employer/whatever"
-			},
-		})
-					
-		return jsonify({'message': f'Successfully created user {user.uid}'}),200
-	except:
-		return jsonify({'message': 'Error creating user'}),400
 
+		if u_type == "jobseeker":
+			users_ref.update({
+				user.uid: {
+					'first_name': json_data["first_name"],
+					'last_name' : json_data["last_name"],
+					'email' : email,
+					'type' : u_type,
+					'company' : 'null',
+				},
+			})					
+		elif u_type == "recruiter":
+			users_ref.update({
+				user.uid: {
+					'first_name': json_data["first_name"],
+					'last_name' : json_data["last_name"],
+					'email' : email,
+					'type' : u_type,
+					'company': json_data["company"]
+				},
+			})
+
+		return jsonify({'message': f'Successfully created user {user.uid}'}),200
+	except Exception as e:		
+		return jsonify({"message": str(e)}), 400
 
 @app.route('/login', methods=['POST'])
-# @app.route('/login')
 def login():
 	try:
 		json_data = request.get_json()
