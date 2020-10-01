@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 
 
-export default function SignUp() {
+function SignUp() {
 	
 	//const [userType, setUserType] = useState("");
 
@@ -35,4 +35,6 @@ export default function SignUp() {
 	</Container>
 	)
 }
+
+export default SignUp;
 
