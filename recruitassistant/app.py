@@ -1,5 +1,5 @@
 import time
-from flask import Flask, request
+from flask import Flask, request, make_response
 from flask import jsonify 
 import firebase_admin
 from firebase_admin import credentials, auth, db
@@ -64,8 +64,6 @@ def seeker_signup():
 def login():
 	try:
 		json_data = request.get_json()
-		print(json_data)
-
 
 		fAuth = pb.auth()
 		db = pb.database()
@@ -86,5 +84,5 @@ def login():
 		# user = users.order_by_child("email").equal_to(email).get()
 		return jsonify({"success": True, "token": token, "user": user}), 200
 	except Exception as e:
-		print(e)
-		return jsonify({'message': 'Failed login'}), 400
+		# print(e)
+		return jsonify({"message": "Incorrect Username or Password"}), 401
