@@ -21,7 +21,13 @@ function Login() {
 		
 		axios.post(submitLogin, ndata)
 			.then(function(response) {
+				console.log("response:")
 				console.log(response)
+			})
+			.catch(function(error){
+				console.log("error:")
+				console.log(error)
+				console.log(error['message'])
 			})
 
 		//let response = await axios.fetch(submitLogin, ndata);

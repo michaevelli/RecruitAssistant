@@ -62,7 +62,6 @@ def seeker_signup():
 @app.route('/login', methods=['POST'])
 #@app.route('/login')
 def login():
-	print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 	try:
 		json_data = request.get_json()
 		print(json_data)
@@ -71,11 +70,13 @@ def login():
 		fAuth = pb.auth()
 		db = pb.database()
 		
-		# password = request.form.get("password")
-		# email = request.form.get("email")
-		password = 'hello123'
-		email = 'test5@gmail.com'
-
+		password = json_data["password"]
+		email = json_data["email"]
+		
+		# password = 'hello123'
+		# email = 'a@a.com'
+		
+		
 		response = fAuth.sign_in_with_email_and_password(email, password)
 		token = fAuth.refresh(response['refreshToken'])['idToken']
 		user = db.child("user").order_by_child("email").equal_to(email).get().val()
@@ -83,7 +84,6 @@ def login():
 		# users = ref.child("user")
 		# print(users)
 		# user = users.order_by_child("email").equal_to(email).get()
-
 		return jsonify({"success": True, "token": token, "user": user}), 200
 	except Exception as e:
 		print(e)
