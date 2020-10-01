@@ -11,6 +11,7 @@ export default function TitleBar() {
       
         <nav className="navbar navbar-dark fixed-top flex-md-nowrap p-0 shadow"
         style={{"backgroundColor": '#348360'}}>
+
             <a className="navbar-brand col-sm-3" href="#">RecruitAssistant</a>
             <ul className="navbar-nav px-3">
                 <li className="nav-item text-nowrap">

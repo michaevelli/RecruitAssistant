@@ -18,15 +18,18 @@ export default function DashBoardTemplate() {
             </Container>
 
             <Container fluid={true}  >
+
                 <Row noGutters >
                     <Col sm={2}  >
                     <SideMenu random={['link1','link2','link3']}/>
+
                     </Col>
 
                     <Col>CONTENT</Col>
 
             </Row>
             </Container>
+
           </Grid>
        );
 }

@@ -8,7 +8,7 @@ export default function SideMenu(props) {
         <div style={{'height': '100vh','backgroundColor': "#DEDEDE" }}>
                 <nav class="navbar " style={{'position':'fixed'}}>
                 <ul class="navbar-nav" >
-               
+
                {
                    props.random.map( (entry,index)=>
                      (<li class="nav-item">
