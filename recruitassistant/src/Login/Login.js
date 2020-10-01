@@ -3,7 +3,9 @@ import { TextField, Button } from "@material-ui/core";
 import {Card, Container} from 'react-bootstrap';
 import axios from "axios";
 
-export const submitLogin="http://localhost:5000/login"
+
+export const submitLogin="http://127.0.0.1:5000/login"
+
 
 function Login() {
 	const [email, setEmail] = useState("");
@@ -15,14 +17,31 @@ function Login() {
 			email: email,
 			password: password
 		}
-		console.log(ndata)
-		let response = await axios.post(submitLogin, ndata);
 
-		if (response.data.success === true) {
-			console.log("good login")
-			// history.push('/dashboard')
-		}
-	}
+		console.log(ndata);
+		
+		
+		axios.post(submitLogin, ndata)
+			.then(function(response) {
+				console.log("response:")
+				console.log(response)
+			})
+			.catch(function(error){
+				console.log("error:")
+				console.log(error)
+				console.log(error['message'])
+			})
+
+		//let response = await axios.fetch(submitLogin, ndata);
+		
+		//console.log(response);
+
+		//fetch('/login').then(res => res.json()).then(data => {
+		//	console.log(data)
+		//});
+
+	  }
+
 	
 
 

@@ -1,13 +1,14 @@
 import time
-from flask import Flask, request
+from flask import Flask, request, make_response
 from flask import jsonify 
 import firebase_admin
 from firebase_admin import credentials, auth, db
 import pyrebase
 import json
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 
 # connect to firebase
 cred = credentials.Certificate('./backend/recruitassistant_cred.json')
@@ -63,23 +64,19 @@ def seeker_signup():
 # @app.route('/login')
 def login():
 	try:
+		json_data = request.get_json()
+
 		fAuth = pb.auth()
 		db = pb.database()
 		
-		# password = request.form.get("password")
-    # email = request.form.get("email")
-		password = 'hello123'
-		email = 'a@a.com'
-
+		password = json_data["password"]
+		email = json_data["email"]
+		
 		response = fAuth.sign_in_with_email_and_password(email, password)
 		token = fAuth.refresh(response['refreshToken'])['idToken']
 		user = db.child("user").order_by_child("email").equal_to(email).get().val()
-		# user = "user"
-		# users = ref.child("user")
-		# print(users)
-		# user = users.order_by_child("email").equal_to(email).get()
-
+	
 		return jsonify({"success": True, "token": token, "user": user}), 200
 	except Exception as e:
-		print(e)
-		return jsonify({'message': 'Failed login'}), 400
+		# print(e)
+		return jsonify({"message": "Incorrect Username or Password"}), 401
