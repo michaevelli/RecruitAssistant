@@ -23,20 +23,14 @@ function Login() {
 			.then(function(response) {
 				console.log("response:")
 				console.log(response)
+				//store appropriate response data in localstorage
+				//redirect to dashboard
 			})
 			.catch(function(error){
 				console.log("error:")
-				console.log(error)
-				console.log(error['message'])
+				console.log(error.response)
+				//add to html to display error
 			})
-
-		//let response = await axios.fetch(submitLogin, ndata);
-		
-		//console.log(response);
-
-		//fetch('/login').then(res => res.json()).then(data => {
-		//	console.log(data)
-		//});
 
 	  }
 	
@@ -49,9 +43,9 @@ function Login() {
 				<b>Sign In</b>
 
 				<form onSubmit={handleSubmit}>
-					<TextField label="Email" value={email} onChange={e=>setEmail(e.target.value)}></TextField>
+					<TextField id="email" label="Email" value={email} onChange={e=>setEmail(e.target.value)}></TextField>
 					<br></br>
-					<TextField label="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)}></TextField>
+					<TextField id="password" label="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)}></TextField>
 					<br></br>
 					<Button type="submit">Log In</Button>
 				</form>
