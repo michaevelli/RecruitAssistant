@@ -59,7 +59,7 @@ def seeker_signup():
         return jsonify({'message': 'Error creating user'}),400
 
 # @app.route('/login', methods=['POST'])
-@app.route('/login')
+@app.route('/api/login')
 def login():
 	try:
 		fAuth = pb.auth()
