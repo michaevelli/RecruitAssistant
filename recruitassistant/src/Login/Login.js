@@ -10,6 +10,7 @@ function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [errorStatus, setErrorStatus] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
 
 
 	async function handleSubmit(e) {
@@ -31,7 +32,7 @@ function Login() {
 			.catch(function(error){
 				console.log("error:")
 				console.log(error.response)
-				document.getElementById("error").innerText = error.response.data.message
+				setErrorMessage(error.response.data.message)
 				setErrorStatus("True")
 
 			})
@@ -45,7 +46,7 @@ function Login() {
 			<Container style={{'textAlign': 'center'}}>
 				<h1>Recruit Assistant</h1>
 				<b>Sign In</b>
-				<div id="error" style={{color: 'red'}}></div>
+				<div id="error" style={{color: 'red'}}>{errorMessage}</div>
 				<form onSubmit={handleSubmit}>
 					<TextField label="Email" value={email} error={errorStatus} onChange={e=>setEmail(e.target.value)}></TextField>
 					<br/>
