@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 export default function SideMenu(props) {
    
     return(
-        <div style={{'height': '100vh','backgroundColor': "#DEDEDE" }}>
+        <div style={{'height': '100vh','backgroundColor': "#F8F8F8",outlineColor:'black' }}>
                 <nav class="navbar " style={{'position':'fixed'}}>
                 <ul class="navbar-nav" >
 
