@@ -4,6 +4,8 @@ import history from './History';
 import Login from './Login/Login';
 import SignUpRecruiter from './SignUp/SignUpRecruiter';
 import SignUpJobSeeker from './SignUp/SignUpJobSeeker';
+import SignUp from './SignUp/SignUp';
+
 
 function App() {
   const [currentTime, setCurrentTime] = useState(0);
@@ -21,6 +23,7 @@ function App() {
         <Route path="/login" component={Login}/>
         <Route path="/signuprecruiter" component={SignUpRecruiter}/>
         <Route path="/signupjobseeker" component={SignUpJobSeeker}/>
+        <Route path="/SignUp" component={SignUp}/>
       </Router>
     </div>
     
