@@ -23,53 +23,47 @@ def get_current_time():
     return jsonify(data)
 
 #@app.route('/api/signup', methods=["POST"])
-@app.route('/api/signup')
+@app.route('/signup', methods=["POST"])
 def seeker_signup():
-    email = request.form.get('email')
-    password = request.form.get('password')
-
-    #data = request.json
-    #email = data["email"]
-    #password = data["password"]
-
-    # frontend 
-    # type: (admin/user/recruiter)
+    # email = request.form.get('email')
+    # password = request.form.get('password')
+	
+	json_data = request.get_json()
+	
+	print(json_data)
+	
+	email = json_data["email"]["email"]
+	password = json_data["password"]["password"]
+	print(email)
+	print(password)
     
-    if email is None or password is None:
-        return jsonify({'message': 'Error missing email or password'}),400
-    try:
-        user = auth.create_user(
-                email=email,
-                password=password
-        )
-        # data structure
-        # currently with temp data
-        users_ref = ref.child('user')
-        users_ref.update({
-            user.uid: {
-                'first_name': 'I AM TEMP DATA',
-                'last_name' : 'I AM TEMP DATA',
-                'company' : 'null/filled',
-                'email' : 'test@a.com',
-                'type' : 'JobSeeker/Recruiter'
-            },
-        })
-                  
-        return jsonify({'message': f'Successfully created user {user.uid}'}),200
-    except:
-        return jsonify({'message': 'Error creating user'}),400
+	if email is None or password is None:
+		return jsonify({'message': 'Error missing email or password'}),400
+	try:
+		user = auth.create_user(
+				email=email,
+				password=password
+		)
+		# data structure
+		# currently with temp data
+		users_ref = ref.child('user')
+		users_ref.update({
+			user.uid: {
+				'first_name': 'I AM TEMP DATA',
+				'last_name' : 'I AM TEMP DATA',
+				'company' : 'null/filled',
+				'email' : 'test@a.com',
+				'type' : "employer/whatever"
+			},
+		})
+					
+		return jsonify({'message': f'Successfully created user {user.uid}'}),200
+	except:
+		return jsonify({'message': 'Error creating user'}),400
 
 
 @app.route('/login', methods=['POST'])
-<<<<<<< HEAD
-<<<<<<< HEAD
-#@app.route('/login')
-=======
 # @app.route('/login')
->>>>>>> firebaseintegration
-=======
-# @app.route('/login')
->>>>>>> firebaseintegration
 def login():
 	try:
 		json_data = request.get_json()
@@ -83,12 +77,9 @@ def login():
 		response = fAuth.sign_in_with_email_and_password(email, password)
 		token = fAuth.refresh(response['refreshToken'])['idToken']
 		user = db.child("user").order_by_child("email").equal_to(email).get().val()
-	
+
 		return jsonify({"success": True, "token": token, "user": user}), 200
 	except Exception as e:
-		# print(e)
-		# print("HERE\n\n\n\n")
-		# #print(e.args[1])
 		error_message = json.loads(e.args[1])['error']['message']
 		error_code = json.loads(e.args[1])['error']['code']
 		
