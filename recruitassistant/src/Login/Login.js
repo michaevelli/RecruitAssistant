@@ -4,7 +4,11 @@ import { withStyles } from '@material-ui/core/styles';
 import {Card, Container} from 'react-bootstrap';
 import axios from "axios";
 
+<<<<<<< HEAD
 export const submitLogin="http://localhost:5000/login"
+=======
+export const submitLogin="http://127.0.0.1:5000/login"
+>>>>>>> firebaseintegration
 
 function Login() {
 	const [email, setEmail] = useState("");
@@ -19,7 +23,10 @@ function Login() {
 			email: email,
 			password: password
 		}
+<<<<<<< HEAD
 
+=======
+>>>>>>> firebaseintegration
 		console.log(ndata);
 		
 		
@@ -38,8 +45,12 @@ function Login() {
 
 			})
 
+<<<<<<< HEAD
 	}
 
+=======
+	  }
+>>>>>>> firebaseintegration
 	
 
 
@@ -56,7 +67,7 @@ function Login() {
 					<br/>
 					<Button type="submit">Log In</Button>
 				</form>
-				<br/>
+				<br></br>
 			
 				Don't have an account? <a href="/signup">Sign Up</a>
 			</Container>
