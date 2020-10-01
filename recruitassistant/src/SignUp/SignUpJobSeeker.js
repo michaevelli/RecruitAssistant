@@ -6,7 +6,8 @@ import axios from "axios";
 export const submitApp="http://127.0.0.1:5000/signup"
 
 function SignUpJobSeeker() {
-    const [full_name, setName] = useState("");
+    const [first_name, setFirstName] = useState("");
+    const [last_name, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [repassword, setRepassword] = useState("");
@@ -15,9 +16,10 @@ function SignUpJobSeeker() {
         e.preventDefault()
         if (password === repassword) {
             const ndata = {
-                full_name: {full_name},
-                email: {email},
-                password: {password},
+                first_name: first_name,
+                last_name: last_name,
+                email: email,
+                password: password,
                 type: "jobseeker"
             }
             console.log(ndata)
@@ -45,7 +47,10 @@ function SignUpJobSeeker() {
                 <b>Sign Up</b>
                 
                 <form onSubmit={handleSubmit}>
-                    <TextField label = "Full Name" value = {full_name} onChange = {e=>setName(e.target.value)}> </TextField>
+                    <TextField label = "First Name" value = {first_name} onChange = {e=>setFirstName(e.target.value)}> </TextField>
+                    <br></br>
+
+                    <TextField label = "Last Name" value = {last_name} onChange = {e=>setLastName(e.target.value)}> </TextField>
                     <br></br>
 
                     <TextField label = "Email" value = {email} onChange = {e=>setEmail(e.target.value)}> </TextField>

@@ -12,7 +12,6 @@ function Login() {
 	const [errorStatus, setErrorStatus] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
 
-
 	async function handleSubmit(e) {
 		e.preventDefault()
 		const ndata = {
@@ -38,7 +37,6 @@ function Login() {
 			})
 
 	}
-
 	
 
 
