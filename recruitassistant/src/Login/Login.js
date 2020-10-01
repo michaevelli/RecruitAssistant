@@ -4,11 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import {Card, Container} from 'react-bootstrap';
 import axios from "axios";
 
-<<<<<<< HEAD
-export const submitLogin="http://127.0.0.1:5000/login"
-=======
 export const submitLogin="http://localhost:5000/login"
->>>>>>> firebaseintegration
 
 function Login() {
 	const [email, setEmail] = useState("");
