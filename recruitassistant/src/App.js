@@ -18,7 +18,6 @@ function App() {
 
   return (
     <div>
-      <p>The current time is {currentTime}.</p>
       <Router history={history}>
         <Route path="/login" component={Login}/>
         <Route path="/signuprecruiter" component={SignUpRecruiter}/>
