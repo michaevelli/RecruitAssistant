@@ -14,6 +14,7 @@ function Login() {
 
 
 	async function handleSubmit(e) {
+		e.preventDefault()
 		const ndata = {
 			email: email,
 			password: password
