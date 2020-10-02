@@ -6,7 +6,7 @@ import SignUpRecruiter from './SignUp/SignUpRecruiter';
 import SignUpJobSeeker from './SignUp/SignUpJobSeeker';
 import SignUp from './SignUp/SignUp';
 import RecruiterDashboard from './RecruiterComponents/RecruiterDashboard';
-
+import JobSeekerDashboard from './JobSeekerComponents/JobSeekerDashboard';
 function App() {
   const [currentTime, setCurrentTime] = useState(0);
 
@@ -22,6 +22,7 @@ function App() {
         <Route path="/login" component={Login}/>
 
         <Route path="/recruiterdashboard" component={RecruiterDashboard}/>
+        <Route path="/jobseekerdashboard" component={JobSeekerDashboard}/>
         <Route path="/signuprecruiter" component={SignUpRecruiter}/>
         <Route path="/signupjobseeker" component={SignUpJobSeeker}/>
         <Route path="/SignUp" component={SignUp}/>

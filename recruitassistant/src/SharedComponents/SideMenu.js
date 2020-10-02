@@ -11,7 +11,7 @@ export default function SideMenu(props) {
 
                {
                    props.random.map( (entry,index)=>
-                     (<li class="nav-item">
+                     (<li class="nav-item" >
                     <a class="nav-link" href="#">{entry}</a>
                     </li>)
                    )

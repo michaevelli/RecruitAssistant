@@ -10,7 +10,12 @@ import SideMenu from "../SharedComponents/SideMenu.js";
 export default function RecruiterDashboard() {
     
     return(
-        <Grid fluid={true}>
+        <Grid 
+        container
+        direction="row"
+        justify="space-around"
+        alignItems="flex-start"
+      >
 
             <Container fluid={true}>           
                 <TitleBar/>
@@ -43,7 +48,7 @@ export default function RecruiterDashboard() {
                                 <Typography color="textSecondary">
                                     status
                                 </Typography>
-                                <Link href="#" style={{marginLeft: 30}} >
+                                <Link href="/sampleapplicationdash" style={{marginLeft: 30}} >
                                         View applications
                                 </Link>
                             </CardActions>
@@ -115,7 +120,7 @@ export default function RecruiterDashboard() {
 
                     <Col>
                     <button className='btn btn-danger pull-right' style={{margin: 10}}>
-                        New Job
+                        + Job
                         </button>                 
                     </Col>
             </Row>
