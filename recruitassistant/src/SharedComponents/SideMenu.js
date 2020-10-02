@@ -12,12 +12,13 @@ export default function SideMenu(props) {
                {
                    props.random.map( (entry,index)=>
                      (<li class="nav-item" >
-                    <a class="nav-link" href="#">{entry}</a>
+                    <a class="nav-link" href="#" style={{color: '#348360'}}>{entry}</a>
                     </li>)
                    )
                }
                 </ul> 
                 </nav>
+                
                 </div>
 
     );
