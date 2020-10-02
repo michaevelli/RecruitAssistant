@@ -10,30 +10,24 @@ import SideMenu from "../SharedComponents/SideMenu.js";
 export default function RecruiterDashboard() {
     
     return(
-        <Grid 
-        container
-        direction="row"
-        justify="space-around"
-        alignItems="flex-start"
-      >
+        <Grid >
+          
+            <Row noGutters fluid>           
+                <TitleBar/>       
+            </Row>
+           
 
-            <Container fluid={true}>           
-                <TitleBar/>
-            </Container>
-
-            <Container fluid={true}>
-
-                <Row noGutters  
-                    style={{
+            <Row noGutters style={{
                     height:'100vh',
-                    overflow: 'auto',
-                    paddingTop: 40}}>
+                    paddingTop: 40
+                    }}>
 
-                    <Col sm={2}  >
+                    <Col sm="2" >
                     <SideMenu random={['Recruiter Dashboard','FAQ']}/>
                     </Col >
-                    <Col sm={9}>
-                    <div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'left'}}>
+
+                    <Col sm="9">
+                    <div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal'}}>
                   
                         <Card style={{margin: 30, height: 150, width:250}}>
                             <CardContent>                          
@@ -94,26 +88,6 @@ export default function RecruiterDashboard() {
                                 </Link>
                         </CardActions>
                     </Card>
-
-               
-                    <Card variant="outlined" style={{margin: 30, height: 150, width:250, borderColor: 'black' }}>
-                            <CardContent>                          
-                                <Typography variant="h5" component="h2">
-                                    Alternate card style
-                                </Typography>
-                                <Typography color="textSecondary">
-                                    Company | City
-                                </Typography>
-                            </CardContent>
-                            <CardActions >
-                                <Typography color="textSecondary" >
-                                    status
-                                </Typography>
-                                <Link href="#" style={{marginLeft: 30}} >
-                                        View applications
-                                </Link>
-                            </CardActions>
-                    </Card>
                     </div>
                     </Col>
                     
@@ -125,7 +99,7 @@ export default function RecruiterDashboard() {
                     </Col>
             </Row>
             
-            </Container>
+            
 
           </Grid>
        );
