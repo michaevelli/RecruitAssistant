@@ -46,8 +46,8 @@ export default function JobSeekerDashboard() {
             <Col sm={2}  >
                 <SideMenu random={['JobSeeker Dashboard','Your Applications','FAQ']}/>
             </Col >
+            
             <Col>
-
                 <Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
                     Job Search
                 </Typography>
@@ -88,13 +88,17 @@ export default function JobSeekerDashboard() {
                         display: 'flex', 
                         flexWrap: 'wrap',
                         justifyContent: "center"}}>
-                <FormControl variant="outlined" style={{ margin: 8 }}>
+                <FormControl variant="outlined" style={{ margin: 8 , flexBasis:'10%'}}>
 
-                <InputLabel>Job-type</InputLabel>
+                <InputLabel >Job-type</InputLabel>
                     <Select
-                        value="job type"
+                        value={jobType}
                         onChange={ (event) => setJobType(event.target.value)}
                         label="Job-type"
+                        inputProps={{
+                            name: 'jobType',
+                            id: 'jobType'
+                          }}
                     >
                     <MenuItem value="">
                         <em>n/a</em>
@@ -106,12 +110,16 @@ export default function JobSeekerDashboard() {
                 </Select>
                 </FormControl>
 
-                <FormControl variant="outlined" style={{ margin: 8 }}>
+                <FormControl variant="outlined" style={{ margin: 8, flexBasis:'20%' }}>
                 <InputLabel>Experience Level</InputLabel>
-                  <Select
-                        value="job type"
+                  <Select                       
+                        value={experienceLevel}
                         onChange={ (event) => setExperienceLevel(event.target.value)}
-                        label="Job-type"
+                        label="experienceLevel"
+                        inputProps={{
+                            name: 'experienceLevel',
+                            id: 'experienceLevel',
+                          }}
                     >
                     <MenuItem value="">
                         <em>n/a</em>
@@ -125,12 +133,16 @@ export default function JobSeekerDashboard() {
                 </Select>
                 </FormControl>
                   
-                <FormControl variant="outlined" style={{ margin: 8 }}>
+                <FormControl variant="outlined" style={{ margin: 8, flexBasis:'15%' }}>
                 <InputLabel>Salary p.a</InputLabel>
                 <Select
-                    value="salary"
+                    value={salary}
                     onChange={ (event) => setSalary(event.target.value)}
                     label="Salary"
+                    inputProps={{
+                        name: 'salary',
+                        id: 'salary'
+                      }}
                 >
                 <MenuItem value="">
                     <em>n/a</em>
