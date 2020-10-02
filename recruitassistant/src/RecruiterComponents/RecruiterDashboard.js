@@ -23,15 +23,15 @@ export default function RecruiterDashboard() {
                     style={{
                     height:'100vh',
                     overflow: 'auto',
-                    paddingTop: 45}}>
+                    paddingTop: 40}}>
 
                     <Col sm={2}  >
-                    <SideMenu random={['Recruiter Dashboard']}/>
+                    <SideMenu random={['Recruiter Dashboard','FAQ']}/>
                     </Col >
                     <Col sm={8}>
                     <div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'left'}}>
                   
-                        <Card style={{margin: 30, height: 150, width:200}}>
+                        <Card style={{margin: 30, height: 150, width:250}}>
                             <CardContent>                          
                                 <Typography variant="h5" component="h2">
                                     Job title
@@ -41,12 +41,15 @@ export default function RecruiterDashboard() {
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Button size="small">View details</Button>
+                                <Typography color="textSecondary">
+                                    status
+                                </Typography>
+                                <Button size="small">View applications</Button>
                             </CardActions>
                     </Card>
                 
                    
-                    <Card style={{margin: 30, height: 150, width:200}}>
+                    <Card style={{margin: 30, height: 150, width:250}}>
                         <CardContent>                          
                             <Typography variant="h5" component="h2">
                                 Job title
@@ -54,9 +57,14 @@ export default function RecruiterDashboard() {
                             <Typography color="textSecondary">
                                 Company | City
                             </Typography>
+                            
                         </CardContent>
                         <CardActions>
-                            <Button size="small">View details</Button>
+                            
+                            <Typography color="textSecondary">
+                                    status
+                            </Typography>
+                            <Button size="small">View applications</Button>
                         </CardActions>
                     </Card>
                     </div>
