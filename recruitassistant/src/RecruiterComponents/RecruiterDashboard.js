@@ -9,6 +9,28 @@ import SideMenu from "../SharedComponents/SideMenu.js";
 
 export default function RecruiterDashboard() {
     
+    //TODO
+    //axios request to get logged in recruiter's job postings, sorted by most recently posted
+   const data={jobs:[
+        {
+            title: "job title",
+            company: "company",
+            city: "city",
+            status: "status"
+        },
+        {
+            title: "job title",
+            company: "company",
+            city: "city",
+            status: "status"
+        },
+        {
+            title: "job title",
+            company: "company",
+            city: "city",
+            status: "status"
+        }]}
+    
     return(
         <Grid >
           
@@ -29,65 +51,29 @@ export default function RecruiterDashboard() {
                     <Col sm="9">
                     <div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal'}}>
                   
-                        <Card style={{margin: 30, height: 150, width:250}}>
-                            <CardContent>                          
-                                <Typography variant="h5" component="h2">
-                                    Job title
-                                </Typography>
-                                <Typography color="textSecondary">
-                                    Company | City
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Typography color="textSecondary">
-                                    status
-                                </Typography>
-                                <Link href="/sampleapplicationdash" style={{marginLeft: 30}} >
-                                        View applications
-                                </Link>
-                            </CardActions>
-                    </Card>
+                    {
+                    data.jobs.map( (job,index)=>
 
-                    <Card style={{margin: 30, height: 150, width:250}}>
-                            <CardContent>                          
-                                <Typography variant="h5" component="h2">
-                                    Job title
-                                </Typography>
-                                <Typography color="textSecondary">
-                                    Company | City
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Typography color="textSecondary">
-                                    status
-                                </Typography>
-                                <Link href="#" style={{marginLeft: 30}} >
-                                        View applications
-                                </Link>
-                            </CardActions>
-                    </Card>
-                
-                   
-                    <Card style={{margin: 30, height: 150, width:250}}>
-                        <CardContent>                          
-                            <Typography variant="h5" component="h2">
-                                Job title
-                            </Typography>
-                            <Typography color="textSecondary">
-                                Company | City
-                            </Typography>
-                            
-                        </CardContent>
-                        <CardActions>
-                            
-                            <Typography color="textSecondary">
-                                    status
-                            </Typography>
-                            <Link href="#" style={{marginLeft: 30}} >
-                                        View applications
-                                </Link>
-                        </CardActions>
-                    </Card>
+                                (<Card style={{margin: 30, height: 150, width:250}}>
+                                <CardContent>                          
+                                    <Typography variant="h5" component="h2">
+                                       {job.title}
+                                    </Typography>
+                                    <Typography color="textSecondary">
+                                        {job.company} | {job.city}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Typography color="textSecondary">
+                                        {job.status}
+                                    </Typography>
+                                    <Link href="/sampleapplicationdash" style={{marginLeft: 30}} >
+                                            View applications
+                                    </Link>
+                                </CardActions>
+                        </Card>)
+                    )}
+   
                     </div>
                     </Col>
                     
@@ -98,9 +84,6 @@ export default function RecruiterDashboard() {
                         </button>                 
                     </Col>
             </Row>
-            
-            
-
           </Grid>
        );
 }
