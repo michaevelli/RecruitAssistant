@@ -24,7 +24,7 @@ export default function SignUp() {
 	     
 		<Button 
 		variant="contained"
-		style={{"margin":10 }}><a href='/signuprecruiter'>Job Seeker</a></Button>
+		style={{"margin":10 }}><a href='/signuprecruiter'>Recruiter</a></Button>
 		<Button 
 		
 		variant="contained"

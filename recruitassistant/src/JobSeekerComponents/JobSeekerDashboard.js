@@ -13,7 +13,7 @@ export default function JobSeekerDashboard() {
     const [location,setLocation] = useState('');
     const [jobType,setJobType] = useState('');
     const [experienceLevel,setExperienceLevel] = useState('');
-    //salary range units are in k/1000
+    //salary range units are in k/$1000
     const [salaryRange,setSalaryRange] = useState([0,10]);
     //open is used to toggle advanced filters div
     const [open, setOpen]=useState(false)
@@ -68,6 +68,11 @@ export default function JobSeekerDashboard() {
 
     const handleSubmit= async (event) =>{
         event.preventDefault();
+        console.log('searchstring ',searchString)
+        console.log('location', location)
+        console.log('exp', experienceLevel)
+        console.log('jobtype', jobType)
+        console.log('salary range', salaryRange)
         //TODO
         const data={
             
@@ -136,8 +141,13 @@ export default function JobSeekerDashboard() {
                 justifyContent: "center"}}>
             <Link href="#" 
             onClick={(event) => {
-            event.preventDefault()
-            setOpen(!open)}
+              event.preventDefault()
+              setOpen(!open)
+              //reset search criteria when toggle closed again
+              setJobType('')
+              setExperienceLevel('')
+              setSalaryRange([0,10])
+            }
             }
             aria-controls="filter-collapse"
             aria-expanded={open}
@@ -160,10 +170,6 @@ export default function JobSeekerDashboard() {
                     value={jobType}
                     onChange={ (event) => setJobType(event.target.value)}
                     label="Job-type"
-                    inputProps={{
-                        name: 'jobType',
-                        id: 'jobType'
-                        }}
                 >
                 <MenuItem value="">
                     <em>n/a</em>
@@ -181,10 +187,6 @@ export default function JobSeekerDashboard() {
                     value={experienceLevel}
                     onChange={ (event) => setExperienceLevel(event.target.value)}
                     label="experienceLevel"
-                    inputProps={{
-                        name: 'experienceLevel',
-                        id: 'experienceLevel',
-                        }}
                 >
                 <MenuItem value="">
                     <em>n/a</em>
