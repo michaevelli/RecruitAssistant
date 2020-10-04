@@ -3,10 +3,6 @@ import { TextField, Button, Grid } from "@material-ui/core";
 import {Card, Container} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-<<<<<<< HEAD
-=======
-import history from '../History';
->>>>>>> sign-in-page
 
 
 function SignUp(props) {
