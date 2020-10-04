@@ -96,4 +96,4 @@ def login():
 		# error_message = json.loads(e.args[1])['error']['message']
 		# error_code = json.loads(e.args[1])['error']['code']
 
-		return jsonify({"success": False, "token" : "Email or password inserted is incorrect"}), 401
+		return jsonify({"success": False, "message" : "Email or password inserted is incorrect"}), 401

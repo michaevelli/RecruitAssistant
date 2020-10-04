@@ -25,7 +25,7 @@ function SignUpRecruiter() {
 				type: "recruiter"
 			}
 			console.log(ndata)
-			axios.post(submitApp, ndata).then(function(response) {
+			axios.post(submitSignUp, ndata).then(function(response) {
 				console.log("response:")
 				console.log(response)
 				//store appropriate response data in localstorage

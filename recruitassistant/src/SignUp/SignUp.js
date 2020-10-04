@@ -3,7 +3,7 @@ import { TextField, Button, Grid } from "@material-ui/core";
 import {Card, Container} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import history from '../history';
+import history from '../History';
 
 
 function SignUp() {

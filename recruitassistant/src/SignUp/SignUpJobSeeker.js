@@ -24,7 +24,7 @@ function SignUpJobSeeker() {
 				type: "jobseeker"
 			}
 			console.log(ndata)
-			axios.post(submitApp, ndata)
+			axios.post(submitSignUp, ndata)
 				.then(function(response) {
 					console.log("response:")
 					console.log(response)
