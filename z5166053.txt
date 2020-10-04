@@ -1,0 +1,8 @@
+Week 1
+In the first week I had two meetings with the team, one during the first tutorial and one on the first Sunday, in which we started discussing and working on the proposal for the project. I helped contributed to a draft background section of the proposal which is under review and could still be refined, and also assisted in discussing and creating the user stories. I helped with the epic story and user story documentation in JIRA, and we decided on the system architecture with a general tech stack to use for the website.
+
+Week 2
+Worked on the system flow diagram to edit job seeker and recruiter flow. Minor edits to a few user stories on Jira. Moved user stories to report and helped with report formatting and review to get it ready for submission. 
+
+Week 3
+Rewrote project objectives in the proposal and moved them under sprint planning, as well as final formatting and edits. Started our first sprint this week and created a basic skeleton app to build off. Introduced the team to the tech stack React and assigned user stories. Worked on setting up the backend with Brendon and did the login backend code. Helped link the frontend to the backend and ensured the login flow was fully functioning and implemented error handling. Created a working router for app navigation.
