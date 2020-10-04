@@ -30,6 +30,7 @@ function SignUpRecruiter() {
 				console.log(response)
 				//store appropriate response data in localstorage
 				//redirect to dashboard
+				this.props.history.push('/')
 			})
 			.catch(function(error){
 				console.log("error:")
