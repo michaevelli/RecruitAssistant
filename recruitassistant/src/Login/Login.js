@@ -13,13 +13,14 @@ function Login() {
 	const [password, setPassword] = useState("");
 	const [user, setUser] = useState("");
 	const [redirect, setRedirect] = useState(false);
-	const [error, setError] = useState(false);
 	const [errorStatus, setErrorStatus] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
 	const history = useHistory();
 
 	async function handleSubmit(e) {
 		e.preventDefault()
+		setErrorStatus("")
+		setErrorMessage("")
 		const ndata = {
 			email: email,
 			password: password
@@ -41,7 +42,6 @@ function Login() {
 				
 			})
 			.catch(function(error) {
-				setError(true)
 				console.log(error.response)
 				setErrorMessage(error.response.data.message)
 				setErrorStatus("True")
@@ -57,11 +57,11 @@ function Login() {
 			<Container style={{'textAlign': 'center'}}>
 				<h1>Recruit Assistant</h1>
 				<b>Sign In</b>
-				
-				<TextField label="Email" value={email} onChange={e=>setEmail(e.target.value)}></TextField>
-				<br></br>
-				<TextField label="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)}></TextField>
-				<br></br>
+				<br/>
+				<TextField label="Email" value={email} error={errorStatus} onChange={e=>setEmail(e.target.value)}></TextField>
+				<br/>
+				<TextField label="Password" type="password" value={password} error={errorStatus} onChange={e=>setPassword(e.target.value)}></TextField>
+				<br/>
 				<div id="error" style={{color: 'red'}}>{errorMessage}</div>
 				<Button onClick={handleSubmit}>Log In</Button>
 				<br/>
