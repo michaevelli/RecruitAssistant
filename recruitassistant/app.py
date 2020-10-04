@@ -30,6 +30,10 @@ def user_signup():
 	email = json_data["email"]
 	password = json_data["password"]
 	u_type = json_data["type"]
+	if u_type == "jobseeker":
+		company = "null"
+	else:
+		company = json_data["company"]
 
 	print(json_data)
     
@@ -42,26 +46,15 @@ def user_signup():
 		)
 		users_ref = ref.child('user')
 
-		if u_type == "jobseeker":
-			users_ref.update({
-				user.uid: {
-					'first_name': json_data["first_name"],
-					'last_name' : json_data["last_name"],
-					'email' : email,
-					'type' : u_type,
-					'company' : 'null',
-				},
-			})					
-		elif u_type == "recruiter":
-			users_ref.update({
-				user.uid: {
-					'first_name': json_data["first_name"],
-					'last_name' : json_data["last_name"],
-					'email' : email,
-					'type' : u_type,
-					'company': json_data["company"]
-				},
-			})
+		users_ref.update({
+			user.uid: {
+				'first_name': json_data["first_name"],
+				'last_name' : json_data["last_name"],
+				'email' : email,
+				'type' : u_type,
+				'company' : company,
+			},
+		})
 
 		return jsonify({'message': f'Successfully created user {user.uid}'}),200
 	except Exception as e:		

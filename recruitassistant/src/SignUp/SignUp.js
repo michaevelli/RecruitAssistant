@@ -3,12 +3,19 @@ import { TextField, Button, Grid } from "@material-ui/core";
 import {Card, Container} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import history from '../history';
 
 
-function SignUp() {
+function SignUp(props) {
 	
 	//const [userType, setUserType] = useState("");
+
+	// function navSignUpRecruiter() {
+	// 	props.history.push('/signuprecruiter')
+	// }
+
+	// function navSignUpJobSeeker() {
+	// 	props.history.push("/signupjobseeker")
+	// }
 
 	return (
 		<Container style={{'textAlign': 'center'}}>
@@ -24,13 +31,13 @@ function SignUp() {
 				</div>
 					
 				<Button 
-					component={Link} to='/signuprecruiter' 
+					onClick={() => props.history.push('/signuprecruiter')}
 					variant="contained"
 					style={{"margin":10 }}>
 					Recruiter
 				</Button>
 				<Button 
-					component={Link} to='/signupjobseeker' 
+					onClick={() => props.history.push("/signupjobseeker")}
 					variant="contained"
 					style={{"margin":10 }}>
 					Job Seeker
