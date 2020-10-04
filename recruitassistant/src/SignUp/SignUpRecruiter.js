@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { TextField, Button } from "@material-ui/core";
 import {Container} from 'react-bootstrap';
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 export const submitSignUp="http://localhost:5000/signup"
 
@@ -12,9 +13,12 @@ function SignUpRecruiter(props) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [repassword, setRepassword] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
+	const history = useHistory();
 
 	async function handleSubmit(e) {
 		e.preventDefault()
+		setErrorMessage("")
 		if (password === repassword) {
 			const ndata = {
 				first_name: first_name,
@@ -26,19 +30,16 @@ function SignUpRecruiter(props) {
 			}
 			console.log(ndata)
 			axios.post(submitSignUp, ndata).then(function(response) {
-				console.log("response:")
-				console.log(response)
-				//store appropriate response data in localstorage
-				//redirect to dashboard
-				props.history.push("/dashboard")
+				console.log("response:", response)
+				alert("successfully created account")
+				history.push("/login")
 			})
 			.catch(function(error){
-				console.log("error:")
-				console.log(error.response)
-				//add to html to display error
+				console.log("error:", error.response)
+				setErrorMessage(error.response.data.message)
 			})
 		} else {
-			alert('Passwords do not match.')
+			setErrorMessage("Passwords do not match")
 		} 
 	}
 	
@@ -67,7 +68,7 @@ function SignUpRecruiter(props) {
 
 					<TextField label = "Re-enter password" type = "password" value = {repassword} onChange = {e=>setRepassword(e.target.value)}> </TextField>
 					<br></br>
-					
+					<div id="error" style={{color: 'red'}}>{errorMessage}</div>
 					<Button type="submit"> Sign Up </Button>
 				</form>
 			</Container>

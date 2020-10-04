@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Switch, withRouter } from 'react-router-dom';
-import history from './history';
+import history from './History';
 import Login from './Login/Login';
 import SignUpRecruiter from './SignUp/SignUpRecruiter';
 import SignUpJobSeeker from './SignUp/SignUpJobSeeker';
