@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Router,Route} from 'react-router-dom';
+import { BrowserRouter, Route, Switch, withRouter } from 'react-router-dom';
 import history from './History';
 import Login from './Login/Login';
 import SignUpRecruiter from './SignUp/SignUpRecruiter';
@@ -18,13 +18,15 @@ function App() {
 
   return (
     <div>
-      <Router history={history}>
-        <Route path="/login" component={Login}/>
-        <Route path="/signuprecruiter" component={SignUpRecruiter}/>
-        <Route path="/signupjobseeker" component={SignUpJobSeeker}/>
-        <Route path="/SignUp" component={SignUp}/>
-        <Route path="/dashboard" component={DashBoardTemplate}/>
-      </Router>
+      <BrowserRouter history={history}>
+        <Switch>
+          <Route path="/login" component={Login}/>
+          <Route path="/signuprecruiter" component={SignUpRecruiter}/>
+          <Route path="/signupjobseeker" component={SignUpJobSeeker}/>
+          <Route exact path="/signup" component={SignUp}/>
+          <Route path="/dashboard" component={DashBoardTemplate}/>
+        </Switch>
+      </BrowserRouter>
     </div>
     
   );
