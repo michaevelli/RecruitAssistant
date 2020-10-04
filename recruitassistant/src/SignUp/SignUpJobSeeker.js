@@ -6,7 +6,7 @@ import axios from "axios";
 
 export const submitApp="http://127.0.0.1:5000/signup"
 
-function SignUpJobSeeker() {
+function SignUpJobSeeker(props) {
 	const [first_name, setFirstName] = useState("");
 	const [last_name, setLastName] = useState("");
 	const [email, setEmail] = useState("");
@@ -30,11 +30,13 @@ function SignUpJobSeeker() {
 					console.log(response)
 					//store appropriate response data in localstorage
 					//redirect to dashboard
+					props.history.push("/dashboard")
 				})
 				.catch(function(error){
 					console.log("error:")
 					console.log(error.response)
 					//add to html to display error
+					
 				})
 		} else {
 			alert('Passwords do not match.')

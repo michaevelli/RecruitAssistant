@@ -5,7 +5,7 @@ import axios from "axios";
 
 export const submitApp="http://127.0.0.1:5000/signup"
 
-function SignUpRecruiter() {
+function SignUpRecruiter(props) {
 	const [first_name, setFirstName] = useState("");
 	const [last_name, setLastName] = useState("");
 	const [company, setCompany] = useState("");
@@ -30,7 +30,7 @@ function SignUpRecruiter() {
 				console.log(response)
 				//store appropriate response data in localstorage
 				//redirect to dashboard
-				this.props.history.push('/')
+				props.history.push("/dashboard")
 			})
 			.catch(function(error){
 				console.log("error:")
