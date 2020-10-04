@@ -1,14 +1,16 @@
 import time
 from flask import Flask, request
-from flask import jsonify 
+from flask import jsonify
+from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, auth, db
 import pyrebase
 import json
 from flask_cors import CORS
 
+# initalise app
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 # connect to firebase
 cred = credentials.Certificate('./backend/recruitassistant_cred.json')
@@ -28,6 +30,10 @@ def user_signup():
 	email = json_data["email"]
 	password = json_data["password"]
 	u_type = json_data["type"]
+	if u_type == "jobseeker":
+		company = "null"
+	else:
+		company = json_data["company"]
 
 	print(json_data)
     
@@ -40,26 +46,15 @@ def user_signup():
 		)
 		users_ref = ref.child('user')
 
-		if u_type == "jobseeker":
-			users_ref.update({
-				user.uid: {
-					'first_name': json_data["first_name"],
-					'last_name' : json_data["last_name"],
-					'email' : email,
-					'type' : u_type,
-					'company' : 'null',
-				},
-			})					
-		elif u_type == "recruiter":
-			users_ref.update({
-				user.uid: {
-					'first_name': json_data["first_name"],
-					'last_name' : json_data["last_name"],
-					'email' : email,
-					'type' : u_type,
-					'company': json_data["company"]
-				},
-			})
+		users_ref.update({
+			user.uid: {
+				'first_name': json_data["first_name"],
+				'last_name' : json_data["last_name"],
+				'email' : email,
+				'type' : u_type,
+				'company' : company,
+			},
+		})
 
 		return jsonify({'message': f'Successfully created user {user.uid}'}),200
 	except Exception as e:		
@@ -73,16 +68,26 @@ def login():
 		fAuth = pb.auth()
 		db = pb.database()
 		
-		password = json_data["password"]
-		email = json_data["email"]
-		
+		datajson = request.json
+		password = datajson["password"]
+		email = datajson["email"]
+		# password = 'hello123'
+		# email = 'hello@gmail.com'
+		print(email, password)
+
+		# login with email password
 		response = fAuth.sign_in_with_email_and_password(email, password)
 		token = fAuth.refresh(response['refreshToken'])['idToken']
-		user = db.child("user").order_by_child("email").equal_to(email).get().val()
 
-		return jsonify({"success": True, "token": token, "user": user}), 200
+		# retrieve user data
+		data = db.child("user").order_by_child("email").equal_to(email).get()
+		user = list(data.val().items())[0][1]
+
+		return jsonify({"token": token, "user": user}), 200
+
 	except Exception as e:
 		error_message = json.loads(e.args[1])['error']['message']
 		error_code = json.loads(e.args[1])['error']['code']
 		
 		return jsonify({"message": error_message}), error_code
+
