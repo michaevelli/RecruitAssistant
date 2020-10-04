@@ -1,14 +1,16 @@
 import time
 from flask import Flask, request
-from flask import jsonify 
+from flask import jsonify
+from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, auth, db
 import pyrebase
 import json
 from flask_cors import CORS
 
+# initalise app
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 # connect to firebase
 cred = credentials.Certificate('./backend/recruitassistant_cred.json')
@@ -22,20 +24,14 @@ def get_current_time():
     data = {'time': 10000}
     return jsonify(data)
 
-#@app.route('/api/signup', methods=["POST"])
 @app.route('/signup', methods=["POST"])
-def seeker_signup():
-    # email = request.form.get('email')
-    # password = request.form.get('password')
-	
+def user_signup():
 	json_data = request.get_json()
-	
+	email = json_data["email"]
+	password = json_data["password"]
+	u_type = json_data["type"]
+
 	print(json_data)
-	
-	email = json_data["email"]["email"]
-	password = json_data["password"]["password"]
-	print(email)
-	print(password)
     
 	if email is None or password is None:
 		return jsonify({'message': 'Error missing email or password'}),400
@@ -44,26 +40,34 @@ def seeker_signup():
 				email=email,
 				password=password
 		)
-		# data structure
-		# currently with temp data
 		users_ref = ref.child('user')
-		users_ref.update({
-			user.uid: {
-				'first_name': 'I AM TEMP DATA',
-				'last_name' : 'I AM TEMP DATA',
-				'company' : 'null/filled',
-				'email' : 'test@a.com',
-				'type' : "employer/whatever"
-			},
-		})
-					
-		return jsonify({'message': f'Successfully created user {user.uid}'}),200
-	except:
-		return jsonify({'message': 'Error creating user'}),400
 
+		if u_type == "jobseeker":
+			users_ref.update({
+				user.uid: {
+					'first_name': json_data["first_name"],
+					'last_name' : json_data["last_name"],
+					'email' : email,
+					'type' : u_type,
+					'company' : 'null',
+				},
+			})					
+		elif u_type == "recruiter":
+			users_ref.update({
+				user.uid: {
+					'first_name': json_data["first_name"],
+					'last_name' : json_data["last_name"],
+					'email' : email,
+					'type' : u_type,
+					'company': json_data["company"]
+				},
+			})
+
+		return jsonify({'message': f'Successfully created user {user.uid}'}),200
+	except Exception as e:		
+		return jsonify({"message": str(e)}), 400
 
 @app.route('/login', methods=['POST'])
-# @app.route('/login')
 def login():
 	try:
 		json_data = request.get_json()
@@ -71,16 +75,25 @@ def login():
 		fAuth = pb.auth()
 		db = pb.database()
 		
-		password = json_data["password"]
-		email = json_data["email"]
-		
+		datajson = request.json
+		password = datajson["password"]
+		email = datajson["email"]
+		# password = 'hello123'
+		# email = 'hello@gmail.com'
+		print(email, password)
+
+		# login with email password
 		response = fAuth.sign_in_with_email_and_password(email, password)
 		token = fAuth.refresh(response['refreshToken'])['idToken']
-		user = db.child("user").order_by_child("email").equal_to(email).get().val()
+
+		# retrieve user data
+		data = db.child("user").order_by_child("email").equal_to(email).get()
+		user = list(data.val().items())[0][1]
 
 		return jsonify({"success": True, "token": token, "user": user}), 200
+
 	except Exception as e:
-		error_message = json.loads(e.args[1])['error']['message']
-		error_code = json.loads(e.args[1])['error']['code']
-		
-		return jsonify({"message": error_message}), error_code
+		# error_message = json.loads(e.args[1])['error']['message']
+		# error_code = json.loads(e.args[1])['error']['code']
+
+		return jsonify({"success": False, "token" : "Email or password inserted is incorrect"}), 401
