@@ -86,7 +86,8 @@ def login():
 		return jsonify({"success": True, "token": token, "user": user}), 200
 
 	except Exception as e:
-		# error_message = json.loads(e.args[1])['error']['message']
-		# error_code = json.loads(e.args[1])['error']['code']
+		error_message = json.loads(e.args[1])['error']['message']
+		error_code = json.loads(e.args[1])['error']['code']
+		
+		return jsonify({"message": error_message}), error_code
 
-		return jsonify({"success": False, "token" : "Email or password inserted is incorrect"}), 401
