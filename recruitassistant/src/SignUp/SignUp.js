@@ -1,21 +1,13 @@
 import React, { useState } from "react";
 import { TextField, Button, Grid } from "@material-ui/core";
 import {Card, Container} from 'react-bootstrap';
-import {Link} from 'react-router-dom';
+// import {Link} from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import Typography from '@material-ui/core/Typography';
 
 
 function SignUp(props) {
-	
-	//const [userType, setUserType] = useState("");
-
-	// function navSignUpRecruiter() {
-	// 	props.history.push('/signuprecruiter')
-	// }
-
-	// function navSignUpJobSeeker() {
-	// 	props.history.push("/signupjobseeker")
-	// }
+	const history = useHistory();
 
 	return (
 		<Container style={{'textAlign': 'center'}}>
@@ -31,13 +23,13 @@ function SignUp(props) {
 				</div>
 					
 				<Button 
-					onClick={() => props.history.push('/signuprecruiter')}
+					onClick={() => history.push('/signuprecruiter')}
 					variant="contained"
 					style={{"margin":10 }}>
 					Recruiter
 				</Button>
 				<Button 
-					onClick={() => props.history.push("/signupjobseeker")}
+					onClick={() => history.push("/signupjobseeker")}
 					variant="contained"
 					style={{"margin":10 }}>
 					Job Seeker
