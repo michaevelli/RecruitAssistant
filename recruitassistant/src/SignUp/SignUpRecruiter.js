@@ -3,7 +3,7 @@ import { TextField, Button } from "@material-ui/core";
 import {Container} from 'react-bootstrap';
 import axios from "axios";
 
-export const submitApp="http://127.0.0.1:5000/signup"
+export const submitSignUp="http://localhost:5000/signup"
 
 function SignUpRecruiter(props) {
 	const [first_name, setFirstName] = useState("");
@@ -25,7 +25,7 @@ function SignUpRecruiter(props) {
 				type: "recruiter"
 			}
 			console.log(ndata)
-			axios.post(submitApp, ndata).then(function(response) {
+			axios.post(submitSignUp, ndata).then(function(response) {
 				console.log("response:")
 				console.log(response)
 				//store appropriate response data in localstorage
