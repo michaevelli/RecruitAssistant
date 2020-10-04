@@ -13,13 +13,13 @@ function Login() {
 	const [password, setPassword] = useState("");
 	const [user, setUser] = useState("");
 	const [redirect, setRedirect] = useState(false);
-	const [errorStatus, setErrorStatus] = useState("");
+	const [errorStatus, setErrorStatus] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const history = useHistory();
 
 	async function handleSubmit(e) {
 		e.preventDefault()
-		setErrorStatus("")
+		setErrorStatus(false)
 		setErrorMessage("")
 		const ndata = {
 			email: email,
@@ -44,7 +44,7 @@ function Login() {
 			.catch(function(error) {
 				console.log(error.response)
 				setErrorMessage(error.response.data.message)
-				setErrorStatus("True")
+				setErrorStatus(true)
 			})		
 	}
 
