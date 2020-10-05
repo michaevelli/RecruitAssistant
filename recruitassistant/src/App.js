@@ -6,6 +6,7 @@ import SignUpRecruiter from './SignUp/SignUpRecruiter';
 import SignUpJobSeeker from './SignUp/SignUpJobSeeker';
 import SignUp from './SignUp/SignUp';
 import DashBoardTemplate from './SharedComponents/Dashboard';
+import AdminDashboard from './AdminComponents/AdminDashboard';
 
 function App() {
   const [currentTime, setCurrentTime] = useState(0);
@@ -21,6 +22,7 @@ function App() {
       <BrowserRouter history={history}>
         <Switch>
           <Route path="/login" component={Login}/>
+          <Route path="/admindashboard" component={AdminDashboard}/>
           <Route path="/signuprecruiter" component={SignUpRecruiter}/>
           <Route path="/signupjobseeker" component={SignUpJobSeeker}/>
           <Route exact path="/signup" component={SignUp}/>

@@ -56,7 +56,7 @@ def user_signup():
 			},
 		})
 
-		return jsonify({'message': f'Successfully created user {user.uid}'}),200
+		return jsonify({'message': 'Successfully created user {user.uid}'}),200
 	except Exception as e:		
 		return jsonify({"message": str(e)}), 400
 

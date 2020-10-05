@@ -12,15 +12,17 @@ export default function DashBoardTemplate() {
     
     return(
         <Grid fluid={true}>
-        
+
             <Container fluid>
             <TitleBar/>
             </Container>
 
             <Container fluid={true}  >
-                <Row noGutters>
+
+                <Row noGutters >
                     <Col sm={2}  >
-                    <SideMenu/>
+                    <SideMenu random={['link1','link2','link3']}/>
+
                     </Col>
 
                     <Col>CONTENT</Col>
@@ -28,9 +30,6 @@ export default function DashBoardTemplate() {
             </Row>
             </Container>
 
-
           </Grid>
-
-
        );
 }
