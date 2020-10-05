@@ -8,5 +8,10 @@ I created some user stories for the product backlog, and outlined
 possible pages for our website.
 
 --week 2---
-I created wireframes along with Cattleya using Balsamiq including: employer dashboard, job seeker dashboard,
+I created wireframes with Cattleya using Balsamiq including: employer dashboard, job seeker dashboard,
 create new job advert pages, login and sign up pages, and admin pages to delete jobs or users.
+
+--week 3---
+Worked on User Interface for Sign up page.
+Created a template with navigation bar for web pages.
+Created UI for recruiter dashboard and job seeker dashboard search bar.Linked recruiter dashboard to backend.
