@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import {Card, Container} from 'react-bootstrap';
 import { Redirect } from "react-router-dom";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { useHistory, withRouter } from "react-router-dom";
 
 export const submitLogin="http://localhost:5000/login"
 
@@ -51,7 +51,7 @@ function Login() {
 
 
 	return redirect ? (
-		<p>Welcome. you are logged in as {user}</p>
+		<Redirect to={"/"+user+"dashboard"}/>
 	) : (
 		<div>
 			<Container style={{'textAlign': 'center'}}>

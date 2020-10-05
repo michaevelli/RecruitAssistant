@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Route, Switch, withRouter } from 'react-router-dom';
-import history from './History';
+import { BrowserRouter, Route, Switch, Redirect, useHistory } from 'react-router-dom';
+// import history from './History';
 import Login from './Login/Login';
 import SignUpRecruiter from './SignUp/SignUpRecruiter';
 import SignUpJobSeeker from './SignUp/SignUpJobSeeker';
@@ -11,6 +11,7 @@ import RecruiterDashboard from './RecruiterComponents/RecruiterDashboard';
 import JobSeekerDashboard from './JobSeekerComponents/JobSeekerDashboard';
 
 function App() {
+  // const history = useHistory();
   const [currentTime, setCurrentTime] = useState(0);
 
   useEffect(() => {
@@ -19,10 +20,20 @@ function App() {
     });
   }, []);
 
+  function getSession() {
+    return false // TODO: make backend call to check if there is active session
+  }
+
   return (
     <div>
-      <BrowserRouter history={history}>
+      <BrowserRouter>
         <Switch>
+          <Route exact path="/" render={() => (
+            getSession() ? (
+              <Redirect to="/dashboard"/>
+            ) : (
+              <Redirect to="/login"/>
+            ))}/>
           <Route path="/login" component={Login}/>
           <Route path="/signuprecruiter" component={SignUpRecruiter}/>
           <Route path="/signupjobseeker" component={SignUpJobSeeker}/>
