@@ -11,11 +11,17 @@ export default function SideMenu(props) {
 
                {
                    props.random.map( (entry,index)=>
+  
                      (<li class="nav-item" >
-                    <a class="nav-link" href="#" style={{color: '#348360'}}>{entry}</a>
-                    </li>)
-                   )
+                    <a class="nav-link"
+                     href={entry.href}
+                     style={ entry.active ?{color: '#348360' , fontWeight:'bold' }: { color: '#348360' }  }
+                    >{entry.text}</a>
+                    </li>))
+                    
+                   
                }
+              
                 </ul> 
                 </nav>
                 

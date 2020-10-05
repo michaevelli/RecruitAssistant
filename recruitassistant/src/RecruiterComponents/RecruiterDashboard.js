@@ -24,16 +24,25 @@ export default function RecruiterDashboard() {
                     }}>
 
                     <Col sm="2" >
-                    <SideMenu random={['Recruiter Dashboard','FAQ']}/>
+                    <SideMenu random={[ {'text':'Recruiter Dashboard',
+                                            'href': '#','active': true},
+                                            
+                                            {'text':'FAQ',
+                                            'href':'#','active': false}
+                                        ]}/>
                     </Col >
 
                     <Col sm="9">
+                    <Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
+                    Your Jobs
+                    </Typography>
+
                     <Async promiseFn={getJobs}>
                     <Async.Loading>Loading.... </Async.Loading>
                     <Async.Fulfilled>
                     {data=> {
                         return(
-                        <div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal'}}>
+                        <div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
                   
                         {data.jobs.map((job) => 
                         
@@ -67,9 +76,9 @@ export default function RecruiterDashboard() {
                     
 
                     <Col>
-                    <button className='btn btn-danger pull-right' style={{margin: 10}}>
+                    <Button variant="contained" color="secondary" href="/newJob" style={{position: 'fixed', right: 0, top: 20, margin: 30}}>
                         + Job
-                        </button>                 
+                    </Button>               
                     </Col>
             </Row>
           </Grid>

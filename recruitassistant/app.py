@@ -7,6 +7,7 @@ import pyrebase
 import json
 from flask_cors import CORS
 import uuid
+from datetime import date
 
 app = Flask(__name__)
 CORS(app)
@@ -29,16 +30,19 @@ def post_new_job():
 	job_uid=str(uuid.uuid1())
 	print(job_uid)
 	print(json_data)
+	today = date.today()
+	date_posted = today.strftime("%d/%m/%Y")
+	print("d1 =", date_posted),
 	#TODO
 	#add recruiter_id as id of logged in user
-	# add real date formats
+	
 	try:
 		ref.child('jobAdvert').update({
 				job_uid: {
 					'title':json_data["title"],
 					'location':json_data["location"],
 					'company':json_data["company"],
-					'date_posted': json_data["date_posted"],
+					'date_posted': date_posted,
 					'closing_date':json_data["closing_date"],
 					'recruiter_id':json_data["recruiter_id"],
 					'job_type': json_data["job_type"],
