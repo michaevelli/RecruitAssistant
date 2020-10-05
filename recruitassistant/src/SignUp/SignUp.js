@@ -15,7 +15,6 @@ function SignUp(props) {
 				RecruitAssistant
 			</Typography>
 			<p>Sign Up</p>
-
 			<Container style={{'textAlign': 'center'}}>
 			
 				<div>       
@@ -34,6 +33,7 @@ function SignUp(props) {
 					style={{"margin":10 }}>
 					Job Seeker
 				</Button>
+
 
 			</Container>
 		</Container>

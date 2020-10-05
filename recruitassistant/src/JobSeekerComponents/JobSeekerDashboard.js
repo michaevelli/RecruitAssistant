@@ -7,7 +7,7 @@ import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 
 
-export default function AdminDashboard() {
+export default function JobSeekerDashboard() {
 
     const [searchString,setSearchString] = useState('');
     const [location,setLocation] = useState('');
@@ -96,8 +96,13 @@ export default function AdminDashboard() {
 
               
             <Col sm={2}  >
-                <SideMenu random={[{'text':'Jobs','href':'#','active':true},
-                {'text':'Users','href':'#','active':false}]}/>
+                <SideMenu random={[ {'text':'Job Seeker Dashboard',
+                                            'href': '#', 'active': true},
+                                      {'text':'Your Applications',
+                                      'href': '#', 'active': false},         
+                                      {'text':'FAQ',
+                                      'href':'#','active': false}
+                                        ]}/>
             </Col >
             
             <Col>
@@ -114,7 +119,7 @@ export default function AdminDashboard() {
                     <TextField size="small"
                          onChange={ (event) => setSearchString(event.target.value)}
                         style={{ margin: 8 }}
-                        placeholder="Job Title, Company, Skills"
+                        placeholder="Job Title, Company,Skills"
                         margin="normal"
                         InputLabelProps={{
                         shrink: true,

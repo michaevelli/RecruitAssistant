@@ -7,6 +7,8 @@ from firebase_admin import credentials, auth, db
 import pyrebase
 import json
 from flask_cors import CORS
+import uuid
+from datetime import date
 
 # initalise app
 app = Flask(__name__)
@@ -23,6 +25,63 @@ ref = db.reference('/')
 def get_current_time():
     data = {'time': 10000}
     return jsonify(data)
+
+@app.route('/jobadverts', methods=["POST"])
+def post_new_job():
+	json_data = request.form
+	job_uid=str(uuid.uuid1())
+	print(job_uid)
+	print(json_data)
+	today = date.today()
+	date_posted = today.strftime("%d/%m/%Y")
+	print("d1 =", date_posted),
+	#TODO
+	#add recruiter_id as id of logged in user
+	
+	try:
+		ref.child('jobAdvert').update({
+				job_uid: {
+					'title':json_data["title"],
+					'location':json_data["location"],
+					'company':json_data["company"],
+					'date_posted': date_posted,
+					'closing_date':json_data["closing_date"],
+					'recruiter_id':json_data["recruiter_id"],
+					'job_type': json_data["job_type"],
+					'salary_pa':json_data["salary_pa"],
+					'experience_level':json_data["experience_level"],
+					'skills':json_data["skills"],
+					'required_docs': json_data["required_docs"],
+					'min_years_experience': json_data["min_years_experience"],
+					'status': json_data['status']
+				},
+			})
+		return jsonify({'message': f'Successfully created job {job_uid}'}),200
+	except Exception as e:		
+		return jsonify({"message": str(e)}), 400
+		
+
+@app.route('/jobadverts/<recruiterid>', methods=["GET"])
+def get_recruiter_posts(recruiterid='1234'):
+	#TODO:
+	#use recruiter id of logged in user
+	#figure out how to also sort results on closing date -> realtime db doesnt 
+	#support multiple where clauses unlike firebase cloud db
+	
+	try:
+		posts=ref.child("jobAdvert").order_by_child('recruiter_id').equal_to(recruiterid).get()
+		
+		jobs=[]
+		for key,val in posts.items():
+			jobs.append((key,val))
+		
+		print(jobs)
+		return jsonify({'jobs': jobs}),200
+ 
+	except Exception as e:		
+		return jsonify({"message": str(e)}), 400
+		
+
 
 @app.route('/signup', methods=["POST"])
 def user_signup():

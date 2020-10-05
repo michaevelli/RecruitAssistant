@@ -7,6 +7,8 @@ import SignUpJobSeeker from './SignUp/SignUpJobSeeker';
 import SignUp from './SignUp/SignUp';
 import DashBoardTemplate from './SharedComponents/Dashboard';
 import AdminDashboard from './AdminComponents/AdminDashboard';
+import RecruiterDashboard from './RecruiterComponents/RecruiterDashboard';
+import JobSeekerDashboard from './JobSeekerComponents/JobSeekerDashboard';
 
 function App() {
   const [currentTime, setCurrentTime] = useState(0);
@@ -27,8 +29,11 @@ function App() {
           <Route path="/signupjobseeker" component={SignUpJobSeeker}/>
           <Route exact path="/signup" component={SignUp}/>
           <Route path="/dashboard" component={DashBoardTemplate}/>
+          <Route path="/recruiterdashboard" component={RecruiterDashboard}/>
+        <Route path="/jobseekerdashboard" component={JobSeekerDashboard}/>
         </Switch>
       </BrowserRouter>
+
     </div>
     
   );
