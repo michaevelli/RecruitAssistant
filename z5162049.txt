@@ -11,3 +11,9 @@ Week 1
 Week 2
 	Github joined
 	Proposal progress: System Architecture, BG
+
+Week 3
+	Began actual codestuff
+	Worked on Login Page
+	Continued work on Login Page
+	Copied some of Login Page submit form functionality over to SignUp related forms
