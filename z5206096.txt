@@ -3,3 +3,6 @@ Discussed with the group during lab about the requirements of the proposal and w
 
 Week 2
 Continued refining the wireframes for the recruiter and job seeker as well as contributed to the flow diagram. We added a new external actor, the admin, to help manage the system and had to create new user stories for the admin, adding it to the flow diagram and creating a wirefram for the admin dashboard too. I was tasked to moving and formatting the diagrams into the project proposal as well as describing the novel functionalities.
+
+Week 3
+Finalised the project proposal and started the first sprint. We had a meeting to set up everyone's working environments and discussed everyone's familiarity in web development in terms of backend and frontend. After getting a better idea of everyone's strengths and skills, I was tasked to create the frontend of the signup pages for the job seeker and recruiter.
