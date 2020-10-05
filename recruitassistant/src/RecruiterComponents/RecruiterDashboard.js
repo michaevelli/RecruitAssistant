@@ -1,39 +1,18 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import {Link, Button, Grid,Card,CardContent,CardActions } from "@material-ui/core";
 import {Container,Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
+import Async from 'react-async';
+import { getJobs } from '../services/JobAdvertServices';
 
 
 export default function RecruiterDashboard() {
-    
-    //TODO
-    //axios request to get logged in recruiter's job postings, sorted by most recently posted
-   const data={jobs:[
-        {
-            title: "job title",
-            company: "company",
-            city: "city",
-            status: "status"
-        },
-        {
-            title: "job title",
-            company: "company",
-            city: "city",
-            status: "status"
-        },
-        {
-            title: "job title",
-            company: "company",
-            city: "city",
-            status: "status"
-        }]}
-    
+
     return(
-        <Grid >
-          
+        <Grid >         
             <Row noGutters fluid>           
                 <TitleBar/>       
             </Row>
@@ -49,32 +28,41 @@ export default function RecruiterDashboard() {
                     </Col >
 
                     <Col sm="9">
-                    <div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal'}}>
+                    <Async promiseFn={getJobs}>
+                    <Async.Loading>Loading.... </Async.Loading>
+                    <Async.Fulfilled>
+                    {data=> {
+                        return(
+                        <div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal'}}>
                   
-                    {
-                    data.jobs.map( (job,index)=>
-
-                                (<Card style={{margin: 30, height: 150, width:250}}>
+                        {data.jobs.map((job) => 
+                        
+                        (<Card style={{margin: 30, height: 150, width:250}}>
                                 <CardContent>                          
                                     <Typography variant="h5" component="h2">
-                                       {job.title}
+                                       {job[1].title}
                                     </Typography>
                                     <Typography color="textSecondary">
-                                        {job.company} | {job.city}
+                                        {job[1].company} | {job[1].location}
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
                                     <Typography color="textSecondary">
-                                        {job.status}
+                                        {job[1].status}
                                     </Typography>
                                     <Link href="/sampleapplicationdash" style={{marginLeft: 30}} >
                                             View applications
                                     </Link>
                                 </CardActions>
-                        </Card>)
-                    )}
-   
-                    </div>
+                        </Card>))
+                        }</div>)}
+                    }
+                            
+
+
+                    </Async.Fulfilled>
+                    <Async.Rejected> Something went wrong..</Async.Rejected>
+                    </Async>   
                     </Col>
                     
 
