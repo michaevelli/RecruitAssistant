@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Switch, Redirect, useHistory } from 'react-router-dom';
 // import history from './History';
-import Login from './Login/Login';
-import SignUpRecruiter from './SignUp/SignUpRecruiter';
-import SignUpJobSeeker from './SignUp/SignUpJobSeeker';
-import SignUp from './SignUp/SignUp';
+import Login from './Authentication/Login';
+import SignUpRecruiter from './Authentication/SignUpRecruiter';
+import SignUpJobSeeker from './Authentication/SignUpJobSeeker';
+import SignUp from './Authentication/SignUp';
 import DashBoardTemplate from './SharedComponents/Dashboard';
 import AdminDashboard from './AdminComponents/AdminDashboard';
 import RecruiterDashboard from './RecruiterComponents/RecruiterDashboard';
@@ -14,11 +14,6 @@ function App() {
   // const history = useHistory();
   const [currentTime, setCurrentTime] = useState(0);
 
-  useEffect(() => {
-    fetch('/time').then(res => res.json()).then(data => {
-      setCurrentTime(data.time);
-    });
-  }, []);
 
   function getSession() {
     return false // TODO: make backend call to check if there is active session

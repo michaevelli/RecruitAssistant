@@ -20,11 +20,16 @@ firebase = firebase_admin.initialize_app(cred, {"databaseURL": "https://recruita
 pb = pyrebase.initialize_app(json.load(open('./backend/firebase_config.json')))
 ref = db.reference('/')
 
-# test
-@app.route('/authenticate', methods=["POST"])
+@app.route('/auth', methods=["POST"])
 def check_token():
+	data = request.json
+	try:
+		user = auth.verify_id_token(data["token"])
+		return jsonify({'message': 'Successfully verified'}),200
+	except:
+		return jsonify({'message': 'Token verification failed'}),400
 	
-	return 
+	
 
 @app.route('/jobadverts', methods=["POST"])
 def post_new_job():
