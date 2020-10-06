@@ -39,7 +39,6 @@ function Login() {
 				window.localStorage.setItem("RALastName", response.data.user.last_name)
 				window.localStorage.setItem("RAType", response.data.user.type)
 				history.push("/"+window.localStorage.getItem("RAType")+"dashboard");
-				// setRedirect(true)
 				
 			})
 			.catch(function(error) {
@@ -49,11 +48,6 @@ function Login() {
 			})
 	}
 
-
-
-	// return redirect ? (
-	// 	<Redirect to={"/"+window.localStorage.getItem("RAType")+"dashboard"}/>
-	// ) : (
 	return (
 		<div>
 			<Container style={{'textAlign': 'center'}}>

@@ -14,8 +14,8 @@ export default function RecruiterDashboard() {
 	const [jobs, setJobs] = useState([])
 
 	useEffect(() => {
-    getJobs();
-  }, []);
+		getJobs();
+	}, []);
 
 	const getJobs = async () => {
 		const url = jobUrl+recruiterID
