@@ -40,16 +40,16 @@ function SignUpRecruiter() {
 			})
 		} else {
 			setErrorMessage("Passwords do not match")
-		} 
+		}
 	}
-	
-	
+
+
 	return (
 		<div>
 			<Container style={{'textAlign': 'center'}}>
 				<h1>Recruit Assistant</h1>
 				<b>Sign Up</b>
-				
+
 				<form onSubmit={handleSubmit}>
 					<TextField label="First Name" value={first_name} onChange={e=>setFirstName(e.target.value)}/>
 					<br/>

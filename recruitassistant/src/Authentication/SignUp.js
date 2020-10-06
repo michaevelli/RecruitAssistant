@@ -6,12 +6,12 @@ import { useHistory } from "react-router-dom";
 import Typography from '@material-ui/core/Typography';
 
 
-function SignUp(props) {
+function SignUp() {
 	const history = useHistory();
 
 	return (
 		<Container style={{'textAlign': 'center'}}>
-	  	<Typography variant="h3"  style={{color: '#348360' }}>
+			<Typography variant="h3"  style={{color: '#348360' }}>
 				RecruitAssistant
 			</Typography>
 			<p>Sign Up</p>
