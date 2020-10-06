@@ -31,14 +31,14 @@ function Login() {
 			.then(function(response) {
 				console.log("response:")
 				console.log(response.data)
-				window.localStorage.setItem("RAToken", response.data.token)
-				window.localStorage.setItem("RAID", response.data.userID)
-				window.localStorage.setItem("RACompany", response.data.user.company)
-				window.localStorage.setItem("RAEmail", response.data.user.email)
-				window.localStorage.setItem("RAFirstName", response.data.user.first_name)
-				window.localStorage.setItem("RALastName", response.data.user.last_name)
-				window.localStorage.setItem("RAType", response.data.user.type)
-				history.push("/"+window.localStorage.getItem("RAType")+"dashboard");
+				window.localStorage.setItem("token", response.data.token)
+				window.localStorage.setItem("id", response.data.userID)
+				window.localStorage.setItem("company", response.data.user.company)
+				window.localStorage.setItem("email", response.data.user.email)
+				window.localStorage.setItem("first_name", response.data.user.first_name)
+				window.localStorage.setItem("last_name", response.data.user.last_name)
+				window.localStorage.setItem("type", response.data.user.type)
+				history.push("/"+window.localStorage.getItem("type")+"dashboard");
 				// setRedirect(true)
 				
 			})
