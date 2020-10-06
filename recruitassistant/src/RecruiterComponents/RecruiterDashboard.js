@@ -8,7 +8,7 @@ import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
 
 export const jobUrl="http://localhost:5000/jobadverts/"
-export const check
+export const authUrl="http://localhost:5000/authenticate/"
 
 export default function RecruiterDashboard() {
 	const recruiterID = "1234";
@@ -23,7 +23,14 @@ export default function RecruiterDashboard() {
 		const ndata = {
 			token: window.localStorage.getItem("token")
 		}
-		axios.post()
+		axios.post(authUrl, ndata)
+			.then(function(response) {
+				console.log(response)
+
+			})
+			.catch(function(error) {
+				console.log(error)
+			})
 	};
 
 	const getJobs = async () => {
