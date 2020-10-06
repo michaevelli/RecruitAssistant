@@ -38,7 +38,8 @@ function Login() {
 				window.localStorage.setItem("RAFirstName", response.data.user.first_name)
 				window.localStorage.setItem("RALastName", response.data.user.last_name)
 				window.localStorage.setItem("RAType", response.data.user.type)
-				// history.push("/dashboard");
+				history.push("/"+window.localStorage.getItem("RAType")+"dashboard");
+				// setRedirect(true)
 				
 			})
 			.catch(function(error) {
@@ -50,9 +51,10 @@ function Login() {
 
 
 
-	return redirect ? (
-		<Redirect to={"/"+window.localStorage.getItem("RAType")+"dashboard"}/>
-	) : (
+	// return redirect ? (
+	// 	<Redirect to={"/"+window.localStorage.getItem("RAType")+"dashboard"}/>
+	// ) : (
+	return (
 		<div>
 			<Container style={{'textAlign': 'center'}}>
 				<h1>Recruit Assistant</h1>
