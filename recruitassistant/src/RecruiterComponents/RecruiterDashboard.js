@@ -6,16 +6,33 @@ import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
+import checkAuth from "../Authentication/Authenticate";
 
 export const jobUrl="http://localhost:5000/jobadverts/"
 
 export default function RecruiterDashboard() {
 	const recruiterID = "1234";
+	const history = useHistory();
+	const [loading, setLoading] = useState(true);
 	const [jobs, setJobs] = useState([])
+	
 
 	useEffect(() => {
+		auth();
 		getJobs();
 	}, []);
+
+	const auth = async () => {
+		await checkAuth(window.localStorage.getItem("token"))
+			.then(function(response) {
+				console.log("auth success: ", response)
+				setLoading(false)
+				if (!response) {
+					history.push("/unauthorised"); //TODO: change response to return user type
+				}
+			})
+	}
 
 	const getJobs = async () => {
 		const url = jobUrl+recruiterID
@@ -52,7 +69,9 @@ export default function RecruiterDashboard() {
 		))
 	}
 
-	return (
+	return loading ? (
+		<div></div>
+	) : (
 		<Grid>
 			<Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 40}}>
