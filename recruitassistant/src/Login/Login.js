@@ -30,15 +30,15 @@ function Login() {
 		axios.post(submitLogin, ndata)
 			.then(function(response) {
 				console.log("response:")
-				console.log(response)
+				console.log(response.data)
 				window.localStorage.setItem("RAToken", response.data.token)
-				window.localStorage.setItem("RAID", Object.keys(response.data.user)[0])
-				window.localStorage.setItem("RACompany", response.data.user[Object.keys(response.data.user)[0]].company)
-				window.localStorage.setItem("RAEmail", response.data.user[Object.keys(response.data.user)[0]].email)
-				window.localStorage.setItem("RAFirstName", response.data.user[Object.keys(response.data.user)[0]].first_name)
-				window.localStorage.setItem("RALastName", response.data.user[Object.keys(response.data.user)[0]].last_name)
-				window.localStorage.setItem("RAType", response.data.user[Object.keys(response.data.user)[0]].type)
-				history.push("/dashboard");
+				window.localStorage.setItem("RAID", response.data.userID)
+				window.localStorage.setItem("RACompany", response.data.user.company)
+				window.localStorage.setItem("RAEmail", response.data.user.email)
+				window.localStorage.setItem("RAFirstName", response.data.user.first_name)
+				window.localStorage.setItem("RALastName", response.data.user.last_name)
+				window.localStorage.setItem("RAType", response.data.user.type)
+				// history.push("/dashboard");
 				
 			})
 			.catch(function(error) {
@@ -51,7 +51,7 @@ function Login() {
 
 
 	return redirect ? (
-		<Redirect to={"/"+user+"dashboard"}/>
+		<Redirect to={"/"+window.localStorage.getItem("RAType")+"dashboard"}/>
 	) : (
 		<div>
 			<Container style={{'textAlign': 'center'}}>
