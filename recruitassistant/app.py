@@ -140,9 +140,10 @@ def login():
 
 		# retrieve user data
 		data = db.child("user").order_by_child("email").equal_to(email).get()
+		userID = list(data.val().items())[0][0]
 		user = list(data.val().items())[0][1]
 
-		return jsonify({"token": token, "user": user}), 200
+		return jsonify({"token": token, "user": user, "userID": userID}), 200
 
 	except Exception as e:
 		error_message = json.loads(e.args[1])['error']['message']
