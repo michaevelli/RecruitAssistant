@@ -6,32 +6,34 @@ import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
+import checkAuth from "../Authentication/Authenticate";
 
 export const jobUrl="http://localhost:5000/jobadverts/"
-export const authUrl="http://localhost:5000/authenticate/"
 
 export default function RecruiterDashboard() {
 	const recruiterID = "1234";
 	const [jobs, setJobs] = useState([])
+	const history = useHistory();
+	// const [authSuccess, setAuthSuccess] = useState(false)
 
 	useEffect(() => {
-    getJobs();
-  }, []);
+		// setAuthSuccess(checkAuth());
+		checkAuth();
+		getJobs();
+	}, []);
 
+	// if (authSuccess === false) {
+	// 	alert("Please log in again")
+	// 	history.push("/login");
+	// 	window.localStorage.clear()
+	// } else {
+	// 	alert("true")
+	// }
 
-  	const checkAuth = async () => {
-		const ndata = {
-			token: window.localStorage.getItem("token")
-		}
-		axios.post(authUrl, ndata)
-			.then(function(response) {
-				console.log(response)
-
-			})
-			.catch(function(error) {
-				console.log(error)
-			})
-	};
+	// const auth = async () => {
+		
+	// }
 
 	const getJobs = async () => {
 		const url = jobUrl+recruiterID
