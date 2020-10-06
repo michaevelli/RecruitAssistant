@@ -21,10 +21,10 @@ pb = pyrebase.initialize_app(json.load(open('./backend/firebase_config.json')))
 ref = db.reference('/')
 
 # test
-@app.route('/time')
-def get_current_time():
-	data = {'time': 10000}
-	return jsonify(data)
+@app.route('/authenticate', methods=["POST"])
+def check_token():
+	
+	return 
 
 @app.route('/jobadverts', methods=["POST"])
 def post_new_job():
