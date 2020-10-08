@@ -72,7 +72,7 @@ export default function RecruiterDashboard() {
 				</Col>
 					
 				<Col>
-					<Button variant="contained" color="secondary" href="/newJob" style={{position: 'fixed', right: 0, top: 20, margin: 30}}>
+					<Button variant="contained" color="secondary" href="/createJobPost" style={{position: 'fixed', right: 0, top: 20, margin: 30}}>
 						+ Job
 					</Button>               
 				</Col>
