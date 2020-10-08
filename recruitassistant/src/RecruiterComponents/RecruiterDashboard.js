@@ -27,9 +27,12 @@ export default function RecruiterDashboard() {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
-				setLoading(false)
+				setLoading(false)				
 				if (!response) {
 					history.push("/unauthorised"); //TODO: change response to return user type
+				}
+				if(window.localStorage.getItem("type") != "recruiter"){
+					history.push("/unauthorised")
 				}
 			})
 	}

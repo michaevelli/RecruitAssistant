@@ -40,7 +40,11 @@ export default function AdminDashboard() {
 				setLoading(false)
 	      if (!response) {
 	        history.push("/unauthorised");
-	      }
+		  }
+		  
+		  if(window.localStorage.getItem("type") != "admin"){
+			history.push("/unauthorised")
+			}
 	    })
 	}
 
