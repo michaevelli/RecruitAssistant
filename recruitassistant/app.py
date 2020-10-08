@@ -52,7 +52,7 @@ def post_new_job():
 					'experience_level':json_data["experience_level"],
 					'skills':json_data["skills"],
 					'required_docs': json_data["required_docs"],
-					'min_years_experience': json_data["min_years_experience"],
+					#'min_years_experience': json_data["min_years_experience"],
 					'status': json_data['status']
 				},
 			})
