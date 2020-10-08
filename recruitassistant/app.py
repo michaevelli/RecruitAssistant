@@ -9,6 +9,8 @@ import json
 from flask_cors import CORS
 import uuid
 from datetime import date
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # initalise app
 app = Flask(__name__)
@@ -19,6 +21,22 @@ cred = credentials.Certificate('./backend/recruitassistant_cred.json')
 firebase = firebase_admin.initialize_app(cred, {"databaseURL": "https://recruitassistant-fe71e.firebaseio.com"})
 pb = pyrebase.initialize_app(json.load(open('./backend/firebase_config.json')))
 ref = db.reference('/')
+
+
+def print_date_time():
+    print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+
+def check_postings():
+	posts=ref.child("jobAdvert").get()
+	for key in posts.keys():
+		print(posts[key])
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=check_postings, trigger="interval", seconds=5)
+scheduler.start()
+# atexit.register(lambda: scheduler.shutdown())
+
+
 
 # test
 @app.route('/time')
@@ -149,4 +167,5 @@ def login():
 		error_code = json.loads(e.args[1])['error']['code']
 		
 		return jsonify({"message": error_message}), error_code
+
 
