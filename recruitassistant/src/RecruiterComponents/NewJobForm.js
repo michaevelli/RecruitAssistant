@@ -1,18 +1,17 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-
 import {Link, Input,InputAdornment, Grid,Button,FormControl,InputLabel,TextField} from "@material-ui/core";
 import {Form,Container,InputGroup,Col,Row,Collapse} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
-
-export const jobUrl="http://localhost:5000/jobAdverts/"
+export const jobUrl="http://localhost:5000/jobadverts"
 
 export default function NewJobForm() {
-	
+	const history = useHistory();
 	//for date picker (closing date)
 	//More info: https://material-ui.com/components/pickers/
     const [selectedDate, setSelectedDate] = useState(new Date('2014-08-18T21:11:54'));
@@ -33,30 +32,65 @@ export default function NewJobForm() {
     //salary units in units k/$1000
 	const [salary,setSalary] = useState(100);
 	const [closingDate,setClosingDate] = useState('');
-	const [skills,setSkills] = useState(['python','c++']);
-	const [requiredDoc,setRequiredDoc] = useState([]);
-	
-	const addSkill= () =>{
-		setSkills(prevSkills => [...prevSkills, ''])
-	}
-	
+	//will be comma seperated strings - split on the commas to get an array
+	const [requiredDocs,setRequiredDocs] = useState('');
+	const [skills,setSkills] = useState('');
 
-    //tTODO
+	const [fields,setFields] = useState([]);
+	const minDate = new Date(Date.now());
+
+	function handleChange(i, event) {
+		const values = [...fields];
+		values[i] = event.target.value;
+		setFields(values);
+	  }
+	
+	  function addField() {
+		const values = [...fields];
+		values.push("");
+		setFields(values);
+	  }
+	
+	  function removeField(i) {
+		const values = [...fields];
+		values.splice(i, 1);
+		setFields(values);
+	  }
+
+	//TODO - ADD real RECRUITER ID TO JOB POST
+	// verify that closing date is valid! else do a pop telling them to reenter date
 	const postJob = async () => {
         const url = jobUrl
-        const data=''
-		await axios.post(url)
+        const data={
+			title:title,
+			location:location,
+			company:company,
+			closing_date:closingDate,
+			recruiter_id:'1234',
+			job_type: jobType,
+			salary_pa:salary,
+			experience_level:experienceLevel,
+			skills:skills,
+			required_docs: requiredDocs,
+			status: 'open',
+		}
+		await axios.post(url, data)
 			.then(res => {
 				setResponse(res.data)
 				console.log("response: ", res)
+				alert("Job successfully created")
+				history.push("/recruiterdashboard")
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
+				alert("An error occured, please try again")
 			})
-    };
+		
+	};
+	
     const handleSubmit= async (event) =>{
         event.preventDefault();
-		// postJob()
+		postJob();
         
     };
 
@@ -121,6 +155,7 @@ export default function NewJobForm() {
 								<Form.Control as="select" 
 								onChange={e=>setJobType(e.target.value)} 
 								defaultValue="Choose...">
+									<option>Choose...</option>
 									<option>Part-time</option>
 									<option>Full-time</option>
 									<option>Casual/Vacation</option>
@@ -136,6 +171,7 @@ export default function NewJobForm() {
 								<Form.Control as="select" 
 								onChange={e=>setExperienceLevel(e.target.value)} 
 								defaultValue="Choose...">
+									<option>Choose...</option>
 									<option>Internship</option>
 									<option>Entry level</option>
 									<option>Associate</option>
@@ -178,56 +214,61 @@ export default function NewJobForm() {
 							</Col>
 						</Form.Group>
 							
-						<fieldset>
 						<Form.Group controlId="skills">
-							<Form.Label as="legend" column sm={2}>
-							Qualifications
+						<Form.Label column sm={2}>
+							Desired Skills
 							</Form.Label>
-							<Button style={{marginLeft: 30}} onClick={ addSkill
+							<Col sm={10}>
+								<Form.Control placeholder="e.g. excel, python"
+								onChange={ (event) => setSkills(event.target.value)}/>
+							</Col>
+						
+						</Form.Group>
+						
+
+						<fieldset>
+						<Form.Group controlId="fields">
+							<Form.Label as="legend" column sm={2}>
+							Alternate way of adding skills (not working yet)
+							</Form.Label>
+							<Button style={{marginLeft: 30}} onClick={ addField
 							}>
-								+ Add Qualification
+							+ Add New Skill
 							</Button>
 							<Col sm={10}>
-							{
-								skills.map( (s,indx) =>(
-								<Form.Group controlId="skill">
-									<Col sm={10}>
-										<Form.Control placeholder={s}/>
-									</Col>
-								</Form.Group>
-								))
-							}
-								
-
+							
+								{ fields.map((field, idx) => {
+									return (
+										<Col>
+										<Form.Control placeholder="skill"
+										onChange={e => handleChange(idx, e)} />
+										<button type="button" onClick={() => removeField(idx)}>
+										X
+										</button>
+										</Col>
+								)})}
 							</Col>
 						</Form.Group>
 						</fieldset>
 
-						<fieldset>
+
 						<Form.Group controlId="requiredDocs">
-							<Form.Label as="legend" column sm={2}>
+							<Form.Label column sm={2}>
 							Required Documents
 							</Form.Label>
 							<Col sm={10}>
-								
-								<Link style={{marginLeft: 30}} >
-								+ Add Document type
-								</Link>
-
+								<Form.Control placeholder="e.g. cover letter, resume, passport"
+								onChange={ (event) => setRequiredDocs(event.target.value)}/>
 							</Col>
-						</Form.Group>
-						</fieldset>
-
-						<Button variant="contained" color="primary" type="submit" style={{margin: 20}}>
-						Create New Job
-						</Button>    
-
 						
-				
-                    </Form>  
+						</Form.Group>
+
+					<Button variant="contained" color="primary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
+					Create New Job
+					</Button>    
+
+					</Form>  		
 				</Col>
-					
-			
 			</Row>
 		</Grid>
 	);

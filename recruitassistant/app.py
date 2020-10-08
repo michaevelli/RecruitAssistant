@@ -28,12 +28,12 @@ def get_current_time():
 
 @app.route('/jobadverts', methods=["POST"])
 def post_new_job():
-	json_data = request.form
+	json_data = request.get_json()
 	job_uid=str(uuid.uuid1())
 	print(job_uid)
-	print(json_data)
+	print( json_data['closing_date'])
 	today = date.today()
-	date_posted = today.strftime("%d/%m/%Y")
+	date_posted = today.strftime("%Y-%m-%y")
 	print("d1 =", date_posted),
 	#TODO
 	#add recruiter_id as id of logged in user
