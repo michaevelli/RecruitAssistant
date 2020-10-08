@@ -8,7 +8,7 @@ import pyrebase
 import json
 from flask_cors import CORS
 import uuid
-from datetime import date
+from datetime import date, datetime
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -29,30 +29,32 @@ def print_date_time():
 def check_postings():
 	posts=ref.child("jobAdvert").get()
 	for key in posts.keys():
-		print(posts[key]["closing_date"])
 		#if current datetime has exceeded closing date, close the thing
-		
-		ref.child("jobAdvert").update({
-			key:{
-				'title': posts[key]["title"],
-				'location': posts[key]["location"],
-				'company': posts[key]["company"],
-				'date_posted': posts[key]["date_posted"],
-				'closing_date': posts[key]["closing_date"],
-				'recruiter_id': posts[key]["recruiter_id"],
-				'job_type': posts[key]["job_type"],
-				'salary_pa': posts[key]["salary_pa"],
-				'experience_level': posts[key]["experience_level"],
-				'skills': posts[key]["skills"],
-				'required_docs': posts[key]["required_docs"],
-				'status': "closed"
-			}
-		})
+		close_date = datetime.strptime(posts[key]["closing_date"], "%d/%m/%Y")
+		current_date = datetime.now()
+		delta = close_date - current_date
+		if(delta.days < 0):
+			ref.child("jobAdvert").update({
+				key:{
+					'title': posts[key]["title"],
+					'location': posts[key]["location"],
+					'company': posts[key]["company"],
+					'date_posted': posts[key]["date_posted"],
+					'closing_date': posts[key]["closing_date"],
+					'recruiter_id': posts[key]["recruiter_id"],
+					'job_type': posts[key]["job_type"],
+					'salary_pa': posts[key]["salary_pa"],
+					'experience_level': posts[key]["experience_level"],
+					'skills': posts[key]["skills"],
+					'required_docs': posts[key]["required_docs"],
+					'status': "closed"
+				}
+			})
 
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=check_postings, trigger="interval", seconds=5)
+scheduler.add_job(func=check_postings, trigger="interval", seconds=60)
 scheduler.start()
 # atexit.register(lambda: scheduler.shutdown())
 
