@@ -15,7 +15,7 @@ export default function RecruiterDashboard() {
 
 	useEffect(() => {
     getJobs();
-  }, []);
+ 	}, []);
 
 	const getJobs = async () => {
 		const url = jobUrl+recruiterID
@@ -31,7 +31,7 @@ export default function RecruiterDashboard() {
 
 	const renderJobs = () => {
 		return jobs.map((job) => (
-			<Card style={{margin: 30, height: 150, width:250}}>
+			<Card style={{margin: 30, height: 180, width:250}}>
 				<CardContent>                          
 					<Typography variant="h5" component="h2">
 						{job[1].title}
@@ -40,7 +40,7 @@ export default function RecruiterDashboard() {
 						{job[1].company} | {job[1].location}
 					</Typography>
 				</CardContent>
-				<CardActions>
+				<CardActions >
 					<Typography color="textSecondary">
 						{job[1].status}
 					</Typography>

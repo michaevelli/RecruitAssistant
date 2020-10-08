@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 
-
+// TODO https://www.w3schools.com/howto/howto_js_navbar_sticky.asp
+//make sticky - currently on some pages it disappears if you scroll too far down
 export default function SideMenu(props) {
    
     return(
