@@ -28,11 +28,8 @@ export default function RecruiterDashboard() {
 			.then(function(response) {
 				console.log("auth success: ", response)
 				setLoading(false)				
-				if (!response) {
-					history.push("/unauthorised"); //TODO: change response to return user type
-				}
-				if(window.localStorage.getItem("type") != "recruiter"){
-					history.push("/unauthorised")
+				if (!response.success || response.userInfo["type"] != "recruiter") {
+					history.push("/unauthorised");
 				}
 			})
 	}

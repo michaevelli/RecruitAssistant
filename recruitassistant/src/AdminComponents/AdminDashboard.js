@@ -30,22 +30,18 @@ export default function AdminDashboard() {
 
 	
 	useEffect(() => {
-	  auth();
+		auth();
 	}, []);
 
 	const auth = async () => {
-	  await checkAuth(window.localStorage.getItem("token"))
-	    .then(function(response) {
+		await checkAuth(window.localStorage.getItem("token"))
+			.then(function(response) {
 				console.log("auth success: ", response)
-				setLoading(false)
-	      if (!response) {
-	        history.push("/unauthorised");
-		  }
-		  
-		  if(window.localStorage.getItem("type") != "admin"){
-			history.push("/unauthorised")
-			}
-	    })
+				setLoading(false)				
+				if (!response.success || response.userInfo["type"] != "admin") {
+					history.push("/unauthorised");
+				}
+			})
 	}
 
 	const handleSubmit= async (event) =>{

@@ -36,12 +36,9 @@ export default function JobSeekerDashboard() {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
-				setLoading(false)
-				if (!response) {
+				setLoading(false)				
+				if (!response.success || response.userInfo["type"] != "jobseeker") {
 					history.push("/unauthorised");
-				}
-				if(window.localStorage.getItem("type") != "jobseeker"){
-					history.push("/unauthorised")
 				}
 			})
 	}
