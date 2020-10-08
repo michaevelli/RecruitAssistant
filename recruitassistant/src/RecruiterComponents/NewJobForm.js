@@ -12,16 +12,10 @@ export const jobUrl="http://localhost:5000/jobadverts"
 
 export default function NewJobForm() {
 	const history = useHistory();
-	//for date picker (closing date)
-	//More info: https://material-ui.com/components/pickers/
-    const [selectedDate, setSelectedDate] = useState(new Date('2014-08-18T21:11:54'));
-	const handleDateChange = (date) => {
-		setSelectedDate(date);
-	};
-
-
+	
     //error msg or successful job creation
-    const [response,setResponse]=useState('')
+	const [response,setResponse]=useState('')
+	//form data
 	const [title,setTitle] = useState('');
 	const [company,setCompany] = useState('');
 	const [description,setDescription] = useState('');
@@ -36,29 +30,11 @@ export default function NewJobForm() {
 	const [requiredDocs,setRequiredDocs] = useState('');
 	const [skills,setSkills] = useState('');
 
-	const [fields,setFields] = useState([]);
-	const minDate = new Date(Date.now());
-
-	function handleChange(i, event) {
-		const values = [...fields];
-		values[i] = event.target.value;
-		setFields(values);
-	  }
-	
-	  function addField() {
-		const values = [...fields];
-		values.push("");
-		setFields(values);
-	  }
-	
-	  function removeField(i) {
-		const values = [...fields];
-		values.splice(i, 1);
-		setFields(values);
-	  }
 
 	//TODO - ADD real RECRUITER ID TO JOB POST
-	// verify that closing date is valid! else do a pop telling them to reenter date
+	//Error checking of form fields!!
+	//currently you can submit empty forms....
+	//verify that closing date is valid! else do a pop  uptelling them to reenter date
 	const postJob = async () => {
         const url = jobUrl
         const data={
@@ -100,7 +76,7 @@ export default function NewJobForm() {
 			<Row noGutters style={{height:'100vh',paddingTop: 40}}>
 				<Col sm="2">
 					<SideMenu random={[
-						{'text':'Recruiter Dashboard','href': '#','active': true},
+						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': true},
 						{'text':'FAQ','href':'#','active': false}]}/>
 				</Col>
 
@@ -215,42 +191,14 @@ export default function NewJobForm() {
 						</Form.Group>
 							
 						<Form.Group controlId="skills">
-						<Form.Label column sm={2}>
+							<Form.Label column sm={2}>
 							Desired Skills
 							</Form.Label>
 							<Col sm={10}>
 								<Form.Control placeholder="e.g. excel, python"
 								onChange={ (event) => setSkills(event.target.value)}/>
-							</Col>
-						
+							</Col>					
 						</Form.Group>
-						
-
-						<fieldset>
-						<Form.Group controlId="fields">
-							<Form.Label as="legend" column sm={2}>
-							Alternate way of adding skills (not working yet)
-							</Form.Label>
-							<Button style={{marginLeft: 30}} onClick={ addField
-							}>
-							+ Add New Skill
-							</Button>
-							<Col sm={10}>
-							
-								{ fields.map((field, idx) => {
-									return (
-										<Col>
-										<Form.Control placeholder="skill"
-										onChange={e => handleChange(idx, e)} />
-										<button type="button" onClick={() => removeField(idx)}>
-										X
-										</button>
-										</Col>
-								)})}
-							</Col>
-						</Form.Group>
-						</fieldset>
-
 
 						<Form.Group controlId="requiredDocs">
 							<Form.Label column sm={2}>
@@ -259,8 +207,7 @@ export default function NewJobForm() {
 							<Col sm={10}>
 								<Form.Control placeholder="e.g. cover letter, resume, passport"
 								onChange={ (event) => setRequiredDocs(event.target.value)}/>
-							</Col>
-						
+							</Col>					
 						</Form.Group>
 
 					<Button variant="contained" color="primary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
