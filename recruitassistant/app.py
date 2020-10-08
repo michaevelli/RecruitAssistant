@@ -25,7 +25,10 @@ def check_token():
 	data = request.json
 	try:
 		user = auth.verify_id_token(data["token"])
-		return jsonify({'message': 'Successfully verified'}),200
+		user_uid = user["uid"]
+		print(user_uid)
+		return jsonify({'message': 'Successfully verified',
+						'uid': user_uid}),200
 	except:
 		return jsonify({'message': 'Token verification failed'}),400
 	
@@ -145,10 +148,11 @@ def login():
 
 		# retrieve user data
 		data = db.child("user").order_by_child("email").equal_to(email).get()
-		userID = list(data.val().items())[0][0]
+		# userID = list(data.val().items())[0][0]
 		user = list(data.val().items())[0][1]
 
-		return jsonify({"token": token, "user": user, "userID": userID}), 200
+		# return jsonify({"token": token, "user": user, "userID": userID}), 200
+		return jsonify({"token": token, "type": user["type"]}), 200
 
 	except Exception as e:
 		error_message = json.loads(e.args[1])['error']['message']

@@ -32,12 +32,12 @@ function Login() {
 				console.log("response:")
 				console.log(response.data)
 				window.localStorage.setItem("token", response.data.token)
-				window.localStorage.setItem("id", response.data.userID)
-				window.localStorage.setItem("company", response.data.user.company)
-				window.localStorage.setItem("email", response.data.user.email)
-				window.localStorage.setItem("first_name", response.data.user.first_name)
-				window.localStorage.setItem("last_name", response.data.user.last_name)
-				window.localStorage.setItem("type", response.data.user.type)
+				// window.localStorage.setItem("id", response.data.userID)
+				// window.localStorage.setItem("company", response.data.user.company)
+				// window.localStorage.setItem("email", response.data.user.email)
+				// window.localStorage.setItem("first_name", response.data.user.first_name)
+				// window.localStorage.setItem("last_name", response.data.user.last_name)
+				window.localStorage.setItem("type", response.data.type)
 				history.push("/"+window.localStorage.getItem("type")+"dashboard");
 				// setRedirect(true)
 				

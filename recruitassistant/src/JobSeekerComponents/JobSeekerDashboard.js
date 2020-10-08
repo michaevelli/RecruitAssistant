@@ -40,6 +40,9 @@ export default function JobSeekerDashboard() {
 				if (!response) {
 					history.push("/unauthorised");
 				}
+				if(window.localStorage.getItem("type") != "jobseeker"){
+					history.push("/unauthorised")
+				}
 			})
 	}
 
