@@ -10,6 +10,8 @@ export default async function checkAuth(token) {
 	// const history = useHistory();
 	// const [success, setSuccess] = useState(false);
 	var success = false;
+	var userID = "";
+	var userInfo = {};
 	const ndata = {
 		token: token
 	}
@@ -19,16 +21,17 @@ export default async function checkAuth(token) {
 
 	await axios.post(authUrl, ndata)
 		.then(function(response) {
-			console.log(response)
+			// console.log(response)
 			success = true
-			window.sessionStorage.setItem("uid", response.data.uid)
+			userID = response.data.uid
+			userInfo = response.data.user_info
+			// window.sessionStorage.setItem("uid", response.data.uid)
 		})
 		.catch(function(error) {
 			console.log(error)
-			// window.localStorage.clear()
-			// history.push("/login");
+
 			success = false
 		})
 
-		return success
+		return { "success": success , "userID": userID, "userInfo": userInfo}
 };

@@ -26,11 +26,14 @@ def check_token():
 	try:
 		user = auth.verify_id_token(data["token"])
 		user_uid = user["uid"]
-		print(user_uid)
-		return jsonify({'message': 'Successfully verified',
-						'uid': user_uid}),200
-	except:
+		# print(user_uid)
+		user_info = ref.child('user').order_by_key().equal_to(user_uid).get()[user_uid]
+		print("---user info ---" + str(user_info))
+		return jsonify({'message': 'Successfully verified', 'uid': user_uid, 'user_info': user_info}),200
+	except Exception as e:
+		print(e)
 		return jsonify({'message': 'Token verification failed'}),400
+
 	
 	
 
