@@ -9,6 +9,7 @@ import DashBoardTemplate from './SharedComponents/Dashboard';
 import AdminDashboard from './AdminComponents/AdminDashboard';
 import RecruiterDashboard from './RecruiterComponents/RecruiterDashboard';
 import JobSeekerDashboard from './JobSeekerComponents/JobSeekerDashboard';
+import NewJobForm from "./RecruiterComponents/NewJobForm";
 
 function App() {
   const [currentTime, setCurrentTime] = useState(0);
@@ -31,6 +32,7 @@ function App() {
           <Route path="/admindashboard" component={AdminDashboard}/>
           <Route path="/recruiterdashboard" component={RecruiterDashboard}/>
           <Route path="/jobseekerdashboard" component={JobSeekerDashboard}/>
+          <Route path="/createJobPost" component={NewJobForm}/>
         </Switch>
       </BrowserRouter>
 
