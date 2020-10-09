@@ -15,6 +15,8 @@ export default function NewJobForm() {
 	
     //error msg or successful job creation
 	const [response,setResponse]=useState('')
+	//Used for form validation
+	const [validated, setValidated] = useState(false);
 	//form data
 	const [title,setTitle] = useState('');
 	const [company,setCompany] = useState('');
@@ -30,11 +32,9 @@ export default function NewJobForm() {
 	const [requiredDocs,setRequiredDocs] = useState('');
 	const [skills,setSkills] = useState('');
 
-
+	
 	//TODO - ADD real RECRUITER ID TO JOB POST
-	//Error checking of form fields!!
-	//currently you can submit empty forms....
-	//verify that closing date is valid! else do a pop  uptelling them to reenter date
+	//verify that closing date is valid! else do a pop up telling them to reenter date
 	const postJob = async () => {
         const url = jobUrl
         const data={
@@ -63,12 +63,26 @@ export default function NewJobForm() {
 			})
 		
 	};
-	
+	const today = new Date()
+	const datevalidator =()=>{
+		return closingDate !== "" && today < Date.parse(closingDate)
+	}
     const handleSubmit= async (event) =>{
-        event.preventDefault();
-		postJob();
-        
-    };
+		
+		const form = event.currentTarget;
+		const correct_date=datevalidator()
+		
+		if (form.checkValidity() === false && correct_date==false) {
+			event.preventDefault();
+			event.stopPropagation();
+			setValidated(true);
+		}else{
+
+			setValidated(true);
+			//good to go
+			postJob();
+		}
+	}
 
 	return (
 		<Grid>
@@ -84,14 +98,16 @@ export default function NewJobForm() {
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						Create New Job
 					</Typography>
-                    <Form onSubmit={handleSubmit} style={{marginLeft:'15%'}}>
+                    <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>
                        
                         <Form.Group controlId="title">
 							<Form.Label column sm={2}>
 							Title
 							</Form.Label>
 							<Col sm={10}>
-								<Form.Control placeholder="Title"
+								<Form.Control 
+									required
+									placeholder="Title"
 									onChange={ (event) => setTitle(event.target.value)} />
 							</Col>
 						</Form.Group>
@@ -100,7 +116,9 @@ export default function NewJobForm() {
 							Company
 							</Form.Label>
 							<Col sm={10}>
-								<Form.Control placeholder="Company"
+								<Form.Control
+								required
+								placeholder="Company"
 								onChange={ (event) => setCompany(event.target.value)}/>
 							</Col>
 						</Form.Group>
@@ -110,7 +128,9 @@ export default function NewJobForm() {
 							Location
 							</Form.Label>
 							<Col sm={10}>
-								<Form.Control placeholder="Location"
+								<Form.Control 
+								required
+								placeholder="Location"
 								onChange={ (event) => setLocation(event.target.value)}/>
 							</Col>
 						</Form.Group>
@@ -120,6 +140,7 @@ export default function NewJobForm() {
 							Description</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="textarea" rows="3" 
+								required
 								onChange={ (event) => setDescription(event.target.value)}/>
 							</Col>
 						</Form.Group>
@@ -129,9 +150,10 @@ export default function NewJobForm() {
 							Job type</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
+								required
 								onChange={e=>setJobType(e.target.value)} 
-								defaultValue="Choose...">
-									<option>Choose...</option>
+								defaultValue="Select">
+									<option selected disabled>Select </option>
 									<option>Part-time</option>
 									<option>Full-time</option>
 									<option>Casual/Vacation</option>
@@ -145,9 +167,10 @@ export default function NewJobForm() {
 							Experience Level</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
+								required
 								onChange={e=>setExperienceLevel(e.target.value)} 
-								defaultValue="Choose...">
-									<option>Choose...</option>
+								defaultValue="Select">
+									<option selected disabled>Select </option>
 									<option>Internship</option>
 									<option>Entry level</option>
 									<option>Associate</option>
@@ -168,11 +191,17 @@ export default function NewJobForm() {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroupPrepend">$</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Form.Control placeholder=""
+									<Form.Control 
+									placeholder=""
+									required
+									type="number"
 									onChange={ (event) => setSalary(event.target.value)}/>
 									<Form.Text className="text-muted">
 									Please enter salary in units of K/$1000
 									</Form.Text>
+									<Form.Control.Feedback type="invalid">
+										Please enter a valid number
+									</Form.Control.Feedback>
 								</InputGroup>
 							</Col>
 						</Form.Group>
@@ -182,11 +211,22 @@ export default function NewJobForm() {
 							<Form.Label column sm={2}>
 							Closing Date</Form.Label>
 							<Col sm={10}>
-								<TextField
+							<TextField 
+									className={
+										!datevalidator()
+										  ? "form-control is-invalid"
+										  : "form-control"
+									  }
 									id="closingDate"
 									type="date"
-									onChange={ (event) => setClosingDate(event.target.value)}
+									min={today}
+									onChange={ (event) => 
+											setClosingDate(event.target.value)	
+									}
 								/>
+								<Form.Control.Feedback type="invalid">
+									Please enter a date in the future
+								</Form.Control.Feedback>
 							</Col>
 						</Form.Group>
 							
