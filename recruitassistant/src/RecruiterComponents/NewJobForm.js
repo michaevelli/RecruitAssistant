@@ -30,11 +30,11 @@ export default function NewJobForm() {
 	const [closingDate,setClosingDate] = useState('');
 	//will be comma seperated strings - split on the commas to get an array
 	const [requiredDocs,setRequiredDocs] = useState('');
-	const [skills,setSkills] = useState('');
-
-	//NOTE: if zero additional questions are added, the field will not exist
+	const [qualifications,setQualifications] = useState('');
+	//NOTE: if zero additional questions/responsibilities are added, the field will not exist
 	//in the database record - must check when displaying job adverts that the field exists!!!
 	const [additionalQuestions, setAdditionalQuestions] = useState([]);
+	const [responsibilities, setResponsibilities] = useState([]);
 
 	const handleAddQuestion = () => {
 		setAdditionalQuestions([...additionalQuestions, ''])
@@ -45,10 +45,25 @@ export default function NewJobForm() {
 		qs.splice(index, 1)
 		setAdditionalQuestions(qs)
 	}
-	const handleChange = (index, event) => {
+	const handleChangeQuestion = (index, event) => {
 		const qs = [...additionalQuestions]
 		qs[index]=event.target.value
 		setAdditionalQuestions(qs)
+	}
+
+	const handleAddResponsibility = () => {
+		setResponsibilities([...responsibilities, ''])
+	}
+	const handleRemoveResponsibility = (index) => {
+		const rs  = [...responsibilities]
+		//remove Responsibility
+		rs.splice(index, 1)
+		setResponsibilities(rs)
+	}
+	const handleChangeResponsibility = (index, event) => {
+		const rs  = [...responsibilities]
+		rs[index]=event.target.value
+		setResponsibilities(rs)
 	}
 
 	//TODO - ADD real RECRUITER ID TO JOB POST
@@ -64,10 +79,11 @@ export default function NewJobForm() {
 			job_type: jobType,
 			salary_pa:salary,
 			experience_level:experienceLevel,
-			skills:skills,
+			qualifications: qualifications,
 			required_docs: requiredDocs,
 			status: 'open',
-			additional_questions: additionalQuestions
+			additional_questions: additionalQuestions,
+			responsibilities: responsibilities
 		}
 		console.log(data)
 		await axios.post(url, data)
@@ -155,6 +171,31 @@ export default function NewJobForm() {
 							</Col>
 						</Form.Group>
 
+						<Form.Group controlId="responsibilities">
+							<Form.Label column sm={2}>
+							Key Responsibilities
+							</Form.Label>
+							<IconButton onClick={() => handleAddResponsibility()}>
+								<AddIcon />
+							</IconButton>
+							<Col sm={10}>
+							{responsibilities.map((r, index) => (
+								<ul key={index}>
+									<li><TextField 
+									name="Responsibility"
+									variant="outlined"
+									placeholder="Responsibility"
+									value={r}
+									onChange={event => handleChangeResponsibility(index, event)}
+									/>
+									<IconButton onClick={() => handleRemoveResponsibility(index)}>
+										<RemoveIcon />
+									</IconButton></li>
+								</ul>
+							))}
+							</Col>					
+						</Form.Group>
+
 						<Form.Group controlId="jobType">
 						<Form.Label column sm={2}>Job type</Form.Label>
 							<Col sm={10}>
@@ -238,13 +279,13 @@ export default function NewJobForm() {
 							</Col>
 						</Form.Group>
 							
-						<Form.Group controlId="skills">
+						<Form.Group controlId="qualifications">
 							<Form.Label column sm={2}>
-							Desired Skills
+							Desired Qualifications
 							</Form.Label>
 							<Col sm={10}>
 								<Form.Control placeholder="e.g. excel, python"
-								onChange={ (event) => setSkills(event.target.value)}/>
+								onChange={ (event) => setQualifications(event.target.value)}/>
 							</Col>					
 						</Form.Group>
 
@@ -273,7 +314,7 @@ export default function NewJobForm() {
 									variant="outlined"
 									placeholder="Additional Question"
 									value={question}
-									onChange={event => handleChange(index, event)}
+									onChange={event => handleChangeQuestion(index, event)}
 									/>
 									<IconButton onClick={() => handleRemoveQuestion(index)}>
 										<RemoveIcon />
@@ -286,7 +327,6 @@ export default function NewJobForm() {
 						<Button variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
 						Create New Job
 						</Button> 
-
 					</Form>  		
 				</Col>
 			</Row>
