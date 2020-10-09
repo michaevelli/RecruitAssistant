@@ -43,6 +43,7 @@ def post_new_job():
 				job_uid: {
 					'title':json_data["title"],
 					'location':json_data["location"],
+					'description': json_data['description'],
 					'company':json_data["company"],
 					'date_posted': date_posted,
 					'closing_date':json_data["closing_date"],
@@ -53,7 +54,8 @@ def post_new_job():
 					'skills':json_data["skills"],
 					'required_docs': json_data["required_docs"],
 					#'min_years_experience': json_data["min_years_experience"],
-					'status': json_data['status']
+					'status': json_data['status'],
+					'additional_questions': json_data['additional_questions']
 				},
 			})
 		return jsonify({'message': f'Successfully created job {job_uid}'}),200

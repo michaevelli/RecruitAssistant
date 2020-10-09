@@ -1,27 +1,28 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Input,InputAdornment, Grid,Button,FormControl,InputLabel,TextField} from "@material-ui/core";
-import {Form,Container,InputGroup,Col,Row,Collapse} from 'react-bootstrap';
+import {IconButton,Grid,Button,TextField} from "@material-ui/core";
+import RemoveIcon from '@material-ui/icons/Remove';
+import AddIcon from '@material-ui/icons/Add';
+import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 
+
 export const jobUrl="http://localhost:5000/jobadverts"
 
 export default function NewJobForm() {
 	const history = useHistory();
-	
-    //error msg or successful job creation
-	const [response,setResponse]=useState('')
+	const today = new Date()
+ 
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
 	//form data
 	const [title,setTitle] = useState('');
 	const [company,setCompany] = useState('');
 	const [description,setDescription] = useState('');
-	const [minYearsExp,setMinYearsExp] = useState('');
     const [location,setLocation] = useState('');
     const [jobType,setJobType] = useState('');
     const [experienceLevel,setExperienceLevel] = useState('');
@@ -32,14 +33,34 @@ export default function NewJobForm() {
 	const [requiredDocs,setRequiredDocs] = useState('');
 	const [skills,setSkills] = useState('');
 
+	//NOTE: if zero additional questions are added, the field will not exist
+	//in the database record - must check when displaying job adverts that the field exists!!!
+	const [additionalQuestions, setAdditionalQuestions] = useState([]);
 	
+
+	const handleAddQuestion = () => {
+		setAdditionalQuestions([...additionalQuestions, ''])
+	}
+	
+	const handleRemoveQuestion = (index) => {
+		const qs  = [...additionalQuestions]
+		//remove question
+		qs.splice(index, 1)
+		setAdditionalQuestions(qs)
+	}
+	const handleChange = (index, event) => {
+		const qs = [...additionalQuestions]
+		qs[index]=event.target.value
+		setAdditionalQuestions(qs)
+	}
+
 	//TODO - ADD real RECRUITER ID TO JOB POST
-	//verify that closing date is valid! else do a pop up telling them to reenter date
 	const postJob = async () => {
         const url = jobUrl
         const data={
 			title:title,
 			location:location,
+			description: description,
 			company:company,
 			closing_date:closingDate,
 			recruiter_id:'1234',
@@ -49,10 +70,11 @@ export default function NewJobForm() {
 			skills:skills,
 			required_docs: requiredDocs,
 			status: 'open',
+			additional_questions: additionalQuestions
 		}
+		console.log(data)
 		await axios.post(url, data)
 			.then(res => {
-				setResponse(res.data)
 				console.log("response: ", res)
 				alert("Job successfully created")
 				history.push("/recruiterdashboard")
@@ -60,24 +82,24 @@ export default function NewJobForm() {
 			.catch((error) => {
 				console.log("error: ", error.response)
 				alert("An error occured, please try again")
-			})
-		
+			})	
 	};
-	const today = new Date()
+
+	
 	const datevalidator =()=>{
 		return closingDate !== "" && today < Date.parse(closingDate)
 	}
-    const handleSubmit= async (event) =>{
-		
+
+
+    const handleSubmit= async (event) =>{	
+		event.preventDefault();
 		const form = event.currentTarget;
 		const correct_date=datevalidator()
-		
-		if (form.checkValidity() === false && correct_date==false) {
-			event.preventDefault();
+		//all dates will always be after today, hence status is always 'open' for a new job
+		if (form.checkValidity() === false || correct_date==false) {	
 			event.stopPropagation();
 			setValidated(true);
 		}else{
-
 			setValidated(true);
 			//good to go
 			postJob();
@@ -98,12 +120,11 @@ export default function NewJobForm() {
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						Create New Job
 					</Typography>
-                    <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>
-                       
+
+
+                    <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
                         <Form.Group controlId="title">
-							<Form.Label column sm={2}>
-							Title
-							</Form.Label>
+							<Form.Label column sm={2}>Title</Form.Label>
 							<Col sm={10}>
 								<Form.Control 
 									required
@@ -112,9 +133,7 @@ export default function NewJobForm() {
 							</Col>
 						</Form.Group>
 						<Form.Group controlId="company">
-							<Form.Label column sm={2}>
-							Company
-							</Form.Label>
+							<Form.Label column sm={2}>Company</Form.Label>
 							<Col sm={10}>
 								<Form.Control
 								required
@@ -124,9 +143,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="location">
-							<Form.Label column sm={2}>
-							Location
-							</Form.Label>
+							<Form.Label column sm={2}>Location</Form.Label>
 							<Col sm={10}>
 								<Form.Control 
 								required
@@ -136,8 +153,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="description">
-							<Form.Label column sm={2}>
-							Description</Form.Label>
+							<Form.Label column sm={2}>Description</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="textarea" rows="3" 
 								required
@@ -146,8 +162,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="jobType">
-						<Form.Label column sm={2}>
-							Job type</Form.Label>
+						<Form.Label column sm={2}>Job type</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
 								required
@@ -163,8 +178,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="experienceLevel">
-						<Form.Label column sm={2}>
-							Experience Level</Form.Label>
+						<Form.Label column sm={2}>Experience Level</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
 								required
@@ -200,7 +214,7 @@ export default function NewJobForm() {
 									Please enter salary in units of K/$1000
 									</Form.Text>
 									<Form.Control.Feedback type="invalid">
-										Please enter a valid number
+									Please enter a number
 									</Form.Control.Feedback>
 								</InputGroup>
 							</Col>
@@ -209,20 +223,20 @@ export default function NewJobForm() {
 						
 						<Form.Group controlId="closingDate">
 							<Form.Label column sm={2}>
-							Closing Date</Form.Label>
+							Application Closing Date</Form.Label>
 							<Col sm={10}>
 							<TextField 
-									className={
-										!datevalidator()
-										  ? "form-control is-invalid"
-										  : "form-control"
-									  }
-									id="closingDate"
-									type="date"
-									min={today}
-									onChange={ (event) => 
-											setClosingDate(event.target.value)	
+								className={
+									!datevalidator()
+										? "form-control is-invalid"
+										: "form-control"
 									}
+								id="closingDate"
+								type="date"
+								min={today}
+								onChange={ (event) => 
+									setClosingDate(event.target.value)	
+								}
 								/>
 								<Form.Control.Feedback type="invalid">
 									Please enter a date in the future
@@ -250,9 +264,34 @@ export default function NewJobForm() {
 							</Col>					
 						</Form.Group>
 
-					<Button variant="contained" color="primary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
-					Create New Job
-					</Button>    
+						<Form.Group controlId="additionalQuestions">
+							<Form.Label column sm={2}>
+							Additional Questions
+							</Form.Label>
+							<IconButton onClick={() => handleAddQuestion()}>
+								<AddIcon />
+							</IconButton>
+							<Col sm={10}>
+							{additionalQuestions.map((question, index) => (
+								<div key={index}>
+									<TextField 
+									name="Question"
+									variant="outlined"
+									placeholder="Additional Question"
+									value={question}
+									onChange={event => handleChange(index, event)}
+									/>
+									<IconButton onClick={() => handleRemoveQuestion(index)}>
+										<RemoveIcon />
+									</IconButton>
+								</div>
+							))}
+							</Col>					
+						</Form.Group>
+
+						<Button variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
+						Create New Job
+						</Button> 
 
 					</Form>  		
 				</Col>
