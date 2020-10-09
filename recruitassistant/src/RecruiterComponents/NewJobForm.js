@@ -184,6 +184,7 @@ export default function NewJobForm() {
 									<li><TextField 
 									name="Responsibility"
 									variant="outlined"
+									size="small"
 									placeholder="Responsibility"
 									value={r}
 									onChange={event => handleChangeResponsibility(index, event)}
@@ -197,13 +198,13 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="jobType">
-						<Form.Label column sm={2}>Job type</Form.Label>
+						<Form.Label column sm={2}>Job Type</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
 								required
 								onChange={e=>setJobType(e.target.value)} 
-								defaultValue="Select">
-									<option selected disabled>Select </option>
+								>
+									<option value="">--Select-- </option>
 									<option>Part-time</option>
 									<option>Full-time</option>
 									<option>Casual/Vacation</option>
@@ -218,8 +219,8 @@ export default function NewJobForm() {
 								<Form.Control as="select" 
 								required
 								onChange={e=>setExperienceLevel(e.target.value)} 
-								defaultValue="Select">
-									<option selected disabled>Select </option>
+								>
+									<option value="">--Select-- </option>
 									<option>Internship</option>
 									<option>Entry level</option>
 									<option>Associate</option>
@@ -265,7 +266,7 @@ export default function NewJobForm() {
 									!datevalidator()
 										? "form-control is-invalid"
 										: "form-control"
-									}
+								}
 								id="closingDate"
 								type="date"
 								min={today}
@@ -312,6 +313,7 @@ export default function NewJobForm() {
 									<TextField 
 									name="Question"
 									variant="outlined"
+									size="small"
 									placeholder="Additional Question"
 									value={question}
 									onChange={event => handleChangeQuestion(index, event)}
