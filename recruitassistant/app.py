@@ -26,6 +26,7 @@ def check_token():
 	try:
 		user = auth.verify_id_token(data["token"])
 		user_uid = user["uid"]
+		print(data["token"])
 		# print(user_uid)
 		user_info = ref.child('user').order_by_key().equal_to(user_uid).get()[user_uid]
 		print("---user info ---" + str(user_info))
@@ -162,4 +163,3 @@ def login():
 		error_code = json.loads(e.args[1])['error']['code']
 		
 		return jsonify({"message": error_message}), error_code
-

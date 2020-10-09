@@ -3,12 +3,13 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { TextField, Button, Grid } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 
+
 export default function TitleBar() {
 		const history = useHistory();
 
-    const logout = () => { 
+    async function logout () { 
 			window.sessionStorage.clear()
-			window.localStorage.clear()
+            window.localStorage.clear()
 			history.push("/")
     }
 
