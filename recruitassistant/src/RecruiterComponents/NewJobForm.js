@@ -10,13 +10,12 @@ import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 
-
 export const jobUrl="http://localhost:5000/jobadverts"
 
 export default function NewJobForm() {
 	const history = useHistory();
 	const today = new Date()
- 
+
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
 	//form data
@@ -36,12 +35,10 @@ export default function NewJobForm() {
 	//NOTE: if zero additional questions are added, the field will not exist
 	//in the database record - must check when displaying job adverts that the field exists!!!
 	const [additionalQuestions, setAdditionalQuestions] = useState([]);
-	
 
 	const handleAddQuestion = () => {
 		setAdditionalQuestions([...additionalQuestions, ''])
 	}
-	
 	const handleRemoveQuestion = (index) => {
 		const qs  = [...additionalQuestions]
 		//remove question
@@ -84,18 +81,16 @@ export default function NewJobForm() {
 				alert("An error occured, please try again")
 			})	
 	};
-
 	
 	const datevalidator =()=>{
 		return closingDate !== "" && today < Date.parse(closingDate)
 	}
 
-
     const handleSubmit= async (event) =>{	
 		event.preventDefault();
 		const form = event.currentTarget;
 		const correct_date=datevalidator()
-		//all dates will always be after today, hence status is always 'open' for a new job
+		//Closing dates will always be after today, hence status is always 'open' for a new job
 		if (form.checkValidity() === false || correct_date==false) {	
 			event.stopPropagation();
 			setValidated(true);
@@ -109,7 +104,7 @@ export default function NewJobForm() {
 	return (
 		<Grid>
 			<Row noGutters fluid><TitleBar/></Row>
-			<Row noGutters style={{height:'100vh',paddingTop: 40}}>
+			<Row noGutters style={{height:'100%',paddingTop: 40}}>
 				<Col sm="2">
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': true},
@@ -120,7 +115,6 @@ export default function NewJobForm() {
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						Create New Job
 					</Typography>
-
 
                     <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
                         <Form.Group controlId="title">
@@ -197,7 +191,7 @@ export default function NewJobForm() {
 
 						<Form.Group controlId="salary">
 							<Form.Label column sm={2}>
-							Salary (p.a)
+							Salary K/p.a
 							</Form.Label>
 							
 							<Col sm={10}>
