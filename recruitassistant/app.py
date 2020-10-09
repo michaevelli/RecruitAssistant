@@ -28,12 +28,12 @@ def get_current_time():
 
 @app.route('/jobadverts', methods=["POST"])
 def post_new_job():
-	json_data = request.form
+	json_data = request.get_json()
 	job_uid=str(uuid.uuid1())
 	print(job_uid)
-	print(json_data)
+	print( json_data['closing_date'])
 	today = date.today()
-	date_posted = today.strftime("%d/%m/%Y")
+	date_posted = today.strftime("%Y-%m-%y")
 	print("d1 =", date_posted),
 	#TODO
 	#add recruiter_id as id of logged in user
@@ -43,6 +43,7 @@ def post_new_job():
 				job_uid: {
 					'title':json_data["title"],
 					'location':json_data["location"],
+					'description': json_data['description'],
 					'company':json_data["company"],
 					'date_posted': date_posted,
 					'closing_date':json_data["closing_date"],
@@ -50,10 +51,13 @@ def post_new_job():
 					'job_type': json_data["job_type"],
 					'salary_pa':json_data["salary_pa"],
 					'experience_level':json_data["experience_level"],
-					'skills':json_data["skills"],
+					'req_qualifications':json_data["qualifications"],
+					'responsibilities': json_data['responsibilities'],
 					'required_docs': json_data["required_docs"],
-					'min_years_experience': json_data["min_years_experience"],
-					'status': json_data['status']
+					#'min_years_experience': json_data["min_years_experience"],
+					'status': json_data['status'],
+					'additional_questions': json_data['additional_questions']
+
 				},
 			})
 		return jsonify({'message': f'Successfully created job {job_uid}'}),200
