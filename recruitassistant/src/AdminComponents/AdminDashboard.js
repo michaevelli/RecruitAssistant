@@ -71,6 +71,42 @@ export default function AdminDashboard() {
 	}
 
 
+
+//   return (
+//     <Grid>      
+//       <Row noGutters fluid><TitleBar/></Row>
+//       <Row noGutters style={{height:'100vh',paddingTop: 40}}>
+//         <Col sm={2}>
+//           <SideMenu random={[
+//             {'text':'Jobs','href': '#', 'active': true},
+//             {'text':'Users','href': '#', 'active': false}]}/>
+//         </Col>
+//         <Col>
+//           <Typography variant="h4" style={{color: 'black', textAlign: "center",margin:20 }}>
+//             Job Search
+//           </Typography>
+//           <Form onSubmit={handleSubmit}>
+//             <Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>
+//               <TextField size="small"
+//                 onChange={ (event) => setSearchString(event.target.value)}
+//                 style={{ margin: 8 }}
+//                 placeholder="Job Title, Company,Skills"
+//                 margin="normal"
+//                 InputLabelProps={{shrink: true,}}
+//                 variant="outlined"/>
+//               <TextField size="small"
+//                 onChange={ (event) => setLocation(event.target.value)}
+//                 style={{ margin: 8 }}
+//                 placeholder="Location"
+//                 margin="normal"
+//                 InputLabelProps={{shrink: true,}}
+//                 variant="outlined"/>
+//               <Button type="submit" variant="contained" style={{margin:10}}>
+//                 Search
+//               </Button>
+//             </Col>
+
+
 	return loading ? (
 			<div></div>
 		) : (
