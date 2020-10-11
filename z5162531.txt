@@ -15,3 +15,6 @@ create new job advert pages, login and sign up pages, and admin pages to delete 
 Worked on User Interface for Sign up page.
 Created a template with navigation bar for web pages.
 Created UI for recruiter dashboard and job seeker dashboard search bar.Linked recruiter dashboard to backend.
+
+--week 4---
+Worked on the feature for recruiters to create a new job posting. Created NewJobPost.js.Added dynamic question fields, form validation, linked form to backend.

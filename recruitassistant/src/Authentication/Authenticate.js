@@ -25,7 +25,7 @@ export default async function checkAuth(token) {
 			success = true
 			userID = response.data.uid
 			userInfo = response.data.user_info
-			// window.sessionStorage.setItem("uid", response.data.uid)
+			window.sessionStorage.setItem("uid", userID)
 		})
 		.catch(function(error) {
 			console.log(error)

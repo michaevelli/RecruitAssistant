@@ -12,11 +12,11 @@ import checkAuth from "../Authentication/Authenticate";
 export const jobUrl="http://localhost:5000/jobadverts/"
 
 export default function RecruiterDashboard() {
-	const recruiterID = "1234";
+	// var recruiterID = "1234";
+	const recruiterID = sessionStorage.getItem("uid")
 	const history = useHistory();
 	const [loading, setLoading] = useState(true);
 	const [jobs, setJobs] = useState([])
-	
 
 	useEffect(() => {
 		auth();
@@ -27,7 +27,8 @@ export default function RecruiterDashboard() {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
-				setLoading(false)				
+				setLoading(false)
+				// const recruiterID = sessionStorage.getItem("uid")			
 				if (!response.success || response.userInfo["type"] != "recruiter") {
 					history.push("/unauthorised");
 				}
@@ -48,7 +49,7 @@ export default function RecruiterDashboard() {
 
 	const renderJobs = () => {
 		return jobs.map((job) => (
-			<Card style={{margin: 30, height: 150, width:250}}>
+			<Card style={{margin: 30, height: 180, width:250}}>
 				<CardContent>                          
 					<Typography variant="h5" component="h2">
 						{job[1].title}
@@ -57,7 +58,7 @@ export default function RecruiterDashboard() {
 						{job[1].company} | {job[1].location}
 					</Typography>
 				</CardContent>
-				<CardActions>
+				<CardActions >
 					<Typography color="textSecondary">
 						{job[1].status}
 					</Typography>
@@ -91,7 +92,7 @@ export default function RecruiterDashboard() {
 				</Col>
 					
 				<Col>
-					<Button variant="contained" color="secondary" href="/newJob" style={{position: 'fixed', right: 0, top: 20, margin: 30}}>
+					<Button variant="contained" color="secondary" href="/createJobPost" style={{position: 'fixed', right: 0, top: 20, margin: 30}}>
 						+ Job
 					</Button>               
 				</Col>
