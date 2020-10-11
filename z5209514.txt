@@ -8,4 +8,4 @@ Week 3
 Imported starter files into Github. Registered a firebase project. Started sprint 1 and completed login/signup backend functionality with Calvin. Edited signup forms for better integration with backend.
 
 Week 4
-Started Sprint 2 with team. Was tasked with handling token authentication to prevent unauthorised access between specific pages. Completed logout process.
+Started Sprint 2 with team. Was tasked with handling token authentication to prevent unauthorised access between specific pages. Completed logout process. Linked job creation page to backend.
