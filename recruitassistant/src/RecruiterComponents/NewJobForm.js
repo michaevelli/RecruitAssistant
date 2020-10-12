@@ -9,6 +9,7 @@ import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import checkAuth from "../Authentication/Authenticate";
 
 export const jobUrl="http://localhost:5000/jobadverts"
 
@@ -35,6 +36,21 @@ export default function NewJobForm() {
 	//in the database record - must check when displaying job adverts that the field exists!!!
 	const [additionalQuestions, setAdditionalQuestions] = useState([]);
 	const [responsibilities, setResponsibilities] = useState([]);
+
+	useEffect(() => {
+		auth();
+	});
+
+	const auth = async () => {
+		await checkAuth(window.localStorage.getItem("token"))
+			.then(function(response) {
+				console.log("auth success: ", response)
+				// const recruiterID = sessionStorage.getItem("uid")			
+				if (!response.success || response.userInfo["type"] != "recruiter") {
+					history.push("/unauthorised");
+				}
+			})
+	}
 
 	const handleAddQuestion = () => {
 		setAdditionalQuestions([...additionalQuestions, ''])
