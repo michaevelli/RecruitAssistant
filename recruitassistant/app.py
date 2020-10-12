@@ -89,6 +89,11 @@ def get_current_time():
 	data = {'time': 10000}
 	return jsonify(data)
 
+@approute('/jobapplications', methods=["POST"])
+def post_application():
+	json_data = request.get_json()
+	return
+
 @app.route('/jobadverts', methods=["POST"])
 def post_new_job():
 	json_data = request.get_json()
