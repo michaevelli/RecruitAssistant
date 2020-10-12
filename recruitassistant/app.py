@@ -92,6 +92,18 @@ def get_current_time():
 @approute('/jobapplications', methods=["POST"])
 def post_application():
 	json_data = request.get_json()
+
+	try:
+		ref.child('jobapp').update({
+				job_app_id: {
+					# put in user data
+					
+				},
+			})
+		return jsonify({'message': f'Successfully created application'}),200
+	except Exception as e:		
+		return jsonify({"message": str(e)}), 400
+	
 	return
 
 @app.route('/jobadverts', methods=["POST"])
