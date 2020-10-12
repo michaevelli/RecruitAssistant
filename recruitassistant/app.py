@@ -8,7 +8,9 @@ import pyrebase
 import json
 from flask_cors import CORS
 import uuid
-from datetime import date
+from datetime import date, datetime
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # initalise app
 app = Flask(__name__)
@@ -19,6 +21,44 @@ cred = credentials.Certificate('./backend/recruitassistant_cred.json')
 firebase = firebase_admin.initialize_app(cred, {"databaseURL": "https://recruitassistant-fe71e.firebaseio.com"})
 pb = pyrebase.initialize_app(json.load(open('./backend/firebase_config.json')))
 ref = db.reference('/')
+
+def print_date_time():
+    print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+
+def check_postings():
+	posts=ref.child("jobAdvert").get()
+	for key in posts.keys():
+		#if current datetime has exceeded closing date, close the thing
+		close_date = datetime.strptime(posts[key]["closing_date"], "%d/%m/%Y")
+		current_date = datetime.now()
+		delta = close_date - current_date
+		if(delta.days < 0):
+			ref.child("jobAdvert").update({
+				key:{
+					'title': posts[key]["title"],
+					'location': posts[key]["location"],
+					'company': posts[key]["company"],
+					'date_posted': posts[key]["date_posted"],
+					'closing_date': posts[key]["closing_date"],
+					'recruiter_id': posts[key]["recruiter_id"],
+					'job_type': posts[key]["job_type"],
+					'salary_pa': posts[key]["salary_pa"],
+					'experience_level': posts[key]["experience_level"],
+					'skills': posts[key]["skills"],
+					'required_docs': posts[key]["required_docs"],
+					'status': "closed"
+				}
+			})
+
+
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=check_postings, trigger="interval", seconds=60)
+scheduler.start()
+# atexit.register(lambda: scheduler.shutdown())
+
+
+
 
 @app.route('/auth', methods=["POST"])
 def check_token():
@@ -35,8 +75,12 @@ def check_token():
 		print(e)
 		return jsonify({'message': 'Token verification failed'}),400
 
-	
-	
+
+# test
+@app.route('/time')
+def get_current_time():
+	data = {'time': 10000}
+	return jsonify(data)
 
 @app.route('/jobadverts', methods=["POST"])
 def post_new_job():
@@ -166,4 +210,10 @@ def login():
 		error_message = json.loads(e.args[1])['error']['message']
 		error_code = json.loads(e.args[1])['error']['code']
 		
+<<<<<<< HEAD
 		return jsonify({"message": error_message}), error_code
+=======
+		return jsonify({"message": error_message}), error_code
+
+
+>>>>>>> time
