@@ -6,3 +6,6 @@ Worked on the system flow diagram to edit job seeker and recruiter flow. Minor e
 
 Week 3
 Rewrote project objectives in the proposal and moved them under sprint planning, as well as final formatting and edits. Started our first sprint this week and created a basic skeleton app to build off. Introduced the team to the tech stack React and assigned user stories. Worked on setting up the backend with Brendon and did the login backend code. Helped link the frontend to the backend and ensured the login flow was fully functioning and implemented error handling. Created a working router for app navigation.
+
+Week 4
+Fixed up formatting and refactored code to standardise code style between files worked on by different people. Started sprint 2 in which I worked on deeper authentication flows such as using tokens to prevent unauthorised access from users not logged in. Also implemented passing the logged in user's data upon a successful token validation so that the dashboards and other components know who is logged in and can display relevant information
