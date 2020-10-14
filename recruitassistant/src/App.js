@@ -12,6 +12,7 @@ import RecruiterDashboard from './RecruiterComponents/RecruiterDashboard';
 import JobSeekerDashboard from './JobSeekerComponents/JobSeekerDashboard';
 import NewJobForm from "./RecruiterComponents/NewJobForm";
 import Advertisement from "./JobSeekerComponents/Advertisement";
+import JobApply from "./JobSeekerComponents/JobApply";
 
 function App() {
   // const history = useHistory();
@@ -43,6 +44,7 @@ function App() {
           <Route path="/jobseekerdashboard" component={JobSeekerDashboard}/>
           <Route path="/createJobPost" component={NewJobForm}/>
           <Route path="/advertisement" component={Advertisement}/>
+          <Route path="/jobapply" component={JobApply}/>
         </Switch>
       </BrowserRouter>
 

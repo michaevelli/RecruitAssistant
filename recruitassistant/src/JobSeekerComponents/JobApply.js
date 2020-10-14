@@ -1,10 +1,9 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField} from "@material-ui/core";
-import RemoveIcon from '@material-ui/icons/Remove';
-import AddIcon from '@material-ui/icons/Add';
-import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
+import {Grid,Button} from "@material-ui/core";
+import {Form,Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
@@ -12,10 +11,13 @@ import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
 export const applicationUrl="http://localhost:5000/jobapplications"
+export const advertisementUrl="http://localhost:5000/advertisement"
 
 export default function JobApply() {
     const history = useHistory();
-    const jobseeker_id = sessionStorage.getItem("uid");
+	const jobseeker_id = sessionStorage.getItem("uid");
+	const href = `${window.location.href}`.split("/")
+    const jobID = href[href.length - 1]
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
 	//form data
@@ -25,15 +27,14 @@ export default function JobApply() {
 	const [rights, setRights] = useState('');
 	//will be comma seperated strings - split on the commas to get an array
 	const [required_docs, setRequiredDocs] = useState('');
-    const [qualifications, setQualifications] = useState('');
-    const [qualification_list, setQualificationList] = useState('');
-    const [matching_list, setMatchingList] = useState('');
-    const [job, setJob] = useState('');
+	const [qualification_list, setQualificationList] = useState([]);
+    const [matching_list, setMatchingList] = useState([]);
+    const [job, setJob] = useState([]);
 
 	useEffect(() => {
         auth();
-        getJob();
-	}, [jobseeker_id]);
+		getJob();
+	}, []);
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -47,22 +48,21 @@ export default function JobApply() {
 	}
     
     const getJob = async () => {
-		const url = `${applicationUrl}${jobseeker_id}`
+		const url = `${advertisementUrl}`
 		console.log(url)
-		await axios.get(url)
-			.then(res => {
-                setJob(res.data.job)
-                setQualificationList(job.qualifications.split("[,]", 0))
-                setMatchingList(new boolean[qualification_list.length])
-                for (var i = 0; i < qualification_list.length; i++) {
-                    matching_list[i] = false
-                }
+		await axios.get(url, {
+			params: {
+				job_id: jobID
+			},
+		})
+		.then(res => {
+				setJob(res.data.job)
 				console.log("response: ", res)
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
 			})
-    };
+	};
     
     const handleChangeQualification = (index) => {
 		const matching = [...matching_list]
@@ -70,15 +70,19 @@ export default function JobApply() {
 		setMatchingList(matching)
 	}
 
+	const handleDocumentInput = (index, event, qualification_array) => {
+		setQualificationList(qualification_array)
+	}
+
 	//TODO - ADD real JOBSEEKER ID TO JOB POST
-	const applyJob = async () => {
-        const url = jobUrl
+	const applyJob = async (final_qualifications) => {
+        const url = `${applicationUrl}`
         const data={
 			first_name: first_name,
             last_name: last_name,
             phone_number: phone_number,
 			rights: rights,
-			qualifications: qualifications,
+			qualifications: final_qualifications,
 			required_docs: required_docs,
             jobseeker_id: jobseeker_id
 		}
@@ -105,39 +109,41 @@ export default function JobApply() {
             setValidated(true);
             const final_qualifications = []
             for (var i = 0; i < qualification_list.length; i++) {
-                if (matching_list[i] === true) {
-                    final_qualifications.push(qualification_list[i])
+                if (matching_list[i]) {
+                    final_qualifications.push(qualification_list[i]);
                 }
             }
-            setQualifications(final_qualifications)
-			applyJob();
+			applyJob(final_qualifications);
 		}
 	}
 
-	return (
+	return job.map((detail) => (
 		<Grid>
 			<Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100%',paddingTop: 40}}>
-				<Col sm="2">
+				<Col sm={2}>
 					<SideMenu random={[
-						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': true},
+						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
+						{'text':'Your Applications','href': '#', 'active': false},         
 						{'text':'FAQ','href':'#','active': false}]}/>
-				</Col>
+				</Col >
 
 				<Col sm="10" >
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						Apply For Job
 					</Typography>
-                    <Typography variant="h5" component="h2">
-						{job.title}
-					</Typography>
-					<Typography color="textSecondary">
-						{job.company} | {job.location}
+                    <Typography component="div" style={{textAlign: "center",margin:20 }}>
+                        <Box fontSize="h5.fontSize">
+                            {detail[1].title}
+                        </Box>
+                        <Box fontSize="h6.fontSize">
+                            {detail[1].company} | {detail[1].location}
+                         </Box>
 					</Typography>
 
                     <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
                         <Form.Group controlId="first_name">
-							<Form.Label column sm={2}>First Name</Form.Label>
+							<Form.Label column sm={10}>First Name</Form.Label>
 							<Col sm={10}>
 								<Form.Control 
 									required
@@ -146,7 +152,7 @@ export default function JobApply() {
 							</Col>
 						</Form.Group>
 						<Form.Group controlId="last_name">
-							<Form.Label column sm={2}>Last Name</Form.Label>
+							<Form.Label column sm={10}>Last Name</Form.Label>
 							<Col sm={10}>
 								<Form.Control
 								required
@@ -156,7 +162,7 @@ export default function JobApply() {
 						</Form.Group>
 
 						<Form.Group controlId="phone_number">
-							<Form.Label column sm={2}>Phone Number</Form.Label>
+							<Form.Label column sm={10}>Phone Number</Form.Label>
 							<Col sm={10}>
 								<Form.Control 
 								required
@@ -167,7 +173,7 @@ export default function JobApply() {
 						</Form.Group>
 
 						<Form.Group controlId="rights">
-						<Form.Label column sm={2}>Do you have the rights to work in {job.location}?</Form.Label>
+						<Form.Label column sm={10}>Do you have the rights to work in {detail[1].location}?</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
 								required
@@ -181,11 +187,11 @@ export default function JobApply() {
 						</Form.Group>
 
 						<Form.Group controlId="qualifications">
-							<Form.Label column sm={2}>
-							Please indicate the skills/experience you have for the following:
+							<Form.Label column sm={10}>
+								Please indicate the skills/experience you have for the following: {job[0][1].req_qualifications.split(",")}
 							</Form.Label>
 							<Col sm={10}>
-							{qualification_list.map((qualification, index) => (
+							{detail[1].req_qualifications.split(",").map((qualification, index) => (
 								<Form.Check
                                     type = "checkbox"
                                     id = {qualification}
@@ -196,50 +202,28 @@ export default function JobApply() {
 						</Form.Group>
 
 						<Form.Group controlId="required_docs">
-						<Form.Label column sm={2}>Please upload the following documents as a pdf</Form.Label>
-                        <Col sm={10}>
-							{job.required_docs.split("[,]", 0).map((document, index) => (
-								<Form.File
-                                    required
-                                    id = {document}
-                                    label = {document}
-                                    onClick = { (event) => handleDocumentInput(index, event)}/>
-                            ))}
+						<Form.Label column sm={10}>Please upload the following documents as a pdf.</Form.Label>
+							<Col sm={10}>
+								<ul>
+									{detail[1].required_docs.split(",").map((document, index) => (
+										<li>
+											<Form.File
+											required
+											id = {document}
+											label = {document}
+											onClick = { (event) => handleDocumentInput(index, event, job[0][1].req_qualifications.split(","))}/>
+										</li>
+									))}
+								</ul>
 							</Col>
 						</Form.Group>
 
-						<Form.Group controlId="additionalQuestions">
-							<Form.Label column sm={2}>
-							Additional Questions
-							</Form.Label>
-							<IconButton onClick={() => handleAddQuestion()}>
-								<AddIcon />
-							</IconButton>
-							<Col sm={10}>
-							{additionalQuestions.map((question, index) => (
-								<div key={index}>
-									<TextField 
-									name="Question"
-									variant="outlined"
-									size="small"
-									placeholder="Additional Question"
-									value={question}
-									onChange={event => handleChangeQuestion(index, event)}
-									/>
-									<IconButton onClick={() => handleRemoveQuestion(index)}>
-										<RemoveIcon />
-									</IconButton>
-								</div>
-							))}
-							</Col>					
-						</Form.Group>
-
 						<Button variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
-						Apply
-						</Button> 
-					</Form>  		
+							Submit Application
+						</Button>
+					</Form>
 				</Col>
 			</Row>
 		</Grid>
-	);
+	))
 }
