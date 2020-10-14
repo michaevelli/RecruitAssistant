@@ -38,7 +38,31 @@ def check_token():
 @app.route('/jobapplications', methods=["POST"])
 def post_application():
 	json_data = request.get_json()
-	return
+	print(json_data)
+	application_uid=str(uuid.uuid1())
+	print(application_uid)
+	today = date.today()
+	date_posted = today.strftime("%Y-%m-%y")
+	print("d1 =", date_posted),
+	#TODO
+	#add recruiter_id as id of logged in user
+	
+	try:
+		ref.child('jobApplications').update({
+				application_uid: {
+					'first_name': json_data["first_name"],
+					'last_name' : json_data["last_name"],
+					'phone_number': json_data['phone_number'],
+					'rights':json_data["rights"],
+					'date_posted': date_posted,
+					'qualifications':json_data["qualifications"],
+					'jobseeker_id':json_data["jobseeker_id"],
+					'required_docs': json_data["required_docs"],
+				},
+			})
+		return jsonify({'message': f'Successfully created application {job_uid}'}),200
+	except Exception as e:		
+		return jsonify({"message": str(e)}), 400
 
 @app.route('/jobadverts', methods=["POST"])
 def post_new_job():

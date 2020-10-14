@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import {Link, Button, Grid,Card,CardContent,CardActions } from "@material-ui/core";
-import {Container,Col,Row} from 'react-bootstrap';
+import {Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -64,7 +64,7 @@ export default function RecruiterDashboard() {
 						{job[1].status}
 					</Typography>
 					<Link href="/sampleapplicationdash" style={{marginLeft: 30}} >
-							View applications
+						View applications
 					</Link>
 				</CardActions>
 			</Card>

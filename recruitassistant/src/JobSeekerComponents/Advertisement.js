@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Button, Grid,Card,CardContent,CardActions } from "@material-ui/core";
-import {Container,Col,Row} from 'react-bootstrap';
+import {Button, Grid} from "@material-ui/core";
+import {Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import TitleBar from "../SharedComponents/TitleBar.js";
@@ -21,7 +21,7 @@ export default function Advertisement() {
 
 	useEffect(() => {
         auth();
-        getJobs();
+        getJob();
 	}, []);
 
 	const auth = async () => {
@@ -35,7 +35,7 @@ export default function Advertisement() {
 			})
 	}
     
-    const getJobs = async () => {
+    const getJob = async () => {
         const url = `${advertisementUrl}`
 		console.log(url)
 		await axios.get(url, {
@@ -67,7 +67,7 @@ export default function Advertisement() {
 				{job.map((detail) => (
                     <Col>
                         <Typography component="div" style={{color: 'black', margin: 50}}>
-                        <Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
+                            <Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
                                 {detail[1].title}
                             </Box>
                             <Box fontSize="h5.fontSize">
@@ -97,7 +97,7 @@ export default function Advertisement() {
                                 Closing date: {detail[1].closing_date}
                             </Box>
                         </Typography>
-                        <Button variant="contained" color="secondary" href={`/apply/${detail[0]}`} style={{margin: 40}}>
+                        <Button variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
                             Apply
                         </Button>
                     </Col>
