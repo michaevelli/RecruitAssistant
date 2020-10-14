@@ -35,8 +35,10 @@ def check_token():
 		print(e)
 		return jsonify({'message': 'Token verification failed'}),400
 
-	
-	
+@app.route('/jobapplications', methods=["POST"])
+def post_application():
+	json_data = request.get_json()
+	return
 
 @app.route('/jobadverts', methods=["POST"])
 def post_new_job():
@@ -77,6 +79,22 @@ def post_new_job():
 		return jsonify({"message": str(e)}), 400
 		
 
+@app.route('/jobadverts/open', methods=["GET"])
+def get_all_posts():
+	#gets all posts in the database
+	try:
+		posts=ref.child("jobAdvert").get()
+		
+		jobs=[]
+		for key,val in posts.items():
+			jobs.append((key,val))
+
+		print(jobs)
+		return jsonify({'jobs': jobs}),200
+ 
+	except Exception as e:
+		return jsonify({"message": str(e)}), 400
+
 @app.route('/jobadverts/<recruiterid>', methods=["GET"])
 def get_recruiter_posts(recruiterid):
 	#TODO:
@@ -86,7 +104,7 @@ def get_recruiter_posts(recruiterid):
 	
 	try:
 		posts=ref.child("jobAdvert").order_by_child('recruiter_id').equal_to(recruiterid).get()
-		
+
 		jobs=[]
 		for key,val in posts.items():
 			jobs.append((key,val))
@@ -95,9 +113,26 @@ def get_recruiter_posts(recruiterid):
 		return jsonify({'jobs': jobs}),200
  
 	except Exception as e:		
+		print(e)
 		return jsonify({"message": str(e)}), 400
 		
+@app.route('/advertisement', methods=["GET"])
+def get_job_for_page():
+	#gets job from job id
+	try:
+		jobid = request.args.get('job_id')
+		post = ref.child("jobAdvert").order_by_key().equal_to(jobid).get()
 
+		job=[]
+		for key,val in post.items():
+			job.append((key,val))
+		
+		print(job)
+		return jsonify({'job': job}),200
+ 
+	except Exception as e:		
+		print(e)
+		return jsonify({"message": str(e)}), 400
 
 @app.route('/signup', methods=["POST"])
 def user_signup():
