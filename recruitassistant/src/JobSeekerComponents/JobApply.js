@@ -83,7 +83,6 @@ export default function JobApply() {
             phone_number: phone_number,
 			rights: rights,
 			qualifications: final_qualifications,
-			required_docs: required_docs,
             jobseeker_id: jobseeker_id
 		}
 		console.log(data)
