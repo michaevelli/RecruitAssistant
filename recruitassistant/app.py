@@ -57,10 +57,10 @@ def post_application():
 					'date_posted': date_posted,
 					'qualifications':json_data["qualifications"],
 					'jobseeker_id':json_data["jobseeker_id"],
-					'required_docs': json_data["required_docs"],
+					#'required_docs': json_data["required_docs"],
 				},
 			})
-		return jsonify({'message': f'Successfully created application {job_uid}'}),200
+		return jsonify({'message': f'Successfully created application {application_uid}'}),200
 	except Exception as e:		
 		return jsonify({"message": str(e)}), 400
 
