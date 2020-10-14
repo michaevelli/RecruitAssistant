@@ -20,6 +20,7 @@ export default function JobApply() {
     const jobID = href[href.length - 1]
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
+	const [applied, setApplied] = useState([]);
 	//form data
 	const [first_name,setFirstName] = useState('');
     const [last_name, setLastName] = useState('');
@@ -63,6 +64,24 @@ export default function JobApply() {
 				console.log("error: ", error.response)
 			})
 	};
+
+	const checkJobApplied = async () => {
+        const url = `${applicationUrl}`
+		console.log(url)
+		await axios.get(url, {
+                params: {
+                    job_id: jobID,
+                    jobseeker_id: sessionStorage.getItem("uid")
+                },
+            })
+            .then(res => {
+                setApplied(res.data.applied)
+                console.log("response: ", res)
+			})
+			.catch((error) => {
+                console.log("error: ", error.response)
+			})
+    };
     
     const handleChangeQualification = (index) => {
 		const matching = [...matching_list]
@@ -83,7 +102,8 @@ export default function JobApply() {
             phone_number: phone_number,
 			rights: rights,
 			qualifications: final_qualifications,
-            jobseeker_id: jobseeker_id
+			jobseeker_id: jobseeker_id,
+			job_id: jobID
 		}
 		console.log(data)
 		await axios.post(url, data)
@@ -187,7 +207,7 @@ export default function JobApply() {
 
 						<Form.Group controlId="qualifications">
 							<Form.Label column sm={10}>
-								Please indicate the skills/experience you have for the following: {job[0][1].req_qualifications.split(",")}
+								Please indicate the skills/experience you have for the following:
 							</Form.Label>
 							<Col sm={10}>
 							{detail[1].req_qualifications.split(",").map((qualification, index) => (
@@ -217,7 +237,7 @@ export default function JobApply() {
 							</Col>
 						</Form.Group>
 
-						<Button variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
+						<Button disabled = {applied} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
 							Submit Application
 						</Button>
 					</Form>

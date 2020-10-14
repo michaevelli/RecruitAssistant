@@ -37,6 +37,7 @@ def check_token():
 
 @app.route('/jobapplications', methods=["POST"])
 def post_application():
+	#posts job application to database
 	json_data = request.get_json()
 	print(json_data)
 	application_uid=str(uuid.uuid1())
@@ -44,9 +45,6 @@ def post_application():
 	today = date.today()
 	date_posted = today.strftime("%Y-%m-%y")
 	print("d1 =", date_posted),
-	#TODO
-	#add recruiter_id as id of logged in user
-	
 	try:
 		ref.child('jobApplications').update({
 				application_uid: {
@@ -57,11 +55,32 @@ def post_application():
 					'date_posted': date_posted,
 					'qualifications':json_data["qualifications"],
 					'jobseeker_id':json_data["jobseeker_id"],
+					'job_id':json_data["job_id"],
 					#'required_docs': json_data["required_docs"],
 				},
 			})
 		return jsonify({'message': f'Successfully created application {application_uid}'}),200
 	except Exception as e:		
+		return jsonify({"message": str(e)}), 400
+
+@app.route('/jobapplications', methods=["GET"])
+def check_applied():
+	#checks if application exists for jobseeker and job
+	try:
+		jobid = request.args.get('job_id')
+		jobseekerid = request.args.get('jobseeker_id')
+		jobseeker_applications=ref.child("jobApplications").order_by_child('jobseeker_id').equal_to(jobseekerid).get()
+
+		for key,val in jobseeker_applications.items():
+			if val['job_id'] == jobid:
+				print("Has applied before")
+				return jsonify({'applied': True}),200
+		
+		print("Hasn't applied before")
+		return jsonify({'applied': False}),200
+ 
+	except Exception as e:		
+		print(e)
 		return jsonify({"message": str(e)}), 400
 
 @app.route('/jobadverts', methods=["POST"])

@@ -10,6 +10,7 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
+export const applicationUrl="http://localhost:5000/jobapplications"
 export const advertisementUrl="http://localhost:5000/advertisement"
 
 export default function Advertisement() {
@@ -17,11 +18,13 @@ export default function Advertisement() {
     const [loading, setLoading] = useState(true);
     const href = `${window.location.href}`.split("/")
     const jobID = href[href.length - 1]
+    const [applied, setApplied] = useState(false);
     const [job, setJob] = useState([])
 
 	useEffect(() => {
         auth();
         getJob();
+        checkJobApplied();
 	}, []);
 
 	const auth = async () => {
@@ -45,7 +48,25 @@ export default function Advertisement() {
             })
             .then(res => {
                 setJob(res.data.job)
-				console.log("response: ", res)
+                console.log("response: ", res)
+			})
+			.catch((error) => {
+                console.log("error: ", error.response)
+			})
+    };
+
+    const checkJobApplied = async () => {
+        const url = `${applicationUrl}`
+		console.log(url)
+		await axios.get(url, {
+                params: {
+                    job_id: jobID,
+                    jobseeker_id: sessionStorage.getItem("uid")
+                },
+            })
+            .then(res => {
+                setApplied(res.data.applied)
+                console.log("response: ", res)
 			})
 			.catch((error) => {
                 console.log("error: ", error.response)
@@ -97,7 +118,7 @@ export default function Advertisement() {
                                 Closing date: {detail[1].closing_date}
                             </Box>
                         </Typography>
-                        <Button variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
+                        <Button disabled={applied} variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
                             Apply
                         </Button>
                     </Col>
