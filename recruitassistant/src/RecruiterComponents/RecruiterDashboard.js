@@ -21,7 +21,7 @@ export default function RecruiterDashboard() {
 	useEffect(() => {
 		auth();
 		getJobs();
-	}, []);
+	}, [recruiterID]);
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -36,7 +36,8 @@ export default function RecruiterDashboard() {
 	}
 
 	const getJobs = async () => {
-		const url = jobUrl+recruiterID
+		const url = `${jobUrl}${recruiterID}`
+		console.log(url)
 		await axios.get(url)
 			.then(res => {
 				setJobs(res.data.jobs)

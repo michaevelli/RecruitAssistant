@@ -5,9 +5,11 @@ import {Form,Container,Col,Row,Collapse} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
+import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
+export const jobUrl="http://localhost:5000/jobadverts/"
 
 export default function JobSeekerDashboard() {
 	const history = useHistory();
@@ -20,6 +22,7 @@ export default function JobSeekerDashboard() {
 	const [salaryRange,setSalaryRange] = useState([0,10]);
 	//open is used to toggle advanced filters div
 	const [open, setOpen]=useState(false)
+	const [jobs, setJobs]=useState([])
 
 	//marks are labels on the salary range slider
 	const marks = [
@@ -30,6 +33,7 @@ export default function JobSeekerDashboard() {
 	
 	useEffect(() => {
 		auth();
+		getJobs();
 	}, []);
 
 	const auth = async () => {
@@ -42,6 +46,19 @@ export default function JobSeekerDashboard() {
 				}
 			})
 	}
+
+	const getJobs = async () => {
+		const url = `${jobUrl}open`
+		console.log(url)
+		await axios.get(url)
+			.then(res => {
+				setJobs(res.data.jobs)
+				console.log("response: ", res)
+			})
+			.catch((error) => {
+				console.log("error: ", error.response)
+			})
+	};
 
 	const handleSubmit= async (event) =>{
 			event.preventDefault();
@@ -68,6 +85,28 @@ export default function JobSeekerDashboard() {
 		setSalaryRange([0,10])
 	}
 
+	const renderJobs = () => {
+		return jobs.map((job) => (
+			<Card style={{margin: 30, height: 180, width:250}}>
+				<CardContent>                          
+					<Typography variant="h5" component="h2">
+						{job[1].title}
+					</Typography>
+					<Typography color="textSecondary">
+						{job[1].company} | {job[1].location}
+					</Typography>
+				</CardContent>
+				<CardActions >
+					<Typography color="textSecondary">
+						{job[1].status}
+					</Typography>
+					<Link href= {`/advertisement/${job[0]}`} style={{marginLeft: 30}}>
+							View Advertisement
+					</Link>
+				</CardActions>
+			</Card>
+		))
+	}
 
 	return loading ? (
 		<div></div>
@@ -156,8 +195,14 @@ export default function JobSeekerDashboard() {
 								</Col>
 							</div>
 						</Collapse>
-					</Form>             
-				</Col>          
+					</Form>
+					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
+						Open Jobs
+					</Typography>
+					<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
+						{renderJobs()}
+					</div>
+				</Col>
 			</Row>
 		</Grid>
 	);
