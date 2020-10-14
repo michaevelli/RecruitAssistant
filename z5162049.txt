@@ -17,3 +17,11 @@ Week 3
 	Worked on Login Page
 	Continued work on Login Page
 	Copied some of Login Page submit form functionality over to SignUp related forms
+
+Week 4
+	Finished off Login Page
+	Began work on time: to close application once the pass date has passed
+	Finished work on time, integrated it with master
+
+Week 5
+	Organise presentation thing
