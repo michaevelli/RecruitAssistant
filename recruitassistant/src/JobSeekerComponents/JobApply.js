@@ -35,6 +35,7 @@ export default function JobApply() {
 	useEffect(() => {
         auth();
 		getJob();
+		checkJobApplied();
 	}, []);
 
 	const auth = async () => {
