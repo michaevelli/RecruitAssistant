@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Button } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles';
 import {Card, Container} from 'react-bootstrap';
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 import { useHistory, withRouter } from "react-router-dom";
+import checkAuth from "../Authentication/Authenticate";
 
 export const submitLogin="http://localhost:5000/login"
 
@@ -15,7 +16,24 @@ function Login() {
 	const [redirect, setRedirect] = useState(false);
 	const [errorStatus, setErrorStatus] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+	const [loading, setLoading] = useState(true);
 	const history = useHistory();
+
+	useEffect(() => {
+		auth();
+	}, []);
+
+	const auth = async () => {
+		await checkAuth(window.localStorage.getItem("token"))
+			.then(function(response) {
+				console.log("auth success: ", response)
+				setLoading(false)
+				// const recruiterID = sessionStorage.getItem("uid")			
+				if (response.success) {
+					history.push("/"+response.userInfo["type"]+"dashboard");
+				}
+			})
+	}
 
 	async function handleSubmit(e) {
 		e.preventDefault()
@@ -49,7 +67,9 @@ function Login() {
 			})
 	}
 
-	return (
+	return loading ? (
+		<div></div>
+	) : (
 		<div>
 			<Container style={{'textAlign': 'center'}}>
 				<h1>Recruit Assistant</h1>
