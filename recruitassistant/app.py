@@ -225,6 +225,31 @@ def get_job_for_page():
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
+@app.route('/interviews', methods=["POST"])
+def send_interview():
+	json_data = request.get_json()
+	interview_id=str(uuid.uuid1())
+	try:
+		ref.child('interviews').update({
+				interview_id: {
+					'title':json_data["title"],
+					'location':json_data["location"],
+					'description': json_data['description'],
+					'company':json_data["company"],
+					'date_of_interview': json_data["date"],
+					'job_seeker_id': json_data["jobseeker_id"],
+					'employer_id': json_data["employer_id"]
+				},
+
+			})
+			return jsonify({'message': f'Successfully created interview {interview_id}'}),200
+	except Exception as e:
+		print(e)
+		return jsonify({"message": str(e)}), 400
+	return
+
+
+
 @app.route('/signup', methods=["POST"])
 def user_signup():
 	json_data = request.get_json()
