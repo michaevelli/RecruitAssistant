@@ -76,7 +76,7 @@ export default function RecruiterDashboard() {
 	) : (
 		<Grid>
 			<Row noGutters fluid><TitleBar/></Row>
-			<Row noGutters style={{height:'100vh',paddingTop: 40}}>
+			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm="2">
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '#','active': true},
@@ -93,7 +93,7 @@ export default function RecruiterDashboard() {
 				</Col>
 					
 				<Col>
-					<Button variant="contained" color="secondary" href="/createJobPost" style={{position: 'fixed', right: 0, top: 20, margin: 30}}>
+					<Button variant="contained" color="secondary" href="/createJobPost" style={{position: 'fixed', right: 0, top: 40, margin: 30}}>
 						+ Job
 					</Button>               
 				</Col>

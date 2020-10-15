@@ -112,7 +112,7 @@ export default function AdminDashboard() {
 		) : (
 		<Grid>      
 			<Row noGutters fluid><TitleBar/></Row>
-			<Row noGutters style={{height:'100vh',paddingTop: 40}}>
+			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Jobs','href': '#', 'active': true},
