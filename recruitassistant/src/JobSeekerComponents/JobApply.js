@@ -140,7 +140,7 @@ export default function JobApply() {
 	return job.map((detail) => (
 		<Grid>
 			<Row noGutters fluid><TitleBar/></Row>
-			<Row noGutters style={{height:'100%',paddingTop: 40}}>
+			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
