@@ -240,7 +240,6 @@ def send_interview():
 					'job_seeker_id': json_data["jobseeker_id"],
 					'employer_id': json_data["employer_id"]
 				},
-
 			})
 			return jsonify({'message': f'Successfully created interview {interview_id}'}),200
 	except Exception as e:
