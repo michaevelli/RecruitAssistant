@@ -62,6 +62,43 @@ scheduler.add_job(func=check_postings, trigger="interval", seconds=5)
 scheduler.start()
 # atexit.register(lambda: scheduler.shutdown())
 
+
+@app.route('/offer', methods=["POST"])
+def post_offer_letter():
+	json_data = request.get_json()
+	offer_uid=str(uuid.uuid1())
+	
+	today = date.today()
+	date_posted = today.strftime("%Y-%m-%y")
+	print("d1 =", date_posted),
+	
+	try:
+		ref.child('offer').update({
+				offer_uid: {
+					'title':json_data["title"],
+					'location':json_data["location"],
+					'description': json_data['description'],
+					'company':json_data["company"],
+					'date_posted': date_posted,
+					'recruiter_id': json_data['recruiter_id'],
+					'application_id': json_data['jobapplication_id'],
+					'jobseeker_id': json_data['jobseeker_id'],
+					'job_type': json_data['job_type'],
+					'salary': json_data['salary'],
+					'salary_type': json_data['salary_type'],
+					'hours': json_data['hours'],
+					'days': json_data['days'],
+					'start_date': json_data['start_date'],
+					'end_date': json_data['end_date'],
+					'status': json_data['status'], 
+					'additional_docs': json_data['additional_docs'],
+				}
+			})
+		return jsonify({'message': f'Successfully created offer {offer_uid}'}),200
+	except Exception as e:		
+		return jsonify({"message": str(e)}), 400
+
+
 @app.route('/auth', methods=["POST"])
 def check_token():
 	data = request.json

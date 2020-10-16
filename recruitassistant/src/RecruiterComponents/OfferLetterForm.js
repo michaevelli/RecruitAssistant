@@ -13,18 +13,23 @@ import checkAuth from "../Authentication/Authenticate";
 
 export const offerURL="http://localhost:5000/offer"
 
+//TODO get prefill info!!! including job seeker and application ids
+//file handling
+
 export default function OfferLetterForm() {
 	const history = useHistory();
 	const options = {year: 'numeric', month: 'long', day: 'numeric' };
     const t  = new Date();
-    const today=t.toLocaleDateString("en-US", options);
+    const todays_date=t.toLocaleDateString("en-US", options);
+   
 
     //todo-- prefill these variables
      //pull title,company, job seeker first and last name from the job application
     const title= "Job title here"
     const company ="company name"
-    const jobseeker_name="Jim"
-    const  default_text =`Date: ${today}\nDear ${jobseeker_name},\n\nyour text here`
+    const jobseeker_name="Jim Bob"
+    
+    const  default_text =`${todays_date}\n\nDear ${jobseeker_name},\n\n    .......`
 
     const default_location="florida"
     const default_jobtype="Part-time"
@@ -36,8 +41,10 @@ export default function OfferLetterForm() {
     const [location,setLocation] = useState(default_location);
 	const [description,setDescription] = useState(default_text);
     const [jobType, setJobType]=useState(default_jobtype) //default to type on the job advert
-    //salary - up to recruitet to specify if per hour or p.a
-	const [salary,setSalary] = useState(default_salary);
+    //salary 
+    const [salary,setSalary] = useState(default_salary);
+    //type - p.a or hourly
+    const [salaryType,setSalaryType] = useState('');
     
     const [startDate, setStartDate]=useState('');
     const [endDate, setEndDate]=useState('n/a');
@@ -85,18 +92,22 @@ export default function OfferLetterForm() {
 	const postOffer = async () => {
         const url = offerURL
         const data={
-			//title:title,
-			//location:location,
+			title:title,
+			location:location,
 			description: description,
-			//company:company,
-            date:today,
+			company:company,
             recruiter_id: sessionStorage.getItem("uid"),
-            jobapplication_id: null,
-            jobseeker_id: null,
+            jobapplication_id: '',
+            jobseeker_id: '',
 			job_type: jobType,
-			salary_pa:salary,
+            salary: salary,
+            salary_type: salaryType,
+            hours: hours,
+            days: days,
+            start_date: startDate,
+            end_date: endDate,
 			status: 'sent', //status of the offer can be sent (first time, or in respnse to counter offer), accepted,rejected
-			additionalDocs: additionalDocs,
+			additional_docs: additionalDocs,
 		}
 		console.log(data)
 		await axios.post(url, data)
@@ -113,7 +124,7 @@ export default function OfferLetterForm() {
 	
 
     const startDatevalidator =()=>{
-		return startDate !== "" && today < Date.parse(startDate)
+		return startDate !== "" && t < Date.parse(startDate)
     }
     
    
@@ -150,10 +161,9 @@ export default function OfferLetterForm() {
                     <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
                         
 						
-                        
-                        
+                        <a href="#">View Original Job Advert</a>
+                        <h4>Offer Description</h4>
 						<Form.Group controlId="description">
-							<Form.Label column sm={2}>*Offer Description:</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="textarea" rows="10" 
 								required
@@ -162,9 +172,9 @@ export default function OfferLetterForm() {
                                 value={description}/>
 							</Col>
 						</Form.Group>
-
+                        <br/>
                         <h4>Details </h4>
-                        <h>Position Title: {title} at {company} </h>
+                        <Form.Label column sm={12}>Position Title: {title} at {company} </Form.Label>
                         <Form.Group controlId="location">
 							<Form.Label column sm={2}>*Location: </Form.Label>
 							<Col sm={10}>
@@ -187,7 +197,7 @@ export default function OfferLetterForm() {
 								}
 								id="startDate"
 								type="date"
-								min={today}
+								min={t}
 								onChange={ (event) => 
 									setStartDate(event.target.value)	
 								}
@@ -234,7 +244,7 @@ export default function OfferLetterForm() {
 
                         <Form.Group controlId="salary">
 							<Form.Label column sm={2}>
-							 *Your Salary:
+							 *Renumeration:
 							</Form.Label>
 							
 							<Col sm={10}>
@@ -249,9 +259,9 @@ export default function OfferLetterForm() {
                                    
                                     <Form.Control as="select" 
                                     required
-                                    value={jobType}
+                                    value={salaryType}
                                     type="number"
-                                    onChange={e=>setJobType(e.target.value)} 
+                                    onChange={e=>setSalaryType(e.target.value)} 
                                     >    
                                         <option value="">--Select-- </option>
                                         <option>p.a (base)</option>
@@ -281,6 +291,29 @@ export default function OfferLetterForm() {
 								value={days}
 								onChange={ (event) => setDays(event.target.value)}/>
 							</Col>
+						</Form.Group>
+
+                        <Form.Group controlId="additionalDocs">
+							<Form.Label column sm={2}>
+							Additional Documents
+							</Form.Label>
+							<IconButton onClick={() => handleAddDoc()}>
+								<AddIcon />
+							</IconButton>
+							<Col sm={10}>
+							{additionalDocs.map((doc, index) => (
+								<div key={index}>
+									<Form.File
+											id = {doc}
+											label = {doc}
+                                            onChange ={handleAddDoc} 
+                                           />
+									<IconButton onClick={() => handleRemoveDoc(index)}>
+										<RemoveIcon />
+									</IconButton>
+								</div>
+							))}
+							</Col>					
 						</Form.Group>
 
 						<Button variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
