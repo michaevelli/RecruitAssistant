@@ -228,20 +228,22 @@ def get_job_for_page():
 @app.route('/interviews', methods=["POST"])
 def send_interview():
 	json_data = request.get_json()
-	interview_id=str(uuid.uuid1())
+	invite_list = json_data["invite_list"]
+	# interview_id=str(uuid.uuid1())
+	i = 0
 	try:
-		ref.child('interviews').update({
-				interview_id: {
-					'title':json_data["title"],
-					'location':json_data["location"],
-					'description': json_data['description'],
-					'company':json_data["company"],
-					'date_of_interview': json_data["date"],
-					'job_seeker_id': json_data["jobseeker_id"],
-					'employer_id': json_data["employer_id"]
-				},
-			})
-			return jsonify({'message': f'Successfully created interview {interview_id}'}),200
+		for u in invite_list:
+			interview_id=str(uuid.uuid1()) + str(i)
+
+			ref.child('interviews').update({
+					interview_id: {
+						'jobseeker_id': u["jobseeker_id"],
+						'employer_id': u["employer_id"],
+						'job_id': u["job_id"],
+						'interview_date': u["date"],
+					},
+				})
+		return jsonify({'message': f'Successfully created interview {interview_id}'}),200
 	except Exception as e:
 		print(e)
 		return jsonify({"message": str(e)}), 400
