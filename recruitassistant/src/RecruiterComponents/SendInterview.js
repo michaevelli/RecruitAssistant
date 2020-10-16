@@ -13,39 +13,48 @@ import checkAuth from "../Authentication/Authenticate";
 
 export const interviewUrl="http://localhost:5000/interviews"
 
-export default function SendInterview() {
-    const history = useHistory();
-
-    useEffect(() => {
-		auth();
-    });
-    
-    const auth = async () => {
-		await checkAuth(window.localStorage.getItem("token"))
-			.then(function(response) {
-				console.log("auth success: ", response)
-				// const recruiterID = sessionStorage.getItem("uid")			
-				if (!response.success || response.userInfo["type"] != "recruiter") {
-					history.push("/unauthorised");
-				}
-			})
-    }
-    
+export default function SendInterview() {    
     const postInterview = async () => {
+				// data will be given as a list of json objects i.e. [{"employer_id": 4321, "jobseeker_id": 1234, "job_id": 2121212,"date": date},{...}]
+				// sample data here
+				// will replace with data given by application list
         const data={
-            
-		}
-		console.log(data)
-		await axios.post(interviewUrl, data)
-			.then(res => {
-				console.log("response: ", res)
-				alert("Interview Successfully Sent")
-				history.push("/recruiterdashboard")
-			})
-			.catch((error) => {
-				console.log("error: ", error.response)
-				alert("An error occured, please try again")
-			})	
-	};
+						invite_list: [
+							{
+								"jobseeker_id": "SErnvdU3Habmmbs0iKU8yCP2N6A2", 
+								"employer_id": sessionStorage.getItem("uid"), 
+								"job_id": "d12a3a2b-09e3-11eb-a227-34f39a2d0b77", 
+								"date": "2020-10-20"
+							},
+							{
+								"jobseeker_id": "eXENTD6TTQV0M0reXynlYMWqpjE3", 
+								"employer_id": sessionStorage.getItem("uid"), 
+								"job_id": "8200ca45-0e01-11eb-84cf-34f39a2d0b77", 
+								"date": "2020-10-20"
+							}
+					]
+				}
+
+				console.log(data)
+				await axios.post(interviewUrl, data)
+				.then(res => {
+					console.log("response: ", res)
+					alert("Interview Successfully Sent")
+				})
+				.catch((error) => {
+					console.log("error: ", error.response)
+					alert("An error occured, please try again")
+				})	
+    };
+    
+    return(
+        <Button 
+					onClick={() => {postInterview()}}
+					variant="contained"
+					style={{"margin":5}}>
+					Send Invites
+				</Button>
+
+    );
 
 }
