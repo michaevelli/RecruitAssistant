@@ -14,26 +14,26 @@ export const applicationUrl="http://localhost:5000/jobapplications"
 export const advertisementUrl="http://localhost:5000/advertisement"
 
 export default function JobApply() {
-    const history = useHistory();
+	const history = useHistory();
 	const jobseeker_id = sessionStorage.getItem("uid");
 	const href = `${window.location.href}`.split("/")
-    const jobID = href[href.length - 1]
+	const jobID = href[href.length - 1]
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
 	const [applied, setApplied] = useState([]);
 	//form data
 	const [first_name,setFirstName] = useState('');
-    const [last_name, setLastName] = useState('');
-    const [phone_number, setPhoneNumber] = useState('');
+	const [last_name, setLastName] = useState('');
+	const [phone_number, setPhoneNumber] = useState('');
 	const [rights, setRights] = useState('');
 	//will be comma seperated strings - split on the commas to get an array
 	const [required_docs, setRequiredDocs] = useState('');
 	const [qualification_list, setQualificationList] = useState([]);
-    const [matching_list, setMatchingList] = useState([]);
-    const [job, setJob] = useState([]);
+	const [matching_list, setMatchingList] = useState([]);
+	const [job, setJob] = useState([]);
 
 	useEffect(() => {
-        auth();
+		auth();
 		getJob();
 		checkJobApplied();
 	}, []);
@@ -48,8 +48,8 @@ export default function JobApply() {
 				}
 			})
 	}
-    
-    const getJob = async () => {
+	
+	const getJob = async () => {
 		const url = `${advertisementUrl}`
 		console.log(url)
 		await axios.get(url, {
@@ -67,24 +67,24 @@ export default function JobApply() {
 	};
 
 	const checkJobApplied = async () => {
-        const url = `${applicationUrl}`
+		const url = `${applicationUrl}`
 		console.log(url)
 		await axios.get(url, {
-                params: {
-                    job_id: jobID,
-                    jobseeker_id: sessionStorage.getItem("uid")
-                },
-            })
-            .then(res => {
-                setApplied(res.data.applied)
-                console.log("response: ", res)
+				params: {
+					job_id: jobID,
+					jobseeker_id: sessionStorage.getItem("uid")
+				},
+			})
+			.then(res => {
+				setApplied(res.data.applied)
+				console.log("response: ", res)
 			})
 			.catch((error) => {
-                console.log("error: ", error.response)
+				console.log("error: ", error.response)
 			})
-    };
-    
-    const handleChangeQualification = (index) => {
+	};
+	
+	const handleChangeQualification = (index) => {
 		const matching = [...matching_list]
 		matching[index] = !matching[index]
 		setMatchingList(matching)
@@ -96,11 +96,11 @@ export default function JobApply() {
 
 	//TODO - ADD real JOBSEEKER ID TO JOB POST
 	const applyJob = async (final_qualifications) => {
-        const url = `${applicationUrl}`
-        const data={
+		const url = `${applicationUrl}`
+		const data={
 			first_name: first_name,
-            last_name: last_name,
-            phone_number: phone_number,
+			last_name: last_name,
+			phone_number: phone_number,
 			rights: rights,
 			qualifications: final_qualifications,
 			jobseeker_id: jobseeker_id,
@@ -119,20 +119,20 @@ export default function JobApply() {
 			})	
 	};
 	
-    const handleSubmit= async (event) =>{	
+	const handleSubmit= async (event) =>{	
 		event.preventDefault();
 		const form = event.currentTarget;
 		if (form.checkValidity() === false) {	
 			event.stopPropagation();
 			setValidated(true);
 		}else{
-            setValidated(true);
-            const final_qualifications = []
-            for (var i = 0; i < qualification_list.length; i++) {
-                if (matching_list[i]) {
-                    final_qualifications.push(qualification_list[i]);
-                }
-            }
+			setValidated(true);
+			const final_qualifications = []
+			for (var i = 0; i < qualification_list.length; i++) {
+				if (matching_list[i]) {
+					final_qualifications.push(qualification_list[i]);
+				}
+			}
 			applyJob(final_qualifications);
 		}
 	}
@@ -152,17 +152,17 @@ export default function JobApply() {
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						Apply For Job
 					</Typography>
-                    <Typography component="div" style={{textAlign: "center",margin:20 }}>
-                        <Box fontSize="h5.fontSize">
-                            {detail[1].title}
-                        </Box>
-                        <Box fontSize="h6.fontSize">
-                            {detail[1].company} | {detail[1].location}
-                         </Box>
+					<Typography component="div" style={{textAlign: "center",margin:20 }}>
+						<Box fontSize="h5.fontSize">
+							{detail[1].title}
+						</Box>
+						<Box fontSize="h6.fontSize">
+							{detail[1].company} | {detail[1].location}
+						 </Box>
 					</Typography>
 
-                    <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
-                        <Form.Group controlId="first_name">
+					<Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
+						<Form.Group controlId="first_name">
 							<Form.Label column sm={10}>First Name</Form.Label>
 							<Col sm={10}>
 								<Form.Control 
@@ -213,11 +213,11 @@ export default function JobApply() {
 							<Col sm={10}>
 							{detail[1].req_qualifications.split(",").map((qualification, index) => (
 								<Form.Check
-                                    type = "checkbox"
-                                    id = {qualification}
-                                    label = {qualification}
-                                    onClick = { (event) => handleChangeQualification(index)}/>
-                            ))}
+									type = "checkbox"
+									id = {qualification}
+									label = {qualification}
+									onClick = { (event) => handleChangeQualification(index)}/>
+							))}
 							</Col>					
 						</Form.Group>
 
