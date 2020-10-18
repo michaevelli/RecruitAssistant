@@ -94,14 +94,15 @@ def check_files():
 def post_application():
 	#posts job application to database
 	json_data = request.get_json()
-	print(json_data)
+	# print(json_data)
 	application_uid=str(uuid.uuid1())
-	print(application_uid)
+	# print(application_uid)
 	today = date.today()
 	date_posted = today.strftime("%Y-%m-%y")
-	print("d1 =", date_posted),
+	# print("d1 =", date_posted)
+
 	try:
-		ref.child('jobApplications').update({
+		ref.child('jobApplications').child(json_data["job_id"]).update({
 				application_uid: {
 					'first_name': json_data["first_name"],
 					'last_name' : json_data["last_name"],
@@ -110,7 +111,12 @@ def post_application():
 					'date_posted': date_posted,
 					'qualifications':json_data["qualifications"],
 					'jobseeker_id':json_data["jobseeker_id"],
+<<<<<<< HEAD
 					'job_id':json_data["job_id"],
+=======
+					# 'job_id':json_data["job_id"],
+					#'required_docs': json_data["required_docs"],
+>>>>>>> b1419fbe1d8703c69d753fe437cc8829b59acd68
 				},
 			})
 		return jsonify({'message': f'Successfully created application {application_uid}'}),200

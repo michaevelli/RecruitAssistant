@@ -113,7 +113,7 @@ export default function JobSeekerDashboard() {
 	) : (
 		<Grid>      
 			<Row noGutters fluid><TitleBar/></Row>
-			<Row noGutters style={{height:'100vh',paddingTop: 40}}>
+			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '#', 'active': true},
