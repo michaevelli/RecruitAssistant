@@ -75,6 +75,7 @@ export default function JobSeekerDashboard() {
 			console.log(ndata)
 			axios.post(url, ndata)
 				.then(function(response) {
+					setJobs(response.data.jobs)
 					console.log(response)
 				})
 				.catch(function(error) {
