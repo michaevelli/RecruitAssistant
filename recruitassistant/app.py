@@ -18,8 +18,9 @@ CORS(app, supports_credentials=True)
 
 # connect to firebase
 cred = credentials.Certificate('./backend/recruitassistant_cred.json')
-firebase = firebase_admin.initialize_app(cred, {"databaseURL": "https://recruitassistant-fe71e.firebaseio.com"})
+firebase = firebase_admin.initialize_app(cred, {"databaseURL": "https://recruitassistant-fe71e.firebaseio.com", "storageBucket": "gs://recruitassistant-fe71e.appspot.com"})
 pb = pyrebase.initialize_app(json.load(open('./backend/firebase_config.json')))
+storage = pb.storage()
 ref = db.reference('/')
 
 def print_date_time():
@@ -77,6 +78,18 @@ def check_token():
 		print(e)
 		return jsonify({'message': 'Token verification failed'}),400
 
+@app.route('/upload', methods=["POST"])
+def check_files():
+	print(request.files.to_dict())
+	jobid = request.args.get('job_id')
+	jobseekerid = request.args.get('jobseeker_id')
+	try:
+		for key, val in request.files.items():
+			uploadTask = storage.child(jobid + "_" + jobseekerid + "_" + key).put(val)
+		return jsonify({'message': 'Uploaded files successfully'}),200
+	except Exception as e:		
+		return jsonify({"message": str(e)}), 400
+
 @app.route('/jobapplications', methods=["POST"])
 def post_application():
 	#posts job application to database
@@ -98,7 +111,6 @@ def post_application():
 					'qualifications':json_data["qualifications"],
 					'jobseeker_id':json_data["jobseeker_id"],
 					'job_id':json_data["job_id"],
-					#'required_docs': json_data["required_docs"],
 				},
 			})
 		return jsonify({'message': f'Successfully created application {application_uid}'}),200
