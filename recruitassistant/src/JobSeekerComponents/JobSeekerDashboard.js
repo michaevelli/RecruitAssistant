@@ -10,6 +10,7 @@ import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
 export const jobUrl="http://localhost:5000/jobadverts/"
+export const searchUrl="http://localhost:5000/search/"
 
 export default function JobSeekerDashboard() {
 	const history = useHistory();
@@ -19,7 +20,7 @@ export default function JobSeekerDashboard() {
 	const [jobType,setJobType] = useState('');
 	const [experienceLevel,setExperienceLevel] = useState('');
 	//salary range units are in k/$1000
-	const [salaryRange,setSalaryRange] = useState([0,10]);
+	const [salaryRange,setSalaryRange] = useState([0,200]);
 	//open is used to toggle advanced filters div
 	const [open, setOpen]=useState(false)
 	const [jobs, setJobs]=useState([])
@@ -62,15 +63,23 @@ export default function JobSeekerDashboard() {
 
 	const handleSubmit= async (event) =>{
 			event.preventDefault();
-			console.log('searchstring ',searchString)
-			console.log('location', location)
-			console.log('exp', experienceLevel)
-			console.log('jobtype', jobType)
-			console.log('salary range', salaryRange)
+			const url = `${jobUrl}search`
 			//TODO
-			const data={
-					
+			const ndata={
+				search: searchString,
+				location: location,
+				exp: experienceLevel,
+				jobtype: jobType,
+				salaryrange: salaryRange		
 			};
+			console.log(ndata)
+			axios.post(url, ndata)
+				.then(function(response) {
+					console.log(response)
+				})
+				.catch(function(error) {
+					console.log(error.response)
+				})
 			
 	}
 	const handleSliderChange = (event, newValue) => {
