@@ -32,30 +32,12 @@ def check_postings():
 		close_date = datetime.strptime(posts[key]["closing_date"], "%Y-%m-%d")
 		current_date = datetime.now()
 		delta = close_date - current_date
-
 		try:
 			if(delta.days < 0 and posts[key]["status"] == "open"):
-				ref.child("jobAdvert").update({
-					key:{
-						'title': posts[key]["title"],
-						'location': posts[key]["location"],
-						'company': posts[key]["company"],
-						'date_posted': posts[key]["date_posted"],
-						'description': posts[key]["description"],
-						'closing_date': posts[key]["closing_date"],
-						'recruiter_id': posts[key]["recruiter_id"],
-						'job_type': posts[key]["job_type"],
-						'req_qualifications':posts[key]["req_qualifications"],
-						'salary_pa': posts[key]["salary_pa"],
-						'experience_level': posts[key]["experience_level"],
-						'required_docs': posts[key]["required_docs"],
-						'status': "closed",
-						'additional_questions': posts[key]["additional_questions"],
-						'responsibilities': posts[key]["responsibilities"]
-					}
-				})
+				ref.child("jobAdvert").child(key).child("status").set("closed")
 		except:
 			print("failed to update for some reason")
+			print(key)
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=check_postings, trigger="interval", seconds=5)
@@ -296,3 +278,7 @@ def login():
 		return jsonify({"message": error_message}), error_code
 
 
+@app.route('/search', methods=['POST'])
+def search():
+	datajson = request.json
+	print(datajson)
