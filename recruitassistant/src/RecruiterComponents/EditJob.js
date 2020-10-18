@@ -11,11 +11,15 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
-export const jobUrl="http://localhost:5000/jobadverts"
+export const editJobUrl="http://localhost:5000/editjob"
+export const advertisementUrl="http://localhost:5000/advertisement"
 
-export default function NewJobForm() {
+export default function EditJob({match}) {
 	const history = useHistory();
-	const today = new Date()
+	const today = new Date();
+	const jobID = match.params.jobID;
+	const [recruiterID, setRecruiterID] = useState('');
+	const [datePosted, setDatePosted] = useState('');
 
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
@@ -23,10 +27,10 @@ export default function NewJobForm() {
 	const [title,setTitle] = useState('');
 	const [company,setCompany] = useState('');
 	const [description,setDescription] = useState('');
-    const [location,setLocation] = useState('');
-    const [jobType,setJobType] = useState('');
-    const [experienceLevel,setExperienceLevel] = useState('');
-    //salary units in units k/$1000
+	const [location,setLocation] = useState('');
+	const [jobType,setJobType] = useState('');
+	const [experienceLevel,setExperienceLevel] = useState('');
+	//salary units in units k/$1000
 	const [salary,setSalary] = useState(100);
 	const [closingDate,setClosingDate] = useState('');
 	//will be comma seperated strings - split on the commas to get an array
@@ -39,6 +43,7 @@ export default function NewJobForm() {
 
 	useEffect(() => {
 		auth();
+		getJobInfo();
 	}, []);
 
 	const auth = async () => {
@@ -49,6 +54,28 @@ export default function NewJobForm() {
 				if (!response.success || response.userInfo["type"] != "recruiter") {
 					history.push("/unauthorised");
 				}
+				setRecruiterID(response.userID);
+			})
+	}
+
+	async function getJobInfo() {
+		await axios.get(advertisementUrl, {params: {job_id: jobID}})
+			.then(res => {
+				console.log(res.data.job[0][1])
+				const job_data = res.data.job[0][1]
+				setTitle(job_data["title"]);
+				setCompany(job_data["company"]);
+				setDescription(job_data["description"]);
+				setLocation(job_data["location"]);
+				setJobType(job_data["job_type"]);
+				setExperienceLevel(job_data["experience_level"]);
+				setSalary(job_data["salary_pa"]);
+				setClosingDate(job_data["closing_date"]);
+				setRequiredDocs(job_data["required_docs"]);
+				setQualifications(job_data["req_qualifications"]);
+				setAdditionalQuestions(job_data["additional_questions"]);
+				setResponsibilities(job_data["responsibilities"]);
+				setDatePosted(job_data["date_posted"]);
 			})
 	}
 
@@ -83,15 +110,14 @@ export default function NewJobForm() {
 	}
 
 	//TODO - ADD real RECRUITER ID TO JOB POST
-	const postJob = async () => {
-        const url = jobUrl
-        const data={
+	const postJobUpdate = async () => {
+		const data={
 			title:title,
 			location:location,
 			description: description,
 			company:company,
 			closing_date:closingDate,
-			recruiter_id: sessionStorage.getItem("uid"),
+			recruiter_id: recruiterID,
 			job_type: jobType,
 			salary_pa:salary,
 			experience_level:experienceLevel,
@@ -99,13 +125,15 @@ export default function NewJobForm() {
 			required_docs: requiredDocs,
 			status: 'open',
 			additional_questions: additionalQuestions,
-			responsibilities: responsibilities
+			responsibilities: responsibilities,
+			date_posted: datePosted,
+			jobid: jobID
 		}
-		console.log(data)
-		await axios.post(url, data)
+		// console.log(data)
+		await axios.post(editJobUrl, data)
 			.then(res => {
 				console.log("response: ", res)
-				alert("Job successfully created")
+				alert("Changes successfully saved")
 				history.push("/recruiterdashboard")
 			})
 			.catch((error) => {
@@ -118,7 +146,7 @@ export default function NewJobForm() {
 		return closingDate !== "" && today < Date.parse(closingDate)
 	}
 
-    const handleSubmit= async (event) =>{	
+	const handleSubmit= async (event) =>{	
 		event.preventDefault();
 		const form = event.currentTarget;
 		const correct_date=datevalidator()
@@ -129,7 +157,7 @@ export default function NewJobForm() {
 		}else{
 			setValidated(true);
 			//good to go
-			postJob();
+			postJobUpdate();
 		}
 	}
 
@@ -145,16 +173,17 @@ export default function NewJobForm() {
 
 				<Col sm="10" >
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
-						Create New Job
+						Edit Job
 					</Typography>
 
-                    <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
-                        <Form.Group controlId="title">
+					<Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
+						<Form.Group controlId="title">
 							<Form.Label column sm={2}>Title</Form.Label>
 							<Col sm={10}>
 								<Form.Control 
 									required
 									placeholder="Title"
+									defaultValue={title}
 									onChange={ (event) => setTitle(event.target.value)} />
 							</Col>
 						</Form.Group>
@@ -163,6 +192,7 @@ export default function NewJobForm() {
 							<Col sm={10}>
 								<Form.Control
 								required
+								defaultValue={company}
 								placeholder="Company"
 								onChange={ (event) => setCompany(event.target.value)}/>
 							</Col>
@@ -173,6 +203,7 @@ export default function NewJobForm() {
 							<Col sm={10}>
 								<Form.Control 
 								required
+								defaultValue={location}
 								placeholder="Location"
 								onChange={ (event) => setLocation(event.target.value)}/>
 							</Col>
@@ -183,6 +214,7 @@ export default function NewJobForm() {
 							<Col sm={10}>
 								<Form.Control as="textarea" rows="3" 
 								required
+								defaultValue={description}
 								onChange={ (event) => setDescription(event.target.value)}/>
 							</Col>
 						</Form.Group>
@@ -218,6 +250,7 @@ export default function NewJobForm() {
 							<Col sm={10}>
 								<Form.Control as="select" 
 								required
+								value={jobType}
 								onChange={e=>setJobType(e.target.value)} 
 								>
 									<option value="">--Select-- </option>
@@ -234,6 +267,7 @@ export default function NewJobForm() {
 							<Col sm={10}>
 								<Form.Control as="select" 
 								required
+								value={experienceLevel}
 								onChange={e=>setExperienceLevel(e.target.value)} 
 								>
 									<option value="">--Select-- </option>
@@ -260,6 +294,7 @@ export default function NewJobForm() {
 									<Form.Control 
 									placeholder=""
 									required
+									defaultValue={salary}
 									type="number"
 									onChange={ (event) => setSalary(event.target.value)}/>
 									<Form.Text className="text-muted">
@@ -286,6 +321,7 @@ export default function NewJobForm() {
 								id="closingDate"
 								type="date"
 								min={today}
+								value={closingDate}
 								onChange={ (event) => 
 									setClosingDate(event.target.value)	
 								}
@@ -302,6 +338,7 @@ export default function NewJobForm() {
 							</Form.Label>
 							<Col sm={10}>
 								<Form.Control placeholder="e.g. excel, python"
+								defaultValue={qualifications}
 								onChange={ (event) => setQualifications(event.target.value)}/>
 							</Col>					
 						</Form.Group>
@@ -312,6 +349,7 @@ export default function NewJobForm() {
 							</Form.Label>
 							<Col sm={10}>
 								<Form.Control placeholder="e.g. cover letter, resume, passport"
+								defaultValue={requiredDocs}
 								onChange={ (event) => setRequiredDocs(event.target.value)}/>
 							</Col>					
 						</Form.Group>
@@ -343,7 +381,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Button variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
-						Create New Job
+							Submit changes
 						</Button> 
 					</Form>  		
 				</Col>
