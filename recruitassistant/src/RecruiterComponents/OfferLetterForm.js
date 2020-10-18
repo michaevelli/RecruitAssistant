@@ -51,7 +51,9 @@ export default function OfferLetterForm() {
 
     //hours per week
     const [hours, setHours]=useState('0 per week');
-    const [days, setDays]=useState('Monday - Friday');
+	const [days, setDays]=useState('Monday - Friday');
+	//for testing prupsoe delete
+	const [files,setFiles]=useState([])
    
 	//NOTE: if zero additional questions/responsibilities are added, the field will not exist
 	//in the database record - must check when displaying job adverts that the field exists!!!
@@ -71,6 +73,29 @@ export default function OfferLetterForm() {
 				}
 			})
 	}
+	
+	const downloadFile = async () =>{
+
+		
+			await axios.get(offerURL)
+		
+			.then(r => {
+					console.log(r)
+					const linkSource = `data:application/pdf;base64,${r.data}`;
+					const downloadLink = document.createElement("a");
+					const fileName = "vct_illustration.pdf";
+				
+					downloadLink.href = linkSource;
+					downloadLink.download = fileName;
+					downloadLink.click();
+					
+			
+			});
+	}
+	
+	
+	
+	
 
 	const handleAddDoc = () => {
 		setAdditionalDocs([...additionalDocs, ''])
@@ -81,12 +106,23 @@ export default function OfferLetterForm() {
 		qs.splice(index, 1)
 		setAdditionalDocs(qs)
 	}
-	const handleChangeDoc = (index, event) => {
-		const qs = [...additionalDocs]
-		qs[index]=event.target.value
+	const handleChangeDoc = (index,event) => {
+		
+		console.log(index)
+		var file=event.target.files[0]
+		const reader = new FileReader()
+		reader.onload = (e) => handleFileLoad(index,e);
+		reader.readAsDataURL(file)
+	
+	}
+	const handleFileLoad= (index,event)=>{
+		var qs = [...additionalDocs]
+		qs[index]=event.target.result
+		console.log(event.target.result); 
 		setAdditionalDocs(qs)
 	}
 
+	
     //TODO - get jobseeker id from the application whose 'offer' button we clicked...
     //also get jobapplication id
 	const postOffer = async () => {
@@ -313,13 +349,18 @@ export default function OfferLetterForm() {
 							{additionalDocs.map((doc, index) => (
 								<div key={index}>
 									<Form.File
-											id = {doc}
-											label = {doc}
-                                            onChange ={handleAddDoc} 
+											controlId = {index}
+                                            onChange = {(e)=>handleChangeDoc(index,e)} 
                                            />
 									<IconButton onClick={() => handleRemoveDoc(index)}>
 										<RemoveIcon />
 									</IconButton>
+								</div>
+							))}
+
+							{additionalDocs.map((doc, index) => (
+								<div key={index}>
+									<button onClick={downloadFile} >download a doc</button>
 								</div>
 							))}
 							</Col>					
