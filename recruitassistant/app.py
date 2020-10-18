@@ -293,16 +293,22 @@ def search():
 		posts=ref.child("jobAdvert").get()	
 		jobs=[]
 		for key,val in posts.items():
-			if lower(location) != "" and not location in lower(val["location"]):
+			# filter: location listed must have location specified
+			if location.lower() != "" and not location in val["location"].lower():
 				continue
-			if lower(jobtype) != "" and not jobtype == lower(val["job_type"]):
+			# filter: job type asked for must match job type specified
+			if jobtype.lower() != "" and not jobtype == val["job_type"].lower():
 				continue
-			if lower(exp) != "" and not exp == lower(val["experience_level"]):
+			# filter: experience level asked for must match experience level specified
+			if exp.lower() != "" and not exp == val["experience_level"].lower():
 				continue
-			if (int(val["salary_pa"]) < salaryrange[0]) or (int(val["salary_pa"]) > salaryrange[1]):
+			# filter: salary specified must fall within the range asked for
+			if (int(val["salary_pa"]) < salaryrange[0]) or (int(val["salary_pa"]) > salaryrange[1] and (salaryrange[1] != 200)):
 				continue
+			# now here i must have a part here for the search query
+			# description and responsibilities maybe merge the text fields together?
+			# then perform a search and return the corresponding returns?
 			jobs.append((key,val))
-			#maybe do something here to filter non applicable jobs
 
 		print(jobs)
 		return jsonify({'jobs': jobs}),200
