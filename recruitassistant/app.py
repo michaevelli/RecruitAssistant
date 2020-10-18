@@ -278,7 +278,34 @@ def login():
 		return jsonify({"message": error_message}), error_code
 
 
-@app.route('/search', methods=['POST'])
+@app.route('/jobadverts/search', methods=["POST"])
 def search():
-	datajson = request.json
-	print(datajson)
+	try:
+		datajson = request.json
+		print(datajson)
+
+		search = datajson["search"]
+		location = datajson["location"]
+		exp = datajson["exp"]
+		jobtype = datajson["jobtype"]
+		salaryrange = datajson["salaryrange"]
+
+		posts=ref.child("jobAdvert").get()	
+		jobs=[]
+		for key,val in posts.items():
+			if lower(location) != "" and not location in lower(val["location"]):
+				continue
+			if lower(jobtype) != "" and not jobtype == lower(val["job_type"]):
+				continue
+			if lower(exp) != "" and not exp == lower(val["experience_level"]):
+				continue
+			if (int(val["salary_pa"]) < salaryrange[0]) or (int(val["salary_pa"]) > salaryrange[1]):
+				continue
+			jobs.append((key,val))
+			#maybe do something here to filter non applicable jobs
+
+		print(jobs)
+		return jsonify({'jobs': jobs}),200
+	except Exception as e:
+		print(e)
+		return jsonify({"error": "something bad happened"}),500
