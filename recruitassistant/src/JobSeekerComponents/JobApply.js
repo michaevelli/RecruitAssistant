@@ -10,6 +10,7 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
+export const uploadUrl="http://localhost:5000/upload"
 export const applicationUrl="http://localhost:5000/jobapplications"
 export const advertisementUrl="http://localhost:5000/advertisement"
 
@@ -27,7 +28,8 @@ export default function JobApply() {
     const [phone_number, setPhoneNumber] = useState('');
 	const [rights, setRights] = useState('');
 	//will be comma seperated strings - split on the commas to get an array
-	const [required_docs, setRequiredDocs] = useState('');
+	const [submitted_docs, setSubmittedDocs] = useState({});
+	const [required_docs, setRequiredDocs] = useState([]);
 	const [qualification_list, setQualificationList] = useState([]);
     const [matching_list, setMatchingList] = useState([]);
     const [job, setJob] = useState([]);
@@ -90,13 +92,34 @@ export default function JobApply() {
 		setMatchingList(matching)
 	}
 
-	const handleDocumentInput = (index, event, qualification_array) => {
+	const handleDocumentInput = (document, event, qualification_array, docs_array) => {
 		setQualificationList(qualification_array)
+		setRequiredDocs(docs_array)
+		const files = {...submitted_docs}
+		files[document] = event.target.files[0]
+		setSubmittedDocs(files)
 	}
 
-	//TODO - ADD real JOBSEEKER ID TO JOB POST
-	const applyJob = async (final_qualifications) => {
-        const url = `${applicationUrl}`
+	const applyJob = async (data) => {
+		const url = `${applicationUrl}`
+		await axios.post(url, data)
+			.then(res => {
+				console.log("response: ", res)
+				
+				alert("Job application successfully created")
+				history.push("/jobseekerdashboard")
+			})
+			.catch((error) => {
+				console.log("error: ", error.response)
+				alert("An error occured, please try again")
+			})
+	};
+
+	const uploadFiles = async (final_qualifications) => {
+		var formData = new FormData();
+		for (var i = 0; i < required_docs.length; i++) {
+			formData.append(required_docs[i], submitted_docs[required_docs[i]])
+		}
         const data={
 			first_name: first_name,
             last_name: last_name,
@@ -106,17 +129,25 @@ export default function JobApply() {
 			jobseeker_id: jobseeker_id,
 			job_id: jobID
 		}
-		console.log(data)
-		await axios.post(url, data)
+
+		const url = `${uploadUrl}`
+		await axios.post(url, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data'
+				},
+				params: {
+                    job_id: jobID,
+                    jobseeker_id: sessionStorage.getItem("uid")
+                }
+			})
 			.then(res => {
 				console.log("response: ", res)
-				alert("Job application successfully created")
-				history.push("/jobseekerdashboard")
+				applyJob(data)
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
-				alert("An error occured, please try again")
-			})	
+				alert("Upload failed, please try again")
+			})
 	};
 	
     const handleSubmit= async (event) =>{	
@@ -125,7 +156,7 @@ export default function JobApply() {
 		if (form.checkValidity() === false) {	
 			event.stopPropagation();
 			setValidated(true);
-		}else{
+		} else {
             setValidated(true);
             const final_qualifications = []
             for (var i = 0; i < qualification_list.length; i++) {
@@ -133,7 +164,7 @@ export default function JobApply() {
                     final_qualifications.push(qualification_list[i]);
                 }
             }
-			applyJob(final_qualifications);
+			uploadFiles(final_qualifications);
 		}
 	}
 
@@ -161,7 +192,7 @@ export default function JobApply() {
                          </Box>
 					</Typography>
 
-                    <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
+                    <Form noValidate validated={validated} action="" onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
                         <Form.Group controlId="first_name">
 							<Form.Label column sm={10}>First Name</Form.Label>
 							<Col sm={10}>
@@ -222,22 +253,23 @@ export default function JobApply() {
 						</Form.Group>
 
 						<Form.Group controlId="required_docs">
-						<Form.Label column sm={10}>Please upload the following documents as a pdf.</Form.Label>
+							<Form.Label column sm={10}>Please upload the following documents as a pdf.</Form.Label>
 							<Col sm={10}>
 								<ul>
-									{detail[1].required_docs.split(",").map((document, index) => (
+									{detail[1].required_docs.split(",").map((document) => (
 										<li>
 											<Form.File
-											required
-											id = {document}
-											label = {document}
-											onClick = { (event) => handleDocumentInput(index, event, job[0][1].req_qualifications.split(","))}/>
+												required
+												id = {document}
+												name = {document}
+												label = {document}
+												accept = "application/pdf"
+												onChange = { (event) => handleDocumentInput(document, event, detail[1].req_qualifications.split(","), detail[1].required_docs.split(","))}/>
 										</li>
 									))}
 								</ul>
 							</Col>
 						</Form.Group>
-
 						<Button disabled = {applied} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
 							Submit Application
 						</Button>
