@@ -11,6 +11,7 @@ import uuid
 from datetime import date, datetime
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
+import re
 
 # initalise app
 app = Flask(__name__)
@@ -305,12 +306,24 @@ def search():
 			# filter: salary specified must fall within the range asked for
 			if (int(val["salary_pa"]) < salaryrange[0]) or (int(val["salary_pa"]) > salaryrange[1] and (salaryrange[1] != 200)):
 				continue
-			# now here i must have a part here for the search query
-			# description and responsibilities maybe merge the text fields together?
-			# then perform a search and return the corresponding returns?
-			jobs.append((key,val))
+			
+			if search != "":
+				searchtext = val["company"].lower() + " " + val["description"].lower() + " " + val["title"].lower()
+				searchtext = re.sub(re.compile("\W"), " ", searchtext)
+				searchtext = ' '.join([w for w in searchtext.split() if len(w)>3])
 
-		print(jobs)
+				searchqueries = search.lower()
+				searchqueries = re.sub(re.compile("\W"), " ", searchqueries)
+				for word in searchqueries.split():
+					if len(word) <= 3:
+						continue
+					if word in searchtext:
+						jobs.append((key, val))
+						break
+			else:
+				jobs.append((key, val))
+
+
 		return jsonify({'jobs': jobs}),200
 	except Exception as e:
 		print(e)
