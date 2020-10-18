@@ -16,6 +16,7 @@ export const jobUrl="http://localhost:5000/jobadverts"
 export default function NewJobForm() {
 	const history = useHistory();
 	const today = new Date()
+	
 
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
