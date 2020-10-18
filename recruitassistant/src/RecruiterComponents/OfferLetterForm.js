@@ -152,16 +152,25 @@ export default function OfferLetterForm() {
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
 						{'text':'FAQ','href':'#','active': false}]}/>
 				</Col>
-
+				
 				<Col sm="10" >
+				
+					<a href="#"  style={{textAlign: "center",margin:20 }}> View Original Job Advert</a>
+					
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						Create Offer Letter
 					</Typography>
-
+                        
+				
+					
+                   
+					
+                   
+                   
                     <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
                         
 						
-                        <a href="#">View Original Job Advert</a>
+                       
                         <h4>Offer Description</h4>
 						<Form.Group controlId="description">
 							<Col sm={10}>
