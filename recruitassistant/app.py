@@ -111,12 +111,8 @@ def post_application():
 					'date_posted': date_posted,
 					'qualifications':json_data["qualifications"],
 					'jobseeker_id':json_data["jobseeker_id"],
-<<<<<<< HEAD
-					'job_id':json_data["job_id"],
-=======
 					# 'job_id':json_data["job_id"],
 					#'required_docs': json_data["required_docs"],
->>>>>>> b1419fbe1d8703c69d753fe437cc8829b59acd68
 				},
 			})
 		return jsonify({'message': f'Successfully created application {application_uid}'}),200
