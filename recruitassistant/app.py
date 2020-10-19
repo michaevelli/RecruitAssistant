@@ -11,7 +11,6 @@ import uuid
 from datetime import date, datetime
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
-from base64 import b64decode
 
 # initalise app
 app = Flask(__name__)
@@ -190,6 +189,25 @@ def check_applied():
 	except Exception as e:		
 		print(e)
 		return jsonify({"message": str(e)}), 400
+
+
+@app.route('/jobapplication', methods=["GET"])
+def get_app_details():
+	#checks if application exists for jobseeker and job
+	try:
+		job_id=request.args.get('jobId')
+		job_app_id = request.args.get('jobAppId')
+		specific_child="jobApplications/"+job_id+'/'+job_app_id
+		print(specific_child)
+		the_application=ref.child(specific_child).get()
+		print("THE APPP")
+		print(the_application)
+		return jsonify({'application': the_application}),200
+ 
+	except Exception as e:		
+		print(e)
+		return jsonify({"message": str(e)}), 400
+
 
 # test
 @app.route('/time')
@@ -380,3 +398,20 @@ def login():
 		return jsonify({"message": error_message}), error_code
 
 
+app.route('/advertisement', methods=["GET"])
+def get_job_for_page():
+	#gets job from job id
+	try:
+		jobid = request.args.get('job_id')
+		post = ref.child("jobAdvert").order_by_key().equal_to(jobid).get()
+
+		job=[]
+		for key,val in post.items():
+			job.append((key,val))
+		
+		print(job)
+		return jsonify({'job': job}),200
+ 
+	except Exception as e:		
+		print(e)
+		return jsonify({"message": str(e)}), 400

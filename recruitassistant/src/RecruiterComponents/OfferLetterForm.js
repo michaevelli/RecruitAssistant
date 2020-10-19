@@ -12,11 +12,19 @@ import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
 export const offerURL="http://localhost:5000/offer"
+export const advertisementUrl="http://localhost:5000/advertisement"
+export const applicationsUrl ="http://localhost:5000/jobapplication"
 
 //TODO get prefill info!!! including job seeker and application ids
 
 
-export default function OfferLetterForm() {
+export default function OfferLetterForm(props) {
+	//const href = `${window.location.href}`.split("/")
+	console.log(props)
+	console.log(props.location.state)
+	const jobAppID = props.location.state.jobAppID
+	const jobID= props.location.state.jobID
+
 	const history = useHistory();
 	const options = {year: 'numeric', month: 'long', day: 'numeric' };
     const t  = new Date();
@@ -24,25 +32,24 @@ export default function OfferLetterForm() {
    
 
     //todo-- prefill these variables
-    //pull title,company, job seeker first and last name from the job advert
-    const title= "Job title here"
-    const company ="company name"
-    const jobseeker_name="Jim Bob"
-    
-    const  default_text =`${todays_date}\n\nDear ${jobseeker_name},\n\n    .......`
+	//pull title,company, job seeker first and last name from the job advert
+	
+	//we have app id through which we can get job ad id and thus all our info!
 
-    const default_location="florida"
-    const default_jobtype="Part-time"
-    const default_salary=10000 //k*1000
+    
 
 	//Used for form validation
     const [validated, setValidated] = useState(false);
     //form data that may be modified
-    const [location,setLocation] = useState(default_location);
-	const [description,setDescription] = useState(default_text);
-    const [jobType, setJobType]=useState(default_jobtype) //default to type on the job advert
+	const [location,setLocation] = useState('');
+	const [title,setTitle] = useState('');
+	const [company,setCompany] = useState('');
+	const [jobseekerName, setJobseekerName]= useState('');
+	
+	const [description,setDescription] = useState('');
+    const [jobType, setJobType]=useState('') //default to type on the job advert
     //salary 
-    const [salary,setSalary] = useState(default_salary);
+    const [salary,setSalary] = useState('');
     //type - p.a or hourly
     const [salaryType,setSalaryType] = useState('');
     
@@ -51,15 +58,54 @@ export default function OfferLetterForm() {
 
     //hours per week
     const [hours, setHours]=useState('0 per week');
-	const [days, setDays]=useState('Monday - Friday');
-	//for testing prupsoe delete
-	const [files,setFiles]=useState([])
-   
+	const [days, setDays]=useState('Monday - Friday');  
 	const [additionalDocs, setAdditionalDocs] = useState([]);
 	
 	useEffect(() => {
 		auth();
+		getJobInfo(jobID);
+		getJobSeekerName(jobAppID);
+		
 	});
+
+	
+	async function getJobInfo(jobID) {
+		await axios.get(advertisementUrl, {params: {job_id: jobID}})
+			.then(res => {
+				console.log(res.data.job[0][1])
+				const job_data = res.data.job[0][1]
+				setTitle(job_data["title"]);
+				setCompany(job_data["company"]);
+				setLocation(job_data["location"]);
+				setJobType(job_data["job_type"]);
+				setSalary(job_data["salary_pa"]*1000);
+				
+			}).catch((error) => {
+				console.log("error: ", error.response)
+				alert("An error occured, please try again")
+			})	
+	}
+
+
+	async function getJobSeekerName(jobAppID) {
+		await axios.get(applicationsUrl, {params: {jobAppId: jobAppID,jobId: jobID}})
+			.then(res => {
+				console.log(res.data.application)
+				const job_data = res.data.application
+				const first=job_data["first_name"]
+				const last= job_data["last_name"]
+				const fullname=first+' '+last
+				console.log(fullname)
+				setJobseekerName(fullname) ;
+				setDescription(`${todays_date}\n\nDear ${fullname},\n\n    .......`)	
+				
+			}).catch((error) => {
+				console.log("error: ", error.response)
+				alert("An error occured, please try again")
+			})	
+	}
+	
+	
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -200,7 +246,7 @@ export default function OfferLetterForm() {
 								<Form.Control as="textarea" rows="10" 
 								required
 								onChange={ (event) => setDescription(event.target.value)}
-                                placeholder={default_text} 
+                               
                                 value={description}/>
 							</Col>
 						</Form.Group>
