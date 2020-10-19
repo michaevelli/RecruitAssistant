@@ -110,9 +110,10 @@ def post_application():
 					'rights':json_data["rights"],
 					'date_posted': date_posted,
 					'qualifications':json_data["qualifications"],
-					'jobseeker_id':json_data["jobseeker_id"],
+					'qualities_met':json_data["qualities_met"],
+					'submitted_docs': json_data["submitted_docs"],
+					'jobseeker_id':json_data["jobseeker_id"]
 					# 'job_id':json_data["job_id"],
-					#'required_docs': json_data["required_docs"],
 				},
 			})
 		return jsonify({'message': f'Successfully created application {application_uid}'}),200
@@ -231,6 +232,23 @@ def get_job_for_page():
 		job=[]
 		for key,val in post.items():
 			job.append((key,val))
+		
+		print(job)
+		return jsonify({'job': job}),200
+ 
+	except Exception as e:		
+		print(e)
+		return jsonify({"message": str(e)}), 400
+
+@app.route('/applicationslist', methods=["GET"])
+def get_applications_for_job():
+	#gets all posts in the database
+	try:
+		jobid = request.args.get('job_id')
+		post = ref.child("jobApplications").order_by_key().equal_to(jobid).get()
+		job=[]
+		for key,val in post.items():
+			job.append(val)
 		
 		print(job)
 		return jsonify({'job': job}),200
