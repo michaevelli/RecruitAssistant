@@ -83,11 +83,11 @@ export default function RecruiterDashboard() {
 
 		for (let i = 0; i < applications.length; i++) {
 			invite_list.push({
-					"jobseeker_id": applications[i][1]["jobseeker_id"],
-					"employer_id" : emp_id,
-					"job_id": applications[i][0],
-					"date": "TEMP DATA FOR NOW"
-				})
+				"jobseeker_id": applications[i][1]["jobseeker_id"],
+				"employer_id" : emp_id,
+				"job_id": applications[i][0],
+				"date": "TEMP DATA FOR NOW"
+			})
 		}
 
 		const data={
