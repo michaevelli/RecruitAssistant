@@ -80,12 +80,13 @@ export default function RecruiterDashboard() {
 	const postInterview = async () => {
 		var invite_list = []
 		var emp_id = sessionStorage.getItem("uid")
-
+		console.log(applications)
 		for (let i = 0; i < applications.length; i++) {
 			invite_list.push({
 				"jobseeker_id": applications[i][1]["jobseeker_id"],
 				"employer_id" : emp_id,
-				"job_id": applications[i][0],
+				"app_id": applications[i][0],
+				"job_id": jobID,
 				"date": "TEMP DATA FOR NOW"
 			})
 		}
@@ -127,7 +128,7 @@ export default function RecruiterDashboard() {
 								</Typography>
 							</Col>
 							<Col>
-								<Link href={`/application/${app[0]}`} style={{marginLeft: 90}} >
+								<Link href={`/viewapplication/${jobID}/${app[0]}`} style={{marginLeft: 90}} >
 									View Application
 								</Link>
 							</Col>
