@@ -67,11 +67,12 @@ scheduler.start()
 @app.route('/offer', methods=["GET"])
 def get_offer_files():
 	try:
-		posts=ref.child("offer/fa821cc1-112c-11eb-912a-005056c00008").child('additional_docs').get()		
+		posts=ref.child("offer/bc5bd92a-11af-11eb-9fea-005056c00008").child('additional_docs').get()		
 		res= posts[0]	
-		res=res[28:] #remove data/application blah
-	
-		return res,200
+		filename=res['filename']
+		content=res['src']
+		content=content[28:] #remove data/application blah
+		return content,200
  
 	except Exception as e:
 		return jsonify({"message": str(e)}), 400
