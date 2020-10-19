@@ -78,7 +78,7 @@ export default function Advertisement() {
 	) : (
         <Grid>      
 			<Row noGutters fluid><TitleBar/></Row>
-			<Row noGutters style={{height:'100vh',paddingTop: 40}}>
+			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
@@ -100,8 +100,20 @@ export default function Advertisement() {
                             <Box fontSize="h6.fontSize" lineHeight={2}>
                                 Remuneration: ${detail[1].salary_pa * 1000}
                             </Box>
-                            <Box fontSize="h6.fontSize" lineHeight={7}>
+                            <br></br>
+                            <br></br>
+                            <Box fontSize="h6.fontSize" lineHeight={2}>
                                 {detail[1].description}
+                            </Box>
+                            <br></br>
+                            <br></br>
+                            <Box fontSize="h6.fontSize" lineHeight={2}>
+                                Responsibilities:
+                                {detail[1].responsibilities.map((responsibility) => (
+                                    <ul>
+                                        <li> {responsibility} </li>
+                                    </ul>
+                                ))}
                             </Box>
                             <Box fontSize="h6.fontSize" lineHeight={2}>
                                 Qualifications:
