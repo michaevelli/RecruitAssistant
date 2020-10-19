@@ -246,12 +246,17 @@ def get_applications_for_job():
 	try:
 		jobid = request.args.get('job_id')
 		post = ref.child("jobApplications").order_by_key().equal_to(jobid).get()
-		job=[]
+		applications=[]
+		# print(list(post.items().index("qualities_met")))
 		for key,val in post.items():
-			job.append(val)
+			# sort on how many qualifications are met
+			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get("qualities_met"))
+			sortedRights = sorted(sortedApps, reverse = True, key = lambda x :val.get(x).get("rights"))
+			for appid in sortedRights:
+			 	applications.append((appid, val.get(appid)))
 		
-		print(job)
-		return jsonify({'job': job}),200
+		print(applications)
+		return jsonify({'applications': applications}),200
  
 	except Exception as e:		
 		print(e)

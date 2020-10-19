@@ -67,7 +67,7 @@ export default function RecruiterDashboard() {
 			},
 		})
 		.then(res => {
-				setApplications(res.data.job)
+				setApplications(res.data.applications)
 				console.log("response: ", res)
 			})
 			.catch((error) => {
@@ -86,22 +86,18 @@ export default function RecruiterDashboard() {
 		// items.sort(function(first, second) {
 		// 	return second[1] - first[1];
 		// });
-		var applicationList = []
-		applications.map((app) => (
-			applicationList = Object.entries(app)
-		))
-		return applicationList.map(([key, value]) => (
+		return applications.map((app) => (
 			<Card style={{margin: 30, height: 180, width:550}}>
 				<CardContent>                          
 					<Grid>
 						<Row>
 							<Col>
 								<Typography variant="h5" component="h2">
-									{value.first_name} {value.last_name}
+									{app[1].first_name} {app[1].last_name}
 								</Typography>
 							</Col>
 							<Col>
-								<Link href={`/application/${key}`} style={{marginLeft: 90}} >
+								<Link href={`/application/${app[0]}`} style={{marginLeft: 90}} >
 									View Application
 								</Link>
 							</Col>
