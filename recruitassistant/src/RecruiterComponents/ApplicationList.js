@@ -108,14 +108,12 @@ export default function RecruiterDashboard() {
 					<ButtonToolbar>
 						<Button>Interview</Button>
 						<Button>	
-							<Link 
-								to={{
+							<Link to={{
 								pathname: `/createoffer`,
 								state: {
 									jobAppID: app[0],
 									jobID: jobID
-								}}}
-								>
+								}}}>
 							Offer
 							</Link>
 						</Button> 
