@@ -18,3 +18,11 @@ Created UI for recruiter dashboard and job seeker dashboard search bar.Linked re
 
 --week 4---
 Worked on the feature for recruiters to create a new job posting. Created NewJobPost.js.Added dynamic question fields, form validation, linked form to backend.
+
+--week 5---
+Created Logo for site and added it to title bar of all pages.
+Had team retospective A. Planned to make subtasks for user stories, and improve
+planning of sprints.
+Began work on a form for customising and sending an offer letter to a candidate. 
+
+
