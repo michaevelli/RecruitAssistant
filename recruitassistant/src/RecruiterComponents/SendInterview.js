@@ -17,7 +17,8 @@ export default function SendInterview() {
     const postInterview = async () => {
 				// data will be given as a list of json objects i.e. [{"employer_id": 4321, "jobseeker_id": 1234, "job_id": 2121212,"date": date},{...}]
 				// sample data here
-				// will replace with data given by application list
+        // will replace with data given by application list
+        console.log(this.state.items)
         const data={
 						invite_list: [
 							{
