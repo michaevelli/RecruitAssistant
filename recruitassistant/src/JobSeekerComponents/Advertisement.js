@@ -104,6 +104,14 @@ export default function Advertisement() {
                                 {detail[1].description}
                             </Box>
                             <Box fontSize="h6.fontSize" lineHeight={2}>
+                                Responsibilities:
+                                {detail[1].responsibilities.map((responsibility) => (
+                                    <ul>
+                                        <li> {responsibility} </li>
+                                    </ul>
+                                ))}
+                            </Box>
+                            <Box fontSize="h6.fontSize" lineHeight={2}>
                                 Qualifications:
                                 {detail[1].req_qualifications.split(",").map((qualification) => (
                                     <ul>
