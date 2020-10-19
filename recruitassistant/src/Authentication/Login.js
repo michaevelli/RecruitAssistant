@@ -12,8 +12,8 @@ export const submitLogin="http://localhost:5000/login"
 function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [user, setUser] = useState("");
-	const [redirect, setRedirect] = useState(false);
+	// const [user, setUser] = useState("");
+	// const [redirect, setRedirect] = useState(false);
 	const [errorStatus, setErrorStatus] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [loading, setLoading] = useState(true);
@@ -28,7 +28,6 @@ function Login() {
 			.then(function(response) {
 				console.log("auth success: ", response)
 				setLoading(false)
-				// const recruiterID = sessionStorage.getItem("uid")			
 				if (response.success) {
 					history.push("/"+response.userInfo["type"]+"dashboard");
 				}
@@ -39,21 +38,17 @@ function Login() {
 		e.preventDefault()
 		setErrorStatus(false)
 		setErrorMessage("")
+
 		const ndata = {
 			email: email,
 			password: password
 		}
-		console.log(ndata);
 		
 		axios.post(submitLogin, ndata)
 			.then(function(response) {
-				console.log("response:")
-				console.log(response.data)
+				console.log("response:", response.data)
 				window.localStorage.setItem("token", response.data.token)
-				// window.localStorage.setItem("type", response.data.type)
 				history.push("/"+response.data.type+"dashboard");
-				// setRedirect(true)
-				
 			})
 			.catch(function(error) {
 				console.log(error.response)
@@ -70,12 +65,14 @@ function Login() {
 				<h1>Recruit Assistant</h1>
 				<b>Sign In</b>
 				<br/>
-				<TextField label="Email" value={email} error={errorStatus} onChange={e=>setEmail(e.target.value)}></TextField>
-				<br/>
-				<TextField label="Password" type="password" value={password} error={errorStatus} onChange={e=>setPassword(e.target.value)}></TextField>
-				<br/>
-				<div id="error" style={{color: 'red'}}>{errorMessage}</div>
-				<Button onClick={handleSubmit}>Log In</Button>
+				<form onSubmit={handleSubmit}>
+					<TextField label="Email" value={email} error={errorStatus} onChange={e=>setEmail(e.target.value)}></TextField>
+					<br/>
+					<TextField label="Password" type="password" value={password} error={errorStatus} onChange={e=>setPassword(e.target.value)}></TextField>
+					<br/>
+					<div id="error" style={{color: 'red'}}>{errorMessage}</div>
+					<Button type="submit">Log In</Button>
+				</form>
 				<br/>
 			
 				Don't have an account? <a href="/signup">Sign Up</a>
