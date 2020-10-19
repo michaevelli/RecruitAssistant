@@ -308,13 +308,13 @@ def search():
 		jobs=[]
 		for key,val in posts.items():
 			# filter: location listed must have location specified
-			if location.lower() != "" and not location in val["location"].lower():
+			if location.lower() != "" and not location.lower() in val["location"].lower():
 				continue
 			# filter: job type asked for must match job type specified
-			if jobtype.lower() != "" and not jobtype == val["job_type"].lower():
+			if jobtype.lower() != "" and not jobtype.lower() == val["job_type"].lower():
 				continue
 			# filter: experience level asked for must match experience level specified
-			if exp.lower() != "" and not exp == val["experience_level"].lower():
+			if exp.lower() != "" and not exp.lower() == val["experience_level"].lower():
 				continue
 			# filter: salary specified must fall within the range asked for
 			if (int(val["salary_pa"]) < salaryrange[0]) or (int(val["salary_pa"]) > salaryrange[1] and (salaryrange[1] != 200)):
