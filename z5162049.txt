@@ -25,3 +25,8 @@ Week 4
 
 Week 5
 	Organise presentation thing
+	Performed sprint retrospective
+	Assign new sprint tasks
+	Did search and filter functionality
+Week 6
+	Do job seeker view offers
