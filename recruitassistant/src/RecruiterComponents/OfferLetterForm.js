@@ -24,7 +24,7 @@ export default function OfferLetterForm() {
    
 
     //todo-- prefill these variables
-     //pull title,company, job seeker first and last name from the job application
+    //pull title,company, job seeker first and last name from the job advert
     const title= "Job title here"
     const company ="company name"
     const jobseeker_name="Jim Bob"
@@ -33,7 +33,7 @@ export default function OfferLetterForm() {
 
     const default_location="florida"
     const default_jobtype="Part-time"
-    const default_salary=10000
+    const default_salary=10000 //*1000
 
 	//Used for form validation
     const [validated, setValidated] = useState(false);
@@ -55,8 +55,6 @@ export default function OfferLetterForm() {
 	//for testing prupsoe delete
 	const [files,setFiles]=useState([])
    
-	//NOTE: if zero additional questions/responsibilities are added, the field will not exist
-	//in the database record - must check when displaying job adverts that the field exists!!!
 	const [additionalDocs, setAdditionalDocs] = useState([]);
 	
 	useEffect(() => {
@@ -76,48 +74,47 @@ export default function OfferLetterForm() {
 	
 	const downloadFile = async () =>{		
 		await axios.get(offerURL)
-	
-		.then(r => {
+			.then(r => {
 				console.log(r)
 				const linkSource = `data:application/pdf;base64,${r.data}`;
 				const downloadLink = document.createElement("a");
-				const fileName = "vct_illustration.pdf";
+				const fileName = "filename.pdf";
 			
 				downloadLink.href = linkSource;
 				downloadLink.download = fileName;
-				downloadLink.click();
-				
-		
+				downloadLink.click();	
 		});
 	}
 	
 	
-	
-	
-
 	const handleAddDoc = () => {
 		setAdditionalDocs([...additionalDocs, ''])
 	}
+
 	const handleRemoveDoc = (index) => {
-		const qs  = [...additionalDocs]
-		//remove question
-		qs.splice(index, 1)
-		setAdditionalDocs(qs)
-	}
-	const handleChangeDoc = (index,event) => {
+		console.log(index+" for remove doc")
+		const docs  = [...additionalDocs]
+		console.log("removing file "+docs[index]['filename'])
+		//remove doc
+		docs.splice(index, 1)
 		
+		setAdditionalDocs(docs)
+	}
+
+	const handleChangeDoc = (index,event) => {	
 		console.log(index)
 		var file=event.target.files[0]
+		var filename=event.target.files[0].name
+		
 		const reader = new FileReader()
-		reader.onload = (e) => handleFileLoad(index,e);
+		reader.onload = (e) => handleFileLoad(filename,index,e);
 		reader.readAsDataURL(file)
-	
 	}
-	const handleFileLoad= (index,event)=>{
-		var qs = [...additionalDocs]
-		qs[index]=event.target.result
+	const handleFileLoad= (filename,index,event)=>{
+		var docs = [...additionalDocs]
+		docs[index]={'filename': filename, 'src': event.target.result}
 		console.log(event.target.result); 
-		setAdditionalDocs(qs)
+		setAdditionalDocs(docs)
 	}
 
 	
@@ -194,17 +191,9 @@ export default function OfferLetterForm() {
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						Create Offer Letter
 					</Typography>
-                        
-				
-					
-                   
-					
-                   
+
                    
                     <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
-                        
-						
-                       
                         <h4>Offer Description</h4>
 						<Form.Group controlId="description">
 							<Col sm={10}>
@@ -233,10 +222,9 @@ export default function OfferLetterForm() {
 							*Start Date:</Form.Label>
 							<Col sm={10}>
 							<TextField 
-								className={
-									!startDatevalidator()
-										? "form-control is-invalid"
-										: "form-control"
+								className={ !startDatevalidator()
+									? "form-control is-invalid"
+									: "form-control"
 								}
 								id="startDate"
 								type="date"
@@ -244,7 +232,7 @@ export default function OfferLetterForm() {
 								onChange={ (event) => 
 									setStartDate(event.target.value)	
 								}
-								/>
+							/>
 								<Form.Control.Feedback type="invalid">
 									Please enter a date in the future
 								</Form.Control.Feedback>
@@ -263,7 +251,7 @@ export default function OfferLetterForm() {
 								onChange={ (event) => 
 									setEndDate(event.target.value)	
 								}
-								/>
+							/>
 								
 							</Col>
 						</Form.Group>
@@ -288,8 +276,7 @@ export default function OfferLetterForm() {
                         <Form.Group controlId="salary">
 							<Form.Label column sm={2}>
 							 *Renumeration:
-							</Form.Label>
-							
+							</Form.Label>	
 							<Col sm={10}>
 								<InputGroup>
 									<InputGroup.Prepend>
@@ -316,6 +303,7 @@ export default function OfferLetterForm() {
 								</InputGroup>
 							</Col>
 						</Form.Group>
+
                         <Form.Group controlId="hours">
 							<Form.Label column sm={2}>*Hours: </Form.Label>
 							<Col sm={10}>
@@ -347,18 +335,15 @@ export default function OfferLetterForm() {
 							{additionalDocs.map((doc, index) => (
 								<div key={index}>
 									<Form.File
-											controlId = {index}
-                                            onChange = {(e)=>handleChangeDoc(index,e)} 
-                                           />
+									key = {index}
+									label={index}
+									onChange = {(e)=>handleChangeDoc(index,e)} 
+									/>
 									<IconButton onClick={() => handleRemoveDoc(index)}>
 										<RemoveIcon />
 									</IconButton>
 								</div>
-							))}
-
-							
-							
-							
+							))}				
 							</Col>
 							<div >
 								<button onClick={downloadFile} > test download a doc</button>
