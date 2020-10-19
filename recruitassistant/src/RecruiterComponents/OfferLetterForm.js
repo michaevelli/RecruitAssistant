@@ -33,7 +33,7 @@ export default function OfferLetterForm() {
 
     const default_location="florida"
     const default_jobtype="Part-time"
-    const default_salary=10000 //*1000
+    const default_salary=10000 //k*1000
 
 	//Used for form validation
     const [validated, setValidated] = useState(false);
