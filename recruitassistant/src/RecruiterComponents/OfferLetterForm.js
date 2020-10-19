@@ -17,35 +17,33 @@ export const applicationsUrl ="http://localhost:5000/jobapplication"
 
 export default function OfferLetterForm(props) {
 
-	console.log(props.location.state)
+	//console.log(props.location.state)
 	const jobAppID = props.location.state.jobAppID
 	const jobID= props.location.state.jobID
 
 	const history = useHistory();
+	//date formatting - to be used in offer letter description
 	const options = {year: 'numeric', month: 'long', day: 'numeric' };
     const t  = new Date();
     const todays_date=t.toLocaleDateString("en-US", options);
 
 	//Used for form validation
     const [validated, setValidated] = useState(false);
-    //form data that may be modified
+
 	const [location,setLocation] = useState('');
 	const [title,setTitle] = useState('');
-	const [company,setCompany] = useState('');
-	
+	const [company,setCompany] = useState('');	
 	const [jobseekerId,setJobSeekerID]=useState('')
 	const [description,setDescription] = useState('');
-    const [jobType, setJobType]=useState('') //default to type on the job advert
+    const [jobType, setJobType]=useState('') 
     //salary 
     const [salary,setSalary] = useState('');
     //type - p.a or hourly
-    const [salaryType,setSalaryType] = useState('');
-    
+    const [salaryType,setSalaryType] = useState(''); 
     const [startDate, setStartDate]=useState('');
     const [endDate, setEndDate]=useState('n/a');
-
     //hours per week
-    const [hours, setHours]=useState('0 per week');
+    const [hours, setHours]=useState('0 hours per week');
 	const [days, setDays]=useState('Monday - Friday');  
 	const [additionalDocs, setAdditionalDocs] = useState([]);
 	
@@ -54,9 +52,9 @@ export default function OfferLetterForm(props) {
 		getJobInfo(jobID);
 		getJobSeekerName(jobAppID);
 		
-	});
-
+	},[]);
 	
+	//Prefill fields with job ad info
 	async function getJobInfo(jobID) {
 		await axios.get(advertisementUrl, {params: {job_id: jobID}})
 			.then(res => {
@@ -119,25 +117,32 @@ export default function OfferLetterForm(props) {
 		});
 	}
 	
-	
 	const handleAddDoc = () => {
 		setAdditionalDocs([...additionalDocs, ''])
 	}
 
+	//works correctly in terms of actual files removed
+	//but interface shows the wrong filenames still.... not sure why
 	const handleRemoveDoc = (index) => {
 		console.log(index+" for remove doc")
 		const docs  = [...additionalDocs]
 		console.log("removing file "+docs[index]['filename'])
 		//remove doc
-		docs.splice(index, 1)
-		
+		docs.splice(index, 1)	
 		setAdditionalDocs(docs)
 	}
+
 
 	const handleChangeDoc = (index,event) => {	
 		console.log(index)
 		var file=event.target.files[0]
 		var filename=event.target.files[0].name
+		var filetype= event.target.files[0].type
+		console.log(filetype)
+		if(filetype!="application/pdf"){
+			alert("please upload a pdf")
+			return 0
+		}
 		const reader = new FileReader()
 		reader.onload = (e) => handleFileLoad(filename,index,e);
 		reader.readAsDataURL(file)
@@ -150,8 +155,7 @@ export default function OfferLetterForm(props) {
 		setAdditionalDocs(docs)
 	}
 
-	
-    //TODO - get jobseeker id from the application whose 'offer' button we clicked...
+
 	const postOffer = async () => {
         const url = offerURL
         const data={
@@ -187,6 +191,7 @@ export default function OfferLetterForm(props) {
 	};
 	
 
+	//check start date is after todays date
     const startDatevalidator =()=>{
 		return startDate !== "" && t < Date.parse(startDate)
     }
@@ -366,6 +371,7 @@ export default function OfferLetterForm(props) {
 									<Form.File
 									key = {index}
 									label={index}
+									accept="application/pdf"
 									onChange = {(e)=>handleChangeDoc(index,e)} 
 									/>
 									<IconButton onClick={() => handleRemoveDoc(index)}>
@@ -375,7 +381,7 @@ export default function OfferLetterForm(props) {
 							))}				
 							</Col>
 							<div >
-								<button onClick={downloadFile} > test download a doc</button>
+								<button onClick={()=>downloadFile()} > test download a doc</button>
 							</div>					
 						</Form.Group>
 
