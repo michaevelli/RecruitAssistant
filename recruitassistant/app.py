@@ -254,7 +254,7 @@ def send_interview():
 					interview_id: {
 						'jobseeker_id': u["jobseeker_id"],
 						'employer_id': u["employer_id"],
-						'job_id': u["job_id"],
+						'application_id': u["job_id"],
 						'interview_date': u["date"],
 					},
 				})
@@ -273,11 +273,13 @@ def get_applications_for_job():
 		applications=[]
 		# print(list(post.items().index("qualities_met")))
 		for key,val in post.items():
+			# print(key)
 			# sort on how many qualifications are met
 			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get("qualities_met"))
 			sortedRights = sorted(sortedApps, reverse = True, key = lambda x :val.get(x).get("rights"))
 			for appid in sortedRights:
-			 	applications.append((appid, val.get(appid)))
+			 	# applications.append((appid, val.get(appid)))
+				applications.append((key, val.get(appid)))
 		
 		print(applications)
 		return jsonify({'applications': applications}),200
