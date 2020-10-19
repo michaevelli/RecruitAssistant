@@ -63,27 +63,14 @@ scheduler.add_job(func=check_postings, trigger="interval", seconds=5)
 scheduler.start()
 # atexit.register(lambda: scheduler.shutdown())
 
+#this method is just for testing download of pdf works
 @app.route('/offer', methods=["GET"])
 def get_offer_files():
 	try:
-		posts=ref.child("offer/fa821cc1-112c-11eb-912a-005056c00008").child('additional_docs').get()	
-		
-		res= posts[0]
-	
+		posts=ref.child("offer/fa821cc1-112c-11eb-912a-005056c00008").child('additional_docs').get()		
+		res= posts[0]	
 		res=res[28:] #remove data/application blah
-		#print("resss:"+ res[0:5])
-		#pdfbytes = b64decode(res, validate=True)
-
-		# Perform a basic validation to make sure that the result is a valid PDF file
-		# Be aware! The magic number (file signature) is not 100% reliable solution to validate PDF files
-		# Moreover, if you get Base64 from an untrusted source, you must sanitize the PDF contents
-		#if pdfbytes[0:4] != b'%PDF':
-		#	raise ValueError('Missing the PDF file signature')
-
-		# Write the PDF contents to a local file
-		
-		#print(res)
-	#	print(offers)
+	
 		return res,200
  
 	except Exception as e:
@@ -203,11 +190,7 @@ def post_new_job():
 	today = date.today()
 	date_posted = today.strftime("%Y-%m-%y")
 	print("d1 =", date_posted),
-	#TODO
-	#add recruiter_id as id of logged in user
-	additional_questions= json_data['additional_questions']
-	if (additional_questions==[]):
-		additional_questions=['']
+	
 	try:
 		ref.child('jobAdvert').update({
 				job_uid: {
@@ -226,7 +209,7 @@ def post_new_job():
 					'required_docs': json_data["required_docs"],
 					#'min_years_experience': json_data["min_years_experience"],
 					'status': json_data['status'],
-					'additional_questions': additional_questions
+					'additional_questions': json_data['additional_questions']
 				},
 			})
 		return jsonify({'message': f'Successfully created job {job_uid}'}),200

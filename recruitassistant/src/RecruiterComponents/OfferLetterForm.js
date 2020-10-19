@@ -14,7 +14,7 @@ import checkAuth from "../Authentication/Authenticate";
 export const offerURL="http://localhost:5000/offer"
 
 //TODO get prefill info!!! including job seeker and application ids
-//file handling
+
 
 export default function OfferLetterForm() {
 	const history = useHistory();
@@ -74,23 +74,21 @@ export default function OfferLetterForm() {
 			})
 	}
 	
-	const downloadFile = async () =>{
-
-		
-			await axios.get(offerURL)
-		
-			.then(r => {
-					console.log(r)
-					const linkSource = `data:application/pdf;base64,${r.data}`;
-					const downloadLink = document.createElement("a");
-					const fileName = "vct_illustration.pdf";
-				
-					downloadLink.href = linkSource;
-					downloadLink.download = fileName;
-					downloadLink.click();
-					
+	const downloadFile = async () =>{		
+		await axios.get(offerURL)
+	
+		.then(r => {
+				console.log(r)
+				const linkSource = `data:application/pdf;base64,${r.data}`;
+				const downloadLink = document.createElement("a");
+				const fileName = "vct_illustration.pdf";
 			
-			});
+				downloadLink.href = linkSource;
+				downloadLink.download = fileName;
+				downloadLink.click();
+				
+		
+		});
 	}
 	
 	
@@ -149,7 +147,7 @@ export default function OfferLetterForm() {
 		await axios.post(url, data)
 			.then(res => {
 				console.log("response: ", res)
-				alert("Job successfully created")
+				alert("Offer successfully sent")
 				history.push("/recruiterdashboard")
 			})
 			.catch((error) => {
@@ -358,12 +356,13 @@ export default function OfferLetterForm() {
 								</div>
 							))}
 
-							{additionalDocs.map((doc, index) => (
-								<div key={index}>
-									<button onClick={downloadFile} >download a doc</button>
-								</div>
-							))}
-							</Col>					
+							
+							
+							
+							</Col>
+							<div >
+								<button onClick={downloadFile} > test download a doc</button>
+							</div>					
 						</Form.Group>
 
 						<Button variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
