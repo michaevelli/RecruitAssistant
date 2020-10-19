@@ -63,8 +63,8 @@ export default function RecruiterDashboard() {
 					<Typography color="textSecondary">
 						{job[1].status}
 					</Typography>
-					<Link href="/sampleapplicationdash" style={{marginLeft: 30}} >
-						View applications
+					<Link href={`/applications/${job[0]}`} style={{marginLeft: 30}} >
+						View More
 					</Link>
 				</CardActions>
 			</Card>

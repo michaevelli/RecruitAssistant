@@ -100,9 +100,13 @@ export default function Advertisement() {
                             <Box fontSize="h6.fontSize" lineHeight={2}>
                                 Remuneration: ${detail[1].salary_pa * 1000}
                             </Box>
-                            <Box fontSize="h6.fontSize" lineHeight={7}>
+                            <br></br>
+                            <br></br>
+                            <Box fontSize="h6.fontSize" lineHeight={2}>
                                 {detail[1].description}
                             </Box>
+                            <br></br>
+                            <br></br>
                             <Box fontSize="h6.fontSize" lineHeight={2}>
                                 Responsibilities:
                                 {detail[1].responsibilities.map((responsibility) => (
