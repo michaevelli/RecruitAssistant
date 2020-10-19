@@ -12,6 +12,7 @@ import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 from backend import jobs
 from backend.init_app import app, ref, pb
+import re
 
 # initalise app
 # app = Flask(__name__)
@@ -33,30 +34,12 @@ def check_postings():
 		close_date = datetime.strptime(posts[key]["closing_date"], "%Y-%m-%d")
 		current_date = datetime.now()
 		delta = close_date - current_date
-
 		try:
 			if(delta.days < 0 and posts[key]["status"] == "open"):
-				ref.child("jobAdvert").update({
-					key:{
-						'title': posts[key]["title"],
-						'location': posts[key]["location"],
-						'company': posts[key]["company"],
-						'date_posted': posts[key]["date_posted"],
-						'description': posts[key]["description"],
-						'closing_date': posts[key]["closing_date"],
-						'recruiter_id': posts[key]["recruiter_id"],
-						'job_type': posts[key]["job_type"],
-						'req_qualifications':posts[key]["req_qualifications"],
-						'salary_pa': posts[key]["salary_pa"],
-						'experience_level': posts[key]["experience_level"],
-						'required_docs': posts[key]["required_docs"],
-						'status': "closed",
-						'additional_questions': posts[key]["additional_questions"],
-						'responsibilities': posts[key]["responsibilities"]
-					}
-				})
+				ref.child("jobAdvert").child(key).child("status").set("closed")
 		except:
 			print("failed to update for some reason")
+			print(key)
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=check_postings, trigger="interval", seconds=5)
@@ -77,6 +60,19 @@ def check_token():
 	except Exception as e:
 		print(e)
 		return jsonify({'message': 'Token verification failed'}),400
+
+@app.route('/upload', methods=["POST"])
+def check_files():
+	print(request.files.to_dict())
+	storage = pb.storage()
+	jobid = request.args.get('job_id')
+	jobseekerid = request.args.get('jobseeker_id')
+	try:
+		for key, val in request.files.items():
+			uploadTask = storage.child(jobid + "_" + jobseekerid + "_" + key).put(val)
+		return jsonify({'message': 'Uploaded files successfully'}),200
+	except Exception as e:		
+		return jsonify({"message": str(e)}), 400
 
 @app.route('/jobapplications', methods=["POST"])
 def post_application():
@@ -297,3 +293,52 @@ def login():
 		return jsonify({"message": error_message}), error_code
 
 
+@app.route('/jobadverts/search', methods=["POST"])
+def search():
+	try:
+		datajson = request.json
+		print(datajson)
+
+		search = datajson["search"]
+		location = datajson["location"]
+		exp = datajson["exp"]
+		jobtype = datajson["jobtype"]
+		salaryrange = datajson["salaryrange"]
+
+		posts=ref.child("jobAdvert").get()	
+		jobs=[]
+		for key,val in posts.items():
+			# filter: location listed must have location specified
+			if location.lower() != "" and not location.lower() in val["location"].lower():
+				continue
+			# filter: job type asked for must match job type specified
+			if jobtype.lower() != "" and not jobtype.lower() == val["job_type"].lower():
+				continue
+			# filter: experience level asked for must match experience level specified
+			if exp.lower() != "" and not exp.lower() == val["experience_level"].lower():
+				continue
+			# filter: salary specified must fall within the range asked for
+			if (int(val["salary_pa"]) < salaryrange[0]) or (int(val["salary_pa"]) > salaryrange[1] and (salaryrange[1] != 200)):
+				continue
+			
+			if search != "":
+				searchtext = val["company"].lower() + " " + val["description"].lower() + " " + val["title"].lower()
+				searchtext = re.sub(re.compile("\W"), " ", searchtext)
+				searchtext = ' '.join([w for w in searchtext.split() if len(w)>3])
+
+				searchqueries = search.lower()
+				searchqueries = re.sub(re.compile("\W"), " ", searchqueries)
+				for word in searchqueries.split():
+					if len(word) <= 3:
+						continue
+					if word in searchtext:
+						jobs.append((key, val))
+						break
+			else:
+				jobs.append((key, val))
+
+
+		return jsonify({'jobs': jobs}),200
+	except Exception as e:
+		print(e)
+		return jsonify({"error": "something bad happened"}),500
