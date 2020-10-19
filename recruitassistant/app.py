@@ -19,8 +19,9 @@ CORS(app, supports_credentials=True)
 
 # connect to firebase
 cred = credentials.Certificate('./backend/recruitassistant_cred.json')
-firebase = firebase_admin.initialize_app(cred, {"databaseURL": "https://recruitassistant-fe71e.firebaseio.com"})
+firebase = firebase_admin.initialize_app(cred, {"databaseURL": "https://recruitassistant-fe71e.firebaseio.com", "storageBucket": "gs://recruitassistant-fe71e.appspot.com"})
 pb = pyrebase.initialize_app(json.load(open('./backend/firebase_config.json')))
+storage = pb.storage()
 ref = db.reference('/')
 
 def print_date_time():
@@ -128,18 +129,31 @@ def check_token():
 		print(e)
 		return jsonify({'message': 'Token verification failed'}),400
 
+@app.route('/upload', methods=["POST"])
+def check_files():
+	print(request.files.to_dict())
+	jobid = request.args.get('job_id')
+	jobseekerid = request.args.get('jobseeker_id')
+	try:
+		for key, val in request.files.items():
+			uploadTask = storage.child(jobid + "_" + jobseekerid + "_" + key).put(val)
+		return jsonify({'message': 'Uploaded files successfully'}),200
+	except Exception as e:		
+		return jsonify({"message": str(e)}), 400
+
 @app.route('/jobapplications', methods=["POST"])
 def post_application():
 	#posts job application to database
 	json_data = request.get_json()
-	print(json_data)
+	# print(json_data)
 	application_uid=str(uuid.uuid1())
-	print(application_uid)
+	# print(application_uid)
 	today = date.today()
 	date_posted = today.strftime("%Y-%m-%y")
-	print("d1 =", date_posted),
+	# print("d1 =", date_posted)
+
 	try:
-		ref.child('jobApplications').update({
+		ref.child('jobApplications').child(json_data["job_id"]).update({
 				application_uid: {
 					'first_name': json_data["first_name"],
 					'last_name' : json_data["last_name"],
@@ -147,9 +161,10 @@ def post_application():
 					'rights':json_data["rights"],
 					'date_posted': date_posted,
 					'qualifications':json_data["qualifications"],
-					'jobseeker_id':json_data["jobseeker_id"],
-					'job_id':json_data["job_id"],
-					#'required_docs': json_data["required_docs"],
+					'qualities_met':json_data["qualities_met"],
+					'submitted_docs': json_data["submitted_docs"],
+					'jobseeker_id':json_data["jobseeker_id"]
+					# 'job_id':json_data["job_id"],
 				},
 			})
 		return jsonify({'message': f'Successfully created application {application_uid}'}),200
@@ -268,6 +283,28 @@ def get_job_for_page():
 		
 		print(job)
 		return jsonify({'job': job}),200
+ 
+	except Exception as e:		
+		print(e)
+		return jsonify({"message": str(e)}), 400
+
+@app.route('/applicationslist', methods=["GET"])
+def get_applications_for_job():
+	#gets all posts in the database
+	try:
+		jobid = request.args.get('job_id')
+		post = ref.child("jobApplications").order_by_key().equal_to(jobid).get()
+		applications=[]
+		# print(list(post.items().index("qualities_met")))
+		for key,val in post.items():
+			# sort on how many qualifications are met
+			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get("qualities_met"))
+			sortedRights = sorted(sortedApps, reverse = True, key = lambda x :val.get(x).get("rights"))
+			for appid in sortedRights:
+			 	applications.append((appid, val.get(appid)))
+		
+		print(applications)
+		return jsonify({'applications': applications}),200
  
 	except Exception as e:		
 		print(e)
