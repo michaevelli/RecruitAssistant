@@ -9,7 +9,6 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
-import SendInterview from "./SendInterview.js"
 
 export const advertisementUrl="http://localhost:5000/advertisement"
 export const applicationUrl="http://localhost:5000/applicationslist"
