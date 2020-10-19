@@ -92,7 +92,7 @@ export default function JobSeekerDashboard() {
 		//reset search criteria when toggle closed again
 		setJobType('')
 		setExperienceLevel('')
-		setSalaryRange([0,10])
+		setSalaryRange([0,200])
 	}
 
 	const renderJobs = () => {
