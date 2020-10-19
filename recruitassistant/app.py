@@ -6,23 +6,23 @@ import firebase_admin
 from firebase_admin import credentials, auth, db
 import pyrebase
 import json
-from flask_cors import CORS
 import uuid
 from datetime import date, datetime
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
+from backend import jobs
+from backend.init_app import app, ref, pb
 import re
 
 # initalise app
-app = Flask(__name__)
-CORS(app, supports_credentials=True)
+# app = Flask(__name__)
+# CORS(app, supports_credentials=True)
 
-# connect to firebase
-cred = credentials.Certificate('./backend/recruitassistant_cred.json')
-firebase = firebase_admin.initialize_app(cred, {"databaseURL": "https://recruitassistant-fe71e.firebaseio.com", "storageBucket": "gs://recruitassistant-fe71e.appspot.com"})
-pb = pyrebase.initialize_app(json.load(open('./backend/firebase_config.json')))
-storage = pb.storage()
-ref = db.reference('/')
+# # connect to firebase
+# cred = credentials.Certificate('./backend/recruitassistant_cred.json')
+# firebase = firebase_admin.initialize_app(cred, {"databaseURL": "https://recruitassistant-fe71e.firebaseio.com"})
+# pb = pyrebase.initialize_app(json.load(open('./backend/firebase_config.json')))
+# ref = db.reference('/')
 
 def print_date_time():
     print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
@@ -64,6 +64,7 @@ def check_token():
 @app.route('/upload', methods=["POST"])
 def check_files():
 	print(request.files.to_dict())
+	storage = pb.storage()
 	jobid = request.args.get('job_id')
 	jobseekerid = request.args.get('jobseeker_id')
 	try:
@@ -261,7 +262,7 @@ def user_signup():
 @app.route('/login', methods=['POST'])
 def login():
 	try:
-		json_data = request.get_json()
+		# json_data = request.get_json()
 
 		fAuth = pb.auth()
 		db = pb.database()
