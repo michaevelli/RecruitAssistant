@@ -121,14 +121,11 @@ export default function OfferLetterForm(props) {
 		setAdditionalDocs([...additionalDocs, ''])
 	}
 
-	//works correctly in terms of actual files removed
-	//but interface shows the wrong filenames still.... not sure why
-	const handleRemoveDoc = (index) => {
-		console.log(index+" for remove doc")
-		const docs  = [...additionalDocs]
-		console.log("removing file "+docs[index]['filename'])
+	//changed to only remove the last document
+	const handleRemoveDoc = () => {
+		const docs  = [...additionalDocs]	
 		//remove doc
-		docs.splice(index, 1)	
+		docs.pop()
 		setAdditionalDocs(docs)
 	}
 
@@ -374,11 +371,17 @@ export default function OfferLetterForm(props) {
 									accept="application/pdf"
 									onChange = {(e)=>handleChangeDoc(index,e)} 
 									/>
-									<IconButton onClick={() => handleRemoveDoc(index)}>
-										<RemoveIcon />
-									</IconButton>
+								
 								</div>
-							))}				
+							))}	
+
+							{ additionalDocs.length > 0 &&
+							
+								<IconButton onClick={() => handleRemoveDoc()}>
+										<RemoveIcon />
+								</IconButton>
+							}		
+							
 							</Col>
 							<div >
 								<button onClick={()=>downloadFile()} > test download a doc</button>
