@@ -1,13 +1,13 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Button, Grid,Card,CardContent,CardActions } from "@material-ui/core";
+import { Button, Grid,Card,CardContent,CardActions } from "@material-ui/core";
 import {Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { useHistory,Link } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
 export const advertisementUrl="http://localhost:5000/advertisement"
@@ -107,7 +107,16 @@ export default function RecruiterDashboard() {
 				<CardActions >
 					<ButtonToolbar>
 						<Button>Interview</Button>
-						<Button>Offer</Button>
+						<Button>	
+							<Link to={{
+								pathname: `/createoffer`,
+								state: {
+									jobAppID: app[0],
+									jobID: jobID
+								}}}>
+							Offer
+							</Link>
+						</Button> 
 						<Button>Dismiss</Button>
 					</ButtonToolbar>
 				</CardActions>
@@ -144,11 +153,7 @@ export default function RecruiterDashboard() {
 						</div>
 					</Col>
 						
-					<Col>
-						<Button variant="contained" color="secondary" href="/createJobPost" style={{position: 'fixed', right: 0, top: 40, margin: 30}}>
-							+ Job
-						</Button>               
-					</Col>
+				
 				</Row>
 			</Grid>
 		))
