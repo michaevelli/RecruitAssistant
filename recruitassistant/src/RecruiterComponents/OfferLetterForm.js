@@ -15,12 +15,8 @@ export const offerURL="http://localhost:5000/offer"
 export const advertisementUrl="http://localhost:5000/advertisement"
 export const applicationsUrl ="http://localhost:5000/jobapplication"
 
-//TODO get prefill info!!! including job seeker and application ids
-
-
 export default function OfferLetterForm(props) {
-	//const href = `${window.location.href}`.split("/")
-	console.log(props)
+
 	console.log(props.location.state)
 	const jobAppID = props.location.state.jobAppID
 	const jobID= props.location.state.jobID
@@ -29,14 +25,6 @@ export default function OfferLetterForm(props) {
 	const options = {year: 'numeric', month: 'long', day: 'numeric' };
     const t  = new Date();
     const todays_date=t.toLocaleDateString("en-US", options);
-   
-
-    //todo-- prefill these variables
-	//pull title,company, job seeker first and last name from the job advert
-	
-	//we have app id through which we can get job ad id and thus all our info!
-
-    
 
 	//Used for form validation
     const [validated, setValidated] = useState(false);
@@ -44,8 +32,8 @@ export default function OfferLetterForm(props) {
 	const [location,setLocation] = useState('');
 	const [title,setTitle] = useState('');
 	const [company,setCompany] = useState('');
-	const [jobseekerName, setJobseekerName]= useState('');
 	
+	const [jobseekerId,setJobSeekerID]=useState('')
 	const [description,setDescription] = useState('');
     const [jobType, setJobType]=useState('') //default to type on the job advert
     //salary 
@@ -95,10 +83,8 @@ export default function OfferLetterForm(props) {
 				const first=job_data["first_name"]
 				const last= job_data["last_name"]
 				const fullname=first+' '+last
-				console.log(fullname)
-				setJobseekerName(fullname) ;
 				setDescription(`${todays_date}\n\nDear ${fullname},\n\n    .......`)	
-				
+				setJobSeekerID(job_data['jobseeker_id'])
 			}).catch((error) => {
 				console.log("error: ", error.response)
 				alert("An error occured, please try again")
@@ -118,6 +104,7 @@ export default function OfferLetterForm(props) {
 			})
 	}
 	
+	//example of how to download a pdf in browser
 	const downloadFile = async () =>{		
 		await axios.get(offerURL)
 			.then(r => {
@@ -151,11 +138,11 @@ export default function OfferLetterForm(props) {
 		console.log(index)
 		var file=event.target.files[0]
 		var filename=event.target.files[0].name
-		
 		const reader = new FileReader()
 		reader.onload = (e) => handleFileLoad(filename,index,e);
 		reader.readAsDataURL(file)
 	}
+
 	const handleFileLoad= (filename,index,event)=>{
 		var docs = [...additionalDocs]
 		docs[index]={'filename': filename, 'src': event.target.result}
@@ -165,7 +152,6 @@ export default function OfferLetterForm(props) {
 
 	
     //TODO - get jobseeker id from the application whose 'offer' button we clicked...
-    //also get jobapplication id
 	const postOffer = async () => {
         const url = offerURL
         const data={
@@ -174,8 +160,9 @@ export default function OfferLetterForm(props) {
 			description: description,
 			company:company,
             recruiter_id: sessionStorage.getItem("uid"),
-            jobapplication_id: '',
-            jobseeker_id: '',
+			jobapplication_id: jobAppID,
+			jobadvert_id: jobID,
+            jobseeker_id: jobseekerId,
 			job_type: jobType,
             salary: salary,
             salary_type: salaryType,
@@ -231,22 +218,19 @@ export default function OfferLetterForm(props) {
 				</Col>
 				
 				<Col sm="10" >
+					<a href={`/advertisement/${jobID}`} target="_blank" style={{textAlign: "center",margin:20 }}> View Original Job Advert</a>
 				
-					<a href="#"  style={{textAlign: "center",margin:20 }}> View Original Job Advert</a>
-					
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						Create Offer Letter
 					</Typography>
-
-                   
+   
                     <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
                         <h4>Offer Description</h4>
 						<Form.Group controlId="description">
 							<Col sm={10}>
 								<Form.Control as="textarea" rows="10" 
 								required
-								onChange={ (event) => setDescription(event.target.value)}
-                               
+								onChange={ (event) => setDescription(event.target.value)}                              
                                 value={description}/>
 							</Col>
 						</Form.Group>
@@ -268,23 +252,22 @@ export default function OfferLetterForm(props) {
 							*Start Date:</Form.Label>
 							<Col sm={10}>
 							<TextField 
-								className={ !startDatevalidator()
-									? "form-control is-invalid"
-									: "form-control"
-								}
-								id="startDate"
-								type="date"
-								min={t}
-								onChange={ (event) => 
-									setStartDate(event.target.value)	
-								}
+							className={ !startDatevalidator()
+								? "form-control is-invalid"
+								: "form-control"
+							}
+							id="startDate"
+							type="date"
+							min={t}
+							onChange={ (event) => 
+								setStartDate(event.target.value)	
+							}
 							/>
 								<Form.Control.Feedback type="invalid">
 									Please enter a date in the future
 								</Form.Control.Feedback>
 							</Col>
 						</Form.Group>
-
 
                         <Form.Group controlId="endDate">
 							<Form.Label column sm={2}>

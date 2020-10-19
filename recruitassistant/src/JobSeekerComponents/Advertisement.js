@@ -20,7 +20,7 @@ export default function Advertisement() {
     const jobID = href[href.length - 1]
     const [applied, setApplied] = useState(false);
     const [job, setJob] = useState([])
-
+    const [recruiter, setRecruiter] = useState(false);
 	useEffect(() => {
         auth();
         getJob();
@@ -31,10 +31,16 @@ export default function Advertisement() {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
                 console.log("auth success: ", response)
-				setLoading(false)
-				if (!response.success || response.userInfo["type"] != "jobseeker") {
+                setLoading(false)
+                //Both recruiters and job seekers should be able to view an advert
+				if (!response.success) {
 					history.push("/unauthorised");
-				}
+                }
+                if (response.userInfo["type"] == "recruiter") {
+                        //hide apply button and side menu
+                        //just show the ad
+                        setRecruiter(true)
+                }
 			})
 	}
     
@@ -73,8 +79,58 @@ export default function Advertisement() {
 			})
     };
 
-    return loading ? (
-		<div></div>
+    return recruiter ? (
+		<Grid>      
+			<Row>
+				{job.map((detail) => (
+                    <Col>
+                        <Typography component="div" style={{color: 'black', margin: 50}}>
+                            <Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
+                                {detail[1].title}
+                            </Box>
+                            <Box fontSize="h5.fontSize">
+                                {detail[1].company} | {detail[1].location}
+                            </Box>
+                            <Box fontSize="h6.fontSize" lineHeight={2}>
+                                {detail[1].job_type}
+                            </Box>
+                            <Box fontSize="h6.fontSize" lineHeight={2}>
+                                Remuneration: ${detail[1].salary_pa * 1000}
+                            </Box>
+                            <br></br>
+                            <br></br>
+                            <Box fontSize="h6.fontSize" lineHeight={2}>
+                                {detail[1].description}
+                            </Box>
+                            <br></br>
+                            <br></br>
+                            <Box fontSize="h6.fontSize" lineHeight={2}>
+                                Responsibilities:
+                                {detail[1].responsibilities.map((responsibility) => (
+                                    <ul>
+                                        <li> {responsibility} </li>
+                                    </ul>
+                                ))}
+                            </Box>
+                            <Box fontSize="h6.fontSize" lineHeight={2}>
+                                Qualifications:
+                                {detail[1].req_qualifications.split(",").map((qualification) => (
+                                    <ul>
+                                        <li> {qualification} </li>
+                                    </ul>
+                                ))}
+                            </Box>
+                            <Box fontSize="h6.fontSize" lineHeight={2}>
+                                Experience level: {detail[1].experience_level}
+                            </Box>
+                            <Box fontSize="h6.fontSize" lineHeight={2}>
+                                Closing date: {detail[1].closing_date}
+                            </Box>
+                        </Typography>   
+                    </Col>
+                ))}
+			</Row>
+		</Grid>
 	) : (
         <Grid>      
 			<Row noGutters fluid><TitleBar/></Row>
