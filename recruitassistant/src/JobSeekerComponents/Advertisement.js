@@ -129,6 +129,9 @@ export default function Advertisement() {
 								Experience level: {detail[1].experience_level}
 							</Box>
 							<Box fontSize="h6.fontSize" lineHeight={2}>
+								Job Type: {detail[1].job_type}
+							</Box>
+							<Box fontSize="h6.fontSize" lineHeight={2}>
 								Closing date: {detail[1].closing_date}
 							</Box>
 						</Typography>
