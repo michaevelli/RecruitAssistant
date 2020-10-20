@@ -126,8 +126,10 @@ export default function JobApply() {
 			phone_number: phone_number,
 			rights: rights,
 			qualifications: final_qualifications,
+			qualities_met: final_qualifications.length,
 			jobseeker_id: jobseeker_id,
-			job_id: jobID
+			job_id: jobID,
+			submitted_docs: required_docs
 		}
 
 		const url = `${uploadUrl}`
