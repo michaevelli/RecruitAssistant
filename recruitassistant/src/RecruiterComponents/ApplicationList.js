@@ -12,6 +12,8 @@ import checkAuth from "../Authentication/Authenticate";
 
 export const advertisementUrl="http://localhost:5000/advertisement"
 export const applicationUrl="http://localhost:5000/applicationslist"
+export const interviewUrl="http://localhost:5000/interviews"
+
 
 export default function RecruiterDashboard() {
 	const href = `${window.location.href}`.split("/")
@@ -75,6 +77,35 @@ export default function RecruiterDashboard() {
 			})
 	};
 
+	const postInterview = async () => {
+		var invite_list = []
+		var emp_id = sessionStorage.getItem("uid")
+		console.log(applications)
+		for (let i = 0; i < applications.length; i++) {
+			invite_list.push({
+				"jobseeker_id": applications[i][1]["jobseeker_id"],
+				"employer_id" : emp_id,
+				"app_id": applications[i][0],
+				"job_id": jobID,
+				"date": "TEMP DATA FOR NOW"
+			})
+		}
+
+		const data={
+			invite_list
+		}
+
+		await axios.post(interviewUrl, data)
+		.then(res => {
+			console.log("response: ", res)
+			alert("Interview Successfully Sent")
+		})
+		.catch((error) => {
+			console.log("error: ", error.response)
+			alert("An error occured, please try again")
+		})	
+	};
+
 	const renderApplications = () => {
 		// var descending = {};
 		// applications.map((app) => (
@@ -97,7 +128,7 @@ export default function RecruiterDashboard() {
 								</Typography>
 							</Col>
 							<Col>
-								<Link href={`/application/${app[0]}`} style={{marginLeft: 90}} >
+								<Link to={`/viewapplication/${jobID}/${app[0]}`} style={{marginLeft: 90}} >
 									View Application
 								</Link>
 							</Col>
@@ -148,6 +179,12 @@ export default function RecruiterDashboard() {
 						<Typography variant="h5"  style={{color: 'black', marginLeft:20 }}>
 							Select top
 						</Typography>
+						<Button 
+							onClick={() => {postInterview()}}
+							variant="contained"
+							style={{"margin":5}}>
+								Send Invites
+						</Button>
 						<div className="card-deck"  style={{ display: 'grid', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
 							{renderApplications()}
 						</div>
