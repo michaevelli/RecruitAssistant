@@ -46,6 +46,56 @@ scheduler.add_job(func=check_postings, trigger="interval", seconds=5)
 scheduler.start()
 # atexit.register(lambda: scheduler.shutdown())
 
+#this method is just for testing download of pdf works
+@app.route('/offer', methods=["GET"])
+def get_offer_files():
+	try:
+		posts=ref.child("offer/bc5bd92a-11af-11eb-9fea-005056c00008").child('additional_docs').get()		
+		res= posts[0]	
+		filename=res['filename']
+		content=res['src']
+		content=content[28:] #remove data/application blah
+		return content,200
+ 
+	except Exception as e:
+		return jsonify({"message": str(e)}), 400
+
+@app.route('/offer', methods=["POST"])
+def post_offer_letter():
+	json_data = request.get_json()
+	offer_uid=str(uuid.uuid1())
+	
+	today = date.today()
+	date_posted = today.strftime("%Y-%m-%y")
+	print("d1 =", date_posted),
+	
+	try:
+		ref.child('offer').update({
+				offer_uid: {
+					'title':json_data["title"],
+					'location':json_data["location"],
+					'description': json_data['description'],
+					'company':json_data["company"],
+					'date_posted': date_posted,
+					'recruiter_id': json_data['recruiter_id'],
+					'application_id': json_data['jobapplication_id'],
+					'jobseeker_id': json_data['jobseeker_id'],
+					'job_type': json_data['job_type'],
+					'salary': json_data['salary'],
+					'salary_type': json_data['salary_type'],
+					'hours': json_data['hours'],
+					'days': json_data['days'],
+					'start_date': json_data['start_date'],
+					'end_date': json_data['end_date'],
+					'status': json_data['status'], 
+					'additional_docs': json_data['additional_docs'],
+				}
+			})
+		return jsonify({'message': f'Successfully created offer {offer_uid}'}),200
+	except Exception as e:		
+		return jsonify({"message": str(e)}), 400
+
+
 @app.route('/auth', methods=["POST"])
 def check_token():
 	data = request.json
@@ -94,9 +144,10 @@ def post_application():
 					'rights':json_data["rights"],
 					'date_posted': date_posted,
 					'qualifications':json_data["qualifications"],
-					'jobseeker_id':json_data["jobseeker_id"],
+					'qualities_met':json_data["qualities_met"],
+					'submitted_docs': json_data["submitted_docs"],
+					'jobseeker_id':json_data["jobseeker_id"]
 					# 'job_id':json_data["job_id"],
-					#'required_docs': json_data["required_docs"],
 				},
 			})
 		return jsonify({'message': f'Successfully created application {application_uid}'}),200
@@ -123,6 +174,25 @@ def check_applied():
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
+
+@app.route('/jobapplication', methods=["GET"])
+def get_app_details():
+	#checks if application exists for jobseeker and job
+	try:
+		job_id=request.args.get('jobId')
+		job_app_id = request.args.get('jobAppId')
+		specific_child="jobApplications/"+job_id+'/'+job_app_id
+		print(specific_child)
+		the_application=ref.child(specific_child).get()
+		print("THE APPP")
+		print(the_application)
+		return jsonify({'application': the_application}),200
+ 
+	except Exception as e:		
+		print(e)
+		return jsonify({"message": str(e)}), 400
+
+
 # test
 @app.route('/time')
 def get_current_time():
@@ -138,8 +208,6 @@ def post_new_job():
 	today = date.today()
 	date_posted = today.strftime("%Y-%m-%y")
 	print("d1 =", date_posted),
-	#TODO
-	#add recruiter_id as id of logged in user
 	
 	try:
 		ref.child('jobAdvert').update({
@@ -160,7 +228,6 @@ def post_new_job():
 					#'min_years_experience': json_data["min_years_experience"],
 					'status': json_data['status'],
 					'additional_questions': json_data['additional_questions']
-
 				},
 			})
 		return jsonify({'message': f'Successfully created job {job_uid}'}),200
@@ -218,6 +285,28 @@ def get_job_for_page():
 		
 		print(job)
 		return jsonify({'job': job}),200
+ 
+	except Exception as e:		
+		print(e)
+		return jsonify({"message": str(e)}), 400
+
+@app.route('/applicationslist', methods=["GET"])
+def get_applications_for_job():
+	#gets all posts in the database
+	try:
+		jobid = request.args.get('job_id')
+		post = ref.child("jobApplications").order_by_key().equal_to(jobid).get()
+		applications=[]
+		# print(list(post.items().index("qualities_met")))
+		for key,val in post.items():
+			# sort on how many qualifications are met
+			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get("qualities_met"))
+			sortedRights = sorted(sortedApps, reverse = True, key = lambda x :val.get(x).get("rights"))
+			for appid in sortedRights:
+			 	applications.append((appid, val.get(appid)))
+		
+		print(applications)
+		return jsonify({'applications': applications}),200
  
 	except Exception as e:		
 		print(e)

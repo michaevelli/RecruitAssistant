@@ -50,7 +50,7 @@ export default function RecruiterDashboard() {
 
 	const renderJobs = () => {
 		return jobs.map((job) => (
-			<Card style={{margin: 30, height: 180, width:250}}>
+			<Card style={{margin: 30, height: 180, width:280}}>
 				{/* <Card.Body> */}
 				<CardContent>                          
 					<Typography variant="h5" component="h2">{job[1].title}</Typography>
@@ -58,11 +58,16 @@ export default function RecruiterDashboard() {
 					<Typography color="textSecondary">{job[1].status}</Typography>
 				</CardContent>
 				<CardActions >
-					<Link href={"/editjob/"+job[0]}>
+					<Typography color="textSecondary" style={{marginLeft: 10}}>
+						{job[1].status}
+					</Typography>
+
+					<Link href={"/editjob/"+job[0]} style={{marginLeft: 10}} >
 						Edit Job
 					</Link>
-					<Link href="/sampleapplicationdash">
-						View applications
+					
+					<Link href={`/applications/${job[0]}`} style={{marginLeft: 10}} >
+						View Applications
 					</Link>
 				</CardActions>
 				{/* </Card.Body> */}

@@ -14,12 +14,14 @@ export const applicationUrl="http://localhost:5000/jobapplications"
 export const advertisementUrl="http://localhost:5000/advertisement"
 
 export default function Advertisement() {
+
 	const history = useHistory();
 	const [loading, setLoading] = useState(true);
 	const href = `${window.location.href}`.split("/")
 	const jobID = href[href.length - 1]
 	const [applied, setApplied] = useState(false);
 	const [job, setJob] = useState([])
+    const [recruiter, setRecruiter] = useState(false);
 
 	useEffect(() => {
 		auth();
@@ -30,11 +32,18 @@ export default function Advertisement() {
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
-				console.log("auth success: ", response)
-				setLoading(false)
-				if (!response.success || response.userInfo["type"] != "jobseeker") {
+                console.log("auth success: ", response)
+                setLoading(false)
+                //Both recruiters and job seekers should be able to view an advert
+				if (!response.success) {
+
 					history.push("/unauthorised");
-				}
+                }
+                if (response.userInfo["type"] == "recruiter") {
+                        //hide apply button and side menu
+                        //just show the ad
+                        setRecruiter(true)
+                }
 			})
 	}
 	
@@ -88,21 +97,10 @@ export default function Advertisement() {
 			)
 		}
 	}
-
-	return loading ? (
-		<div></div>
-	) : (
-		<Grid>      
-			<Row noGutters fluid><TitleBar/></Row>
-			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
-				<Col sm={2}>
-					<SideMenu random={[
-						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
-						{'text':'Your Applications','href': '#', 'active': false},         
-						{'text':'FAQ','href':'#','active': false}]}/>
-				</Col >
-				{job.map((detail) => (
-					<Col>
+	const advertPanel = () =>{
+		return (
+			job.map((detail) => (
+				<Col>
 						<Typography component="div" style={{color: 'black', margin: 50}}>
 							<Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
 								{detail[1].title}
@@ -134,11 +132,30 @@ export default function Advertisement() {
 								Closing date: {detail[1].closing_date}
 							</Box>
 						</Typography>
-						<Button disabled={applied} variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
+						<Button disabled={applied || recruiter } variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
 							Apply
 						</Button>
 					</Col>
-				))}
+			))
+		);
+	}
+    return recruiter ? (
+		<Grid>      
+			<Row>
+			{advertPanel()}
+			</Row>
+		</Grid>
+	) : (
+		<Grid>      
+			<Row noGutters fluid><TitleBar/></Row>
+			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
+				<Col sm={2}>
+					<SideMenu random={[
+						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
+						{'text':'Your Applications','href': '#', 'active': false},         
+						{'text':'FAQ','href':'#','active': false}]}/>
+				</Col >
+				{advertPanel()}
 			</Row>
 		</Grid>
 	);

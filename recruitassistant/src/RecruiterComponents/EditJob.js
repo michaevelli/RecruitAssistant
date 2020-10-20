@@ -73,8 +73,8 @@ export default function EditJob({match}) {
 				setClosingDate(job_data["closing_date"]);
 				setRequiredDocs(job_data["required_docs"]);
 				setQualifications(job_data["req_qualifications"]);
-				setAdditionalQuestions(job_data["additional_questions"]);
-				setResponsibilities(job_data["responsibilities"]);
+				setAdditionalQuestions(job_data["additional_questions"] || []);
+				setResponsibilities(job_data["responsibilities"] || []);
 				setDatePosted(job_data["date_posted"]);
 			})
 	}
