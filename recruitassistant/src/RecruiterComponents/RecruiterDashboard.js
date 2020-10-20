@@ -8,6 +8,7 @@ import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
+// import SendInterview from "./SendInterview.js";
 
 export const jobUrl="http://localhost:5000/jobadverts/"
 
@@ -99,7 +100,8 @@ export default function RecruiterDashboard() {
 				<Col>
 					<Button variant="contained" color="secondary" href="/createJobPost" style={{position: 'fixed', right: 0, top: 40, margin: 30}}>
 						+ Job
-					</Button>               
+					</Button>      
+					{/* <SendInterview></SendInterview> */}
 				</Col>
 			</Row>
 		</Grid>

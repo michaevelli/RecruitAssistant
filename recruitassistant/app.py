@@ -175,6 +175,7 @@ def check_applied():
 		return jsonify({"message": str(e)}), 400
 
 
+
 @app.route('/jobapplication', methods=["GET"])
 def get_app_details():
 	#checks if application exists for jobseeker and job
@@ -188,7 +189,24 @@ def get_app_details():
 		print(the_application)
 		return jsonify({'application': the_application}),200
  
-	except Exception as e:		
+	except Exception as e:
+		print(e)
+		return jsonify({"message": str(e)}), 400		
+
+@app.route('/retrieveapplication', methods=["GET"])
+def return_application():
+	appid = request.args.get('app_id')
+	jobid = request.args.get('job_id')
+	app_resp = {}
+	print("here")
+	try:
+		app_resp=ref.child("jobApplications").get().get(jobid).get(appid)
+		print(app_resp)
+		job_info = ref.child("jobAdvert").order_by_key().equal_to(jobid).get().get(jobid)
+		print(job_info)
+
+		return jsonify({"applications": app_resp, "jobinfo": job_info}), 200
+	except Exception as e:
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
@@ -290,6 +308,31 @@ def get_job_for_page():
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
+@app.route('/interviews', methods=["POST"])
+def send_interview():
+	json_data = request.get_json()
+	invite_list = json_data["invite_list"]
+	# interview_id=str(uuid.uuid1())
+	i = 0
+	try:
+		for u in invite_list:
+			interview_id=str(uuid.uuid1()) + str(i)
+
+			ref.child('interviews').update({
+					interview_id: {
+						'jobseeker_id': u["jobseeker_id"],
+						'employer_id': u["employer_id"],
+						'application_id': u["app_id"],
+						'job_id': u["job_id"],
+						'interview_date': u["date"],
+					},
+				})
+		return jsonify({'message': f'Successfully created interview {interview_id}'}),200
+	except Exception as e:
+		print(e)
+		return jsonify({"message": str(e)}), 400
+	return
+
 @app.route('/applicationslist', methods=["GET"])
 def get_applications_for_job():
 	#gets all posts in the database
@@ -299,11 +342,13 @@ def get_applications_for_job():
 		applications=[]
 		# print(list(post.items().index("qualities_met")))
 		for key,val in post.items():
+			# print(key)
 			# sort on how many qualifications are met
 			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get("qualities_met"))
 			sortedRights = sorted(sortedApps, reverse = True, key = lambda x :val.get(x).get("rights"))
 			for appid in sortedRights:
 			 	applications.append((appid, val.get(appid)))
+				#applications.append((key, val.get(appid)))
 		
 		print(applications)
 		return jsonify({'applications': applications}),200
