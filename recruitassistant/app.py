@@ -251,8 +251,7 @@ def get_applications_for_job():
 		for key,val in post.items():
 			# sort on how many qualifications are met
 			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get("qualities_met"))
-			sortedRights = sorted(sortedApps, reverse = True, key = lambda x :val.get(x).get("rights"))
-			for appid in sortedRights:
+			for appid in sortedApps:
 			 	applications.append((appid, val.get(appid)))
 		
 		print(applications)
