@@ -15,6 +15,8 @@ import EditJob from "./RecruiterComponents/EditJob";
 import Advertisement from "./JobSeekerComponents/Advertisement";
 import JobApply from "./JobSeekerComponents/JobApply";
 import Home from "./Home";
+import OfferLetterForm from './RecruiterComponents/OfferLetterForm';
+import ApplicationList from './RecruiterComponents/ApplicationList';
 
 function App() {
 
@@ -36,6 +38,8 @@ function App() {
           <Route path="/editjob/:jobID" component={EditJob}/>
           <Route path="/advertisement" component={Advertisement}/>
           <Route path="/jobapply" component={JobApply}/>
+          <Route path="/createoffer" component={OfferLetterForm}/>
+          <Route path="/applications" component={ApplicationList}/>
         </Switch>
       </BrowserRouter>
 
