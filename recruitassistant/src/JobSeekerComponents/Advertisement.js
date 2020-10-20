@@ -14,69 +14,142 @@ export const applicationUrl="http://localhost:5000/jobapplications"
 export const advertisementUrl="http://localhost:5000/advertisement"
 
 export default function Advertisement() {
-    const history = useHistory();
-    const [loading, setLoading] = useState(true);
-    const href = `${window.location.href}`.split("/")
-    const jobID = href[href.length - 1]
-    const [applied, setApplied] = useState(false);
-    const [job, setJob] = useState([])
+
+	const history = useHistory();
+	const [loading, setLoading] = useState(true);
+	const href = `${window.location.href}`.split("/")
+	const jobID = href[href.length - 1]
+	const [applied, setApplied] = useState(false);
+	const [job, setJob] = useState([])
+    const [recruiter, setRecruiter] = useState(false);
 
 	useEffect(() => {
-        auth();
-        getJob();
-        checkJobApplied();
+		auth();
+		getJob();
+		checkJobApplied();
 	}, []);
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
                 console.log("auth success: ", response)
-				setLoading(false)
-				if (!response.success || response.userInfo["type"] != "jobseeker") {
+                setLoading(false)
+                //Both recruiters and job seekers should be able to view an advert
+				if (!response.success) {
+
 					history.push("/unauthorised");
-				}
+                }
+                if (response.userInfo["type"] == "recruiter") {
+                        //hide apply button and side menu
+                        //just show the ad
+                        setRecruiter(true)
+                }
 			})
 	}
-    
-    const getJob = async () => {
-        const url = `${advertisementUrl}`
+	
+	const getJob = async () => {
+		const url = `${advertisementUrl}`
 		console.log(url)
 		await axios.get(url, {
-                params: {
-                    job_id: jobID
-                },
-            })
-            .then(res => {
-                setJob(res.data.job)
-                console.log("response: ", res)
+				params: {
+					job_id: jobID
+				},
+			})
+			.then(res => {
+				setJob(res.data.job)
+				console.log("response: ", res)
 			})
 			.catch((error) => {
-                console.log("error: ", error.response)
+				console.log("error: ", error.response)
 			})
-    };
+	};
 
-    const checkJobApplied = async () => {
-        const url = `${applicationUrl}`
+	const checkJobApplied = async () => {
+		const url = `${applicationUrl}`
 		console.log(url)
 		await axios.get(url, {
-                params: {
-                    job_id: jobID,
-                    jobseeker_id: sessionStorage.getItem("uid")
-                },
-            })
-            .then(res => {
-                setApplied(res.data.applied)
-                console.log("response: ", res)
+				params: {
+					job_id: jobID,
+					jobseeker_id: sessionStorage.getItem("uid")
+				},
+			})
+			.then(res => {
+				setApplied(res.data.applied)
+				console.log("response: ", res)
 			})
 			.catch((error) => {
-                console.log("error: ", error.response)
+				console.log("error: ", error.response)
 			})
-    };
+	};
 
-    return loading ? (
-		<div></div>
+	const renderListItems = (field) => {
+		if (field == null) {
+			return <div></div>
+		} else {
+			var item = [];
+			item.concat(field);
+			return (
+				item.map((i) => (
+					<ul>
+						<li> {i} </li>
+					</ul>
+				))
+			)
+		}
+	}
+	const advertPanel = () =>{
+		return (
+			job.map((detail) => (
+				<Col>
+						<Typography component="div" style={{color: 'black', margin: 50}}>
+							<Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
+								{detail[1].title}
+							</Box>
+							<Box fontSize="h5.fontSize">
+								{detail[1].company} | {detail[1].location}
+							</Box>
+							<Box fontSize="h6.fontSize" lineHeight={2}>
+								{detail[1].job_type}
+							</Box>
+							<Box fontSize="h6.fontSize" lineHeight={2}>
+								Remuneration: ${detail[1].salary_pa * 1000}
+							</Box>
+							<Box fontSize="h6.fontSize" lineHeight={7}>
+								{detail[1].description}
+							</Box>
+							<Box fontSize="h6.fontSize" lineHeight={2}>
+								Responsibilities:
+								{renderListItems(detail[1].responsibilities)}
+							</Box>
+							<Box fontSize="h6.fontSize" lineHeight={2}>
+								Qualifications:
+								{renderListItems(detail[1].req_qualifications)}
+							</Box>
+							<Box fontSize="h6.fontSize" lineHeight={2}>
+								Experience level: {detail[1].experience_level}
+							</Box>
+							<Box fontSize="h6.fontSize" lineHeight={2}>
+								Job Type: {detail[1].job_type}
+							</Box>
+							<Box fontSize="h6.fontSize" lineHeight={2}>
+								Closing date: {detail[1].closing_date}
+							</Box>
+						</Typography>
+						<Button disabled={applied || recruiter } variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
+							Apply
+						</Button>
+					</Col>
+			))
+		);
+	}
+    return recruiter ? (
+		<Grid>      
+			<Row>
+			{advertPanel()}
+			</Row>
+		</Grid>
 	) : (
-        <Grid>      
+		<Grid>      
 			<Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
@@ -85,44 +158,7 @@ export default function Advertisement() {
 						{'text':'Your Applications','href': '#', 'active': false},         
 						{'text':'FAQ','href':'#','active': false}]}/>
 				</Col >
-				{job.map((detail) => (
-                    <Col>
-                        <Typography component="div" style={{color: 'black', margin: 50}}>
-                            <Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
-                                {detail[1].title}
-                            </Box>
-                            <Box fontSize="h5.fontSize">
-                                {detail[1].company} | {detail[1].location}
-                            </Box>
-                            <Box fontSize="h6.fontSize" lineHeight={2}>
-                                {detail[1].job_type}
-                            </Box>
-                            <Box fontSize="h6.fontSize" lineHeight={2}>
-                                Remuneration: ${detail[1].salary_pa * 1000}
-                            </Box>
-                            <Box fontSize="h6.fontSize" lineHeight={7}>
-                                {detail[1].description}
-                            </Box>
-                            <Box fontSize="h6.fontSize" lineHeight={2}>
-                                Qualifications:
-                                {detail[1].req_qualifications.split(",").map((qualification) => (
-                                    <ul>
-                                        <li> {qualification} </li>
-                                    </ul>
-                                ))}
-                            </Box>
-                            <Box fontSize="h6.fontSize" lineHeight={2}>
-                                Experience level: {detail[1].experience_level}
-                            </Box>
-                            <Box fontSize="h6.fontSize" lineHeight={2}>
-                                Closing date: {detail[1].closing_date}
-                            </Box>
-                        </Typography>
-                        <Button disabled={applied} variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
-                            Apply
-                        </Button>
-                    </Col>
-                ))}
+				{advertPanel()}
 			</Row>
 		</Grid>
 	);
