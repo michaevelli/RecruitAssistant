@@ -12,6 +12,8 @@ import checkAuth from "../Authentication/Authenticate";
 
 export const advertisementUrl="http://localhost:5000/advertisement"
 export const applicationUrl="http://localhost:5000/applicationslist"
+export const interviewUrl="http://localhost:5000/interviews"
+
 
 export default function RecruiterDashboard() {
 	const today = new Date()
@@ -24,7 +26,7 @@ export default function RecruiterDashboard() {
 	const [inviteList, setInviteList] = useState([])
 	const [job, setJob] = useState([])
 	const [selection, setSelection] = useState()
-	const [closingDate, setClosingDate] = useState('')
+	const [filled, setFilled] = useState(false)
 
 	useEffect(() => {
 		auth();
@@ -78,6 +80,36 @@ export default function RecruiterDashboard() {
 			})
 	};
 
+	const postInterview = async () => {
+		var invite_list = []
+		var emp_id = sessionStorage.getItem("uid")
+		console.log(inviteList.slice(0, selection))
+		for (let i = 0; i < selection; i++) {
+			invite_list.push({
+				jobseeker_id: applications[i][1]["jobseeker_id"],
+				employer_id: emp_id,
+				app_id: applications[i][0],
+				job_id: jobID,
+				date: inviteList[i]["date"],
+				time: inviteList[i]["time"]
+			})
+		}
+
+		const data={
+			invite_list
+		}
+
+		await axios.post(interviewUrl, data)
+		.then(res => {
+			console.log("response: ", res)
+			alert("Interview Successfully Sent")
+		})
+		.catch((error) => {
+			console.log("error: ", error.response)
+			alert("An error occured, please try again")
+		})	
+	};
+
 	const handleDate = (date, jobseeker, index) => {
 		var considering = [...inviteList]
 		if (inviteList.length !== index + 1) {
@@ -106,6 +138,16 @@ export default function RecruiterDashboard() {
 		}
 	}
 
+	const timevalidator = (index) => {
+		if (typeof inviteList[index] === "undefined") {
+			return false
+		} else if (inviteList[index]["time"] !== "") {
+			return true
+		} else {
+			return false
+		}
+	}
+
 	const renderApplications = (selection, status) => {
 		return applications.slice(0, selection).map((app, index) => (
 			<Card style={{margin: 30, height: 225, width:550}}>
@@ -121,7 +163,7 @@ export default function RecruiterDashboard() {
 								</Typography>
 							</Col>
 							<Col>
-								<Link href={`/application/${app[0]}`} style={{marginLeft: 90}} >
+								<Link href={`/viewapplication/${jobID}/${app[0]}`} style={{marginLeft: 90}} >
 									View Application
 								</Link>
 							</Col>
@@ -164,10 +206,18 @@ export default function RecruiterDashboard() {
 													Time
 												</Form.Label>
 												<TextField
+													className={
+														!timevalidator(index)
+															? "form-control is-invalid"
+															: "form-control"
+													}
 													required
 													id="interview_time"
 													type="time"
 													onChange={ (event) => handleTime(event.target.value, app[1].jobseeker_id, index)}/>
+													<Form.Control.Feedback type="invalid">
+														Please enter a time
+													</Form.Control.Feedback>
 											</Form.Group>
 										</Col>
 								</Form>	
@@ -214,7 +264,7 @@ export default function RecruiterDashboard() {
 								</Form>
 							</Col>
 							<Col>
-								<Button disabled = {detail[1].status === "open"} variant="contained" color="secondary"> Send Interview Invitations</Button>
+								<Button disabled = {detail[1].status === "open"} variant="contained" color="secondary" onClick={() => {postInterview()}}> Send Interview Invitations</Button>
 							</Col>
 						</Row>
 						<Row>
@@ -222,7 +272,6 @@ export default function RecruiterDashboard() {
 								{renderApplications(selection, detail[1].status)}
 							</div>
 						</Row>
-						
 					</Col>
 				</Row>
 			</Grid>
