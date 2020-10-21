@@ -1,6 +1,8 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Button, Grid, Card, CardContent, CardActions, TextField} from "@material-ui/core";
+import {IconButton, Button, Grid, Card, CardContent, CardActions, TextField} from "@material-ui/core";
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import {Form, Col, Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
@@ -31,7 +33,6 @@ export default function RecruiterDashboard() {
 		auth();
 		getJob();
 		getApplications();
-		initialise(applications);
 	}, [recruiterID]);
 
 	const auth = async () => {
@@ -179,92 +180,122 @@ export default function RecruiterDashboard() {
 		setInviteList(considering)
 	}
 
+	const moveAppUp = (index) => {
+		var list = [...applications]
+		var temp = applications[index - 1]
+		list[index - 1] = applications[index]
+		list[index] = temp
+		setApplications(list)
+	}
+
+	const moveAppDown = (index) => {
+		var list = [...applications]
+		var temp = applications[index + 1]
+		list[index + 1] = applications[index]
+		list[index] = temp
+		setApplications(list)
+	}
+
 	const renderApplications = (selection, status) => {
-		return applications.slice(0, selection).map((app) => (
-			<Card style={{margin: 30, height: 225, width:550}}>
-				<CardContent>                          
-					<Grid>
-						<Row>
-							<Col>
-								<Typography variant="h5" component="h2">
-									{app[1].first_name} {app[1].last_name}
-								</Typography>
-								<Typography color="textSecondary">
-									Meets {app[1].qualities_met} of the qualifications
-								</Typography>
-							</Col>
-							<Col>
-								<Link to={`/viewapplication/${jobID}/${app[0]}`} style={{marginLeft: 90}} >
-									View Application
-								</Link>
-							</Col>
-						</Row>
-					</Grid>
-				</CardContent>
-				<CardActions>
-					<Grid>
-						<Col>
-							<Row>
-								<ButtonToolbar>
-									<Button disabled = {status === "open"} variant="contained" color="secondary">Interview</Button>
-									<Button disabled = {status === "open"} variant="contained" color="secondary">
-										<Link to={{
-											pathname: `/createoffer`,
-											state: {
-												jobAppID: app[0],
-												jobID: jobID}}}>
-											Offer
-										</Link>
-									</Button>
-									<Button variant="contained" color="secondary">Dismiss</Button>
-								</ButtonToolbar>
-							</Row>
-							<Row style = {{marginTop: 15, width: 500}}>
-								<Form inline hidden = {status == "open"}>
-									<Col style = {{marginLeft: 1, height: 25, width: 250}}>
-										<Form.Group controlId="interview_date">
-											<TextField 
-												className={
-													!datevalidator(app[1].jobseeker_id)
-														? "form-control is-invalid"
-														: "form-control"
-												}
-												required
-												id="interview_date"
-												type="date"
-												min={today}
-												onChange={ (event) => handleDate(event.target.value, app[1].jobseeker_id, app)}/>
-												<Form.Control.Feedback type="invalid">
-													Please enter a date in the future
-												</Form.Control.Feedback>
-										</Form.Group>
+		return applications.slice(0, selection).map((app, index) => (
+			<Grid>
+				<Row>
+					<Col>
+						<Card style={{margin: 30, height: 225, width:550}}>
+							<CardContent>                          
+								<Grid>
+									<Row>
+										<Col>
+											<Typography variant="h5" component="h2">
+												{app[1].first_name} {app[1].last_name}
+											</Typography>
+											<Typography color="textSecondary">
+												Meets {app[1].qualities_met} of the qualifications
+											</Typography>
+										</Col>
+										<Col>
+											<Link to={`/viewapplication/${jobID}/${app[0]}`} style={{marginLeft: 90}} >
+												View Application
+											</Link>
+										</Col>
+									</Row>
+								</Grid>
+							</CardContent>
+							<CardActions>
+								<Grid>
+									<Col>
+										<Row>
+											<ButtonToolbar>
+												<Button disabled = {status === "open"} variant="contained" color="secondary">Interview</Button>
+												<Button disabled = {status === "open"} variant="contained" color="secondary">
+													<Link to={{
+														pathname: `/createoffer`,
+														state: {
+															jobAppID: app[0],
+															jobID: jobID}}}>
+														Offer
+													</Link>
+												</Button>
+												<Button variant="contained" color="secondary">Dismiss</Button>
+											</ButtonToolbar>
+										</Row>
+										<Row style = {{marginTop: 15, width: 500}}>
+											<Form inline hidden = {status == "open"}>
+												<Col style = {{marginLeft: 1, height: 25, width: 250}}>
+													<Form.Group controlId="interview_date">
+														<TextField 
+															className={
+																!datevalidator(app[1].jobseeker_id)
+																	? "form-control is-invalid"
+																	: "form-control"
+															}
+															required
+															id="interview_date"
+															type="date"
+															min={today}
+															onChange={ (event) => handleDate(event.target.value, app[1].jobseeker_id, app)}/>
+															<Form.Control.Feedback type="invalid">
+																Please enter a date in the future
+															</Form.Control.Feedback>
+													</Form.Group>
+												</Col>
+												<Col style = {{marginRight: 1, height: 25, width: 250}}>
+													<Form.Group controlId="interview_time">
+														<Form.Label>
+															Time
+														</Form.Label>
+														<TextField
+															className={
+																!timevalidator(app[1].jobseeker_id)
+																	? "form-control is-invalid"
+																	: "form-control"
+															}
+															required
+															id="interview_time"
+															type="time"
+															onChange={ (event) => handleTime(event.target.value, app[1].jobseeker_id, app)}/>
+															<Form.Control.Feedback type="invalid">
+																Please enter a time
+															</Form.Control.Feedback>
+													</Form.Group>
+												</Col>
+											</Form>	
+										</Row>
 									</Col>
-									<Col style = {{marginRight: 1, height: 25, width: 250}}>
-										<Form.Group controlId="interview_time">
-											<Form.Label>
-												Time
-											</Form.Label>
-											<TextField
-												className={
-													!timevalidator(app[1].jobseeker_id)
-														? "form-control is-invalid"
-														: "form-control"
-												}
-												required
-												id="interview_time"
-												type="time"
-												onChange={ (event) => handleTime(event.target.value, app[1].jobseeker_id, app)}/>
-												<Form.Control.Feedback type="invalid">
-													Please enter a time
-												</Form.Control.Feedback>
-										</Form.Group>
-									</Col>
-								</Form>	
-							</Row>
-						</Col>
-					</Grid>
-				</CardActions>
-			</Card>
+								</Grid>
+							</CardActions>
+						</Card>
+					</Col>
+					<Col style = {{marginTop: 100}}>
+						<IconButton disabled = {index === 0 || status === "open"} color="secondary" onClick = {() => moveAppUp(index)}>
+							<KeyboardArrowUpIcon/>
+						</IconButton>
+						<IconButton disabled = {index === selection - 1 || status === "open"} color="secondary" onClick = {() => moveAppDown(index)}>
+							<KeyboardArrowDownIcon/>
+						</IconButton>
+					</Col>
+				</Row>
+			</Grid>
 		))
 	};
 
@@ -297,6 +328,8 @@ export default function RecruiterDashboard() {
 										<Form.Control
 											required
 											type = "number"
+											min = {1}
+											max = {applications.length}
 											disabled = {detail[1].status === "open"}
 											onChange = { (event) => setSelection(event.target.value)}/>
 									</Form.Group>
