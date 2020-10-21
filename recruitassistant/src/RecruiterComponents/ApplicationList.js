@@ -98,6 +98,9 @@ export default function RecruiterDashboard() {
 	}
 
 	const checkFormValidity = () => {
+		if(selection > applications.length){
+			return false
+		}
 		if (selection > 0) {
 			for (let i = 0; i < selection; i++) {
 				if (datevalidator(applications[i][1]["jobseeker_id"]) === false || timevalidator(applications[i][1]["jobseeker_id"]) === false) {
@@ -190,7 +193,7 @@ export default function RecruiterDashboard() {
 									{app[1].first_name} {app[1].last_name}
 								</Typography>
 								<Typography color="textSecondary">
-									Meets {app[1].qualities_met} of the qualifications
+									Meets {app[1].qualities_met || 0} of the qualifications
 								</Typography>
 							</Col>
 							<Col>
@@ -276,13 +279,16 @@ export default function RecruiterDashboard() {
 				<Row noGutters fluid><TitleBar/></Row>
 				<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 					<Col sm="2">
-						<SideMenu random={[
-							{'text':'Job View','href': '#','active': false},
-							{'text':'Applications','href': '#','active': true},
-							{'text':'Interviews','href': '#','active': false},
-							{'text':'Offers','href': '#','active': false},
+					<SideMenu random={[
+							{'text':'Job View','href': '#','active': false,
+							'nested':[
+								{'text':'Applications','href': '#','active': true},
+								{'text':'Interviews','href': '#','active': false},
+								{'text':'Offers','href': '#','active': false},
+							]},
 							{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-							{'text':'FAQ','href':'#','active': false}]}/>
+							{'text':'FAQ','href':'#','active': false}
+						]}/>
 					</Col>
 
 					<Col sm="9">
