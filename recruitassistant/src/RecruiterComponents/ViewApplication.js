@@ -86,7 +86,7 @@ export default function ViewApplication() {
                         <br></br>
                         <Box fontSize="h6.fontSize" lineHeight={2}>
                                 Qualifications:
-                                {application.qualification}
+                                {application.qualifications}
                             </Box>
                     </Typography>
                 </Col>

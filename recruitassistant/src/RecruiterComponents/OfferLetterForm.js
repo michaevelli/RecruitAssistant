@@ -214,7 +214,7 @@ export default function OfferLetterForm(props) {
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
 					<SideMenu random={[
-                        {'text':'Job Applications','href': '/applications','active': true},
+                        {'text':'Job Applications','href': `/applications/${jobID}`,'active': true},
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
 						{'text':'FAQ','href':'#','active': false}]}/>
 				</Col>
