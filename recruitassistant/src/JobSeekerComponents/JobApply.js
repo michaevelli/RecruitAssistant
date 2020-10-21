@@ -270,6 +270,9 @@ export default function JobApply() {
 										</li>
 									))}
 								</ul>
+								<Form.Control.Feedback type="invalid">
+									Please upload the files
+								</Form.Control.Feedback>
 							</Col>
 						</Form.Group>
 						<Button disabled = {applied} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>

@@ -325,6 +325,7 @@ def send_interview():
 						'application_id': u["app_id"],
 						'job_id': u["job_id"],
 						'interview_date': u["date"],
+						'interview_time': u["time"]
 					},
 				})
 		return jsonify({'message': f'Successfully created interview {interview_id}'}),200
@@ -345,8 +346,7 @@ def get_applications_for_job():
 			# print(key)
 			# sort on how many qualifications are met
 			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get("qualities_met"))
-			sortedRights = sorted(sortedApps, reverse = True, key = lambda x :val.get(x).get("rights"))
-			for appid in sortedRights:
+			for appid in sortedApps:
 			 	applications.append((appid, val.get(appid)))
 				#applications.append((key, val.get(appid)))
 		
