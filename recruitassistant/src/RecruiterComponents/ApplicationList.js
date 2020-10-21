@@ -1,13 +1,13 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Button, Grid, Card, CardContent, CardActions, TextField} from "@material-ui/core";
+import {Button, Grid, Card, CardContent, CardActions, TextField} from "@material-ui/core";
 import {Form, Col, Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import {useHistory, Link} from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
 export const advertisementUrl="http://localhost:5000/advertisement"
@@ -194,7 +194,7 @@ export default function RecruiterDashboard() {
 								</Typography>
 							</Col>
 							<Col>
-								<Link href={`/viewapplication/${jobID}/${app[0]}`} style={{marginLeft: 90}} >
+								<Link to={`/viewapplication/${jobID}/${app[0]}`} style={{marginLeft: 90}} >
 									View Application
 								</Link>
 							</Col>
@@ -207,7 +207,15 @@ export default function RecruiterDashboard() {
 							<Row>
 								<ButtonToolbar>
 									<Button disabled = {status === "open"} variant="contained" color="secondary">Interview</Button>
-									<Button disabled = {status === "open"} variant="contained" color="secondary">Offer</Button>
+									<Button disabled = {status === "open"} variant="contained" color="secondary">
+										<Link to={{
+											pathname: `/createoffer`,
+											state: {
+												jobAppID: app[0],
+												jobID: jobID}}}>
+											Offer
+										</Link>
+									</Button>
 									<Button variant="contained" color="secondary">Dismiss</Button>
 								</ButtonToolbar>
 							</Row>

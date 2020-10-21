@@ -11,8 +11,10 @@ import AdminDashboard from './AdminComponents/AdminDashboard';
 import RecruiterDashboard from './RecruiterComponents/RecruiterDashboard';
 import JobSeekerDashboard from './JobSeekerComponents/JobSeekerDashboard';
 import NewJobForm from "./RecruiterComponents/NewJobForm";
+import EditJob from "./RecruiterComponents/EditJob";
 import Advertisement from "./JobSeekerComponents/Advertisement";
 import JobApply from "./JobSeekerComponents/JobApply";
+import OfferLetterForm from './RecruiterComponents/OfferLetterForm';
 import ApplicationList from './RecruiterComponents/ApplicationList';
 import ViewApplication from './RecruiterComponents/ViewApplication';
 
@@ -45,8 +47,10 @@ function App() {
           <Route path="/recruiterdashboard" component={RecruiterDashboard}/>
           <Route path="/jobseekerdashboard" component={JobSeekerDashboard}/>
           <Route path="/createJobPost" component={NewJobForm}/>
+          <Route path="/editjob/:jobID" component={EditJob}/>
           <Route path="/advertisement" component={Advertisement}/>
           <Route path="/jobapply" component={JobApply}/>
+          <Route path="/createoffer" component={OfferLetterForm}/>
           <Route path="/applications" component={ApplicationList}/>
           <Route path="/viewapplication" component={ViewApplication}/>
         </Switch>
