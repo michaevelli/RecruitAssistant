@@ -23,15 +23,15 @@ export default function RecruiterDashboard() {
 	const history = useHistory();
 	const [loading, setLoading] = useState(true);
 	const [applications, setApplications] = useState([])
-	const [inviteList, setInviteList] = useState([])
+	const [inviteList, setInviteList] = useState({})
 	const [job, setJob] = useState([])
 	const [selection, setSelection] = useState()
-	const [filled, setFilled] = useState(false)
 
 	useEffect(() => {
 		auth();
 		getJob();
 		getApplications();
+		initialise(applications);
 	}, [recruiterID]);
 
 	const auth = async () => {
@@ -53,7 +53,7 @@ export default function RecruiterDashboard() {
 				job_id: jobID
 			},
 		})
-		.then(res => {
+			.then(res => {
 				setJob(res.data.job)
 				console.log("response: ", res)
 			})
@@ -70,9 +70,8 @@ export default function RecruiterDashboard() {
 				job_id: jobID
 			},
 		})
-		.then(res => {
-				setApplications(res.data.applications)
-				setSelection(res.data.applications.length)
+			.then(res => {
+				initialise(res.data.applications)
 				console.log("response: ", res)
 			})
 			.catch((error) => {
@@ -80,76 +79,108 @@ export default function RecruiterDashboard() {
 			})
 	};
 
+	const handleDate = (date, jobseeker, application) => {
+		var considering = {...inviteList}
+		if (!(jobseeker in considering)) {
+			considering[jobseeker] = {app_id: application[0], date: "", time: ""}
+		}
+		considering[jobseeker]["date"] = date
+		setInviteList(considering)
+	}
+
+	const handleTime = (time, jobseeker, application) => {
+		var considering = {...inviteList}
+		if (!(jobseeker in considering)) {
+			considering[jobseeker] = {app_id: application[0], date: "", time: ""}
+		}
+		considering[jobseeker]["time"] = time
+		setInviteList(considering)
+	}
+
+	const checkFormValidity = () => {
+		if (selection > 0) {
+			for (let i = 0; i < selection; i++) {
+				if (datevalidator(applications[i][1]["jobseeker_id"]) === false || timevalidator(applications[i][1]["jobseeker_id"]) === false) {
+					return false
+				}
+			}
+			return true
+		} else {
+			return false
+		}
+	}
+
 	const postInterview = async () => {
-		var invite_list = []
-		var emp_id = sessionStorage.getItem("uid")
-		console.log(inviteList.slice(0, selection))
-		for (let i = 0; i < selection; i++) {
-			invite_list.push({
-				jobseeker_id: applications[i][1]["jobseeker_id"],
-				employer_id: emp_id,
-				app_id: applications[i][0],
-				job_id: jobID,
-				date: inviteList[i]["date"],
-				time: inviteList[i]["time"]
+		if (checkFormValidity() === true) {
+			var invite_list = []
+			var emp_id = sessionStorage.getItem("uid")
+			console.log(applications.slice(0, selection))
+			for (let i = 0; i < selection; i++) {
+				const jobseeker = applications[i][1]["jobseeker_id"]
+				invite_list.push({
+					jobseeker_id: jobseeker,
+					employer_id: emp_id,
+					app_id: applications[i][0],
+					job_id: jobID,
+					date: inviteList[jobseeker]["date"],
+					time: inviteList[jobseeker]["time"]
+				})
+			}
+
+			const data={
+				invite_list
+			}
+
+			await axios.post(interviewUrl, data)
+			.then(res => {
+				console.log("response: ", res)
+				alert("Interview Successfully Sent")
 			})
+			.catch((error) => {
+				console.log("error: ", error.response)
+				alert("An error occured, please try again")
+			})
+		} else {
+			alert("Please fill in all fields correctly with one or more applicants chosen")
 		}
-
-		const data={
-			invite_list
-		}
-
-		await axios.post(interviewUrl, data)
-		.then(res => {
-			console.log("response: ", res)
-			alert("Interview Successfully Sent")
-		})
-		.catch((error) => {
-			console.log("error: ", error.response)
-			alert("An error occured, please try again")
-		})	
 	};
 
-	const handleDate = (date, jobseeker, index) => {
-		var considering = [...inviteList]
-		if (inviteList.length !== index + 1) {
-			considering.push({ jobseeker_id: jobseeker })
-		}
-		considering[index]["date"] = date
-		setInviteList(considering)
-	}
-
-	const handleTime = (time, jobseeker, index) => {
-		var considering = [...inviteList]
-		if (inviteList.length !== index + 1) {
-			considering.push({ jobseeker_id: jobseeker })
-		}
-		considering[index]["time"] = time
-		setInviteList(considering)
-	}
-
-	const datevalidator = (index) => {
-		if (typeof inviteList[index] === "undefined") {
+	const datevalidator = (jobseeker) => {
+		if (typeof jobseeker === "undefined" || jobseeker === "") {
 			return false
-		} else if (inviteList[index]["date"] !== "" && today < Date.parse(inviteList[index]["date"])) {
+	 	} else if (typeof inviteList[jobseeker] === "undefined") {
+			return false
+		} else if (inviteList[jobseeker]["date"] !== "" && typeof inviteList[jobseeker]["date"] !== "undefined" && today < Date.parse(inviteList[jobseeker]["date"])) {
 			return true
 		} else {
 			return false
 		}
 	}
 
-	const timevalidator = (index) => {
-		if (typeof inviteList[index] === "undefined") {
+	const timevalidator = (jobseeker) => {
+		if (typeof jobseeker === "undefined" || jobseeker === "") {
 			return false
-		} else if (inviteList[index]["time"] !== "") {
+	 	} else if(typeof inviteList[jobseeker] === "undefined") {
+			return false
+		} else if (inviteList[jobseeker]["time"] !== "" && typeof inviteList[jobseeker]["time"] !== "undefined") {
 			return true
 		} else {
 			return false
 		}
+	}
+
+	const initialise = (applicationList) => {
+		setApplications(applicationList)
+		setSelection(applicationList.length)
+		var considering = {...inviteList}
+		for (let i = 0; i < applicationList.length; i++) {
+			considering[applicationList[i][1]["jobseeker_id"]] = {app_id: applicationList[i][0], date: "", time: ""}
+		}
+		setInviteList(considering)
 	}
 
 	const renderApplications = (selection, status) => {
-		return applications.slice(0, selection).map((app, index) => (
+		return applications.slice(0, selection).map((app) => (
 			<Card style={{margin: 30, height: 225, width:550}}>
 				<CardContent>                          
 					<Grid>
@@ -182,44 +213,44 @@ export default function RecruiterDashboard() {
 							</Row>
 							<Row style = {{marginTop: 15, width: 500}}>
 								<Form inline hidden = {status == "open"}>
-										<Col style = {{marginLeft: 1, height: 25, width: 250}}>
-											<Form.Group controlId="interview_date">
-												<TextField 
-													className={
-														!datevalidator(index)
-															? "form-control is-invalid"
-															: "form-control"
-													}
-													required
-													id="interview_date"
-													type="date"
-													min={today}
-													onChange={ (event) => handleDate(event.target.value, app[1].jobseeker_id, index)}/>
-													<Form.Control.Feedback type="invalid">
-														Please enter a date in the future
-													</Form.Control.Feedback>
-											</Form.Group>
-										</Col>
-										<Col style = {{marginRight: 1, height: 25, width: 250}}>
-											<Form.Group controlId="interview_time">
-												<Form.Label>
-													Time
-												</Form.Label>
-												<TextField
-													className={
-														!timevalidator(index)
-															? "form-control is-invalid"
-															: "form-control"
-													}
-													required
-													id="interview_time"
-													type="time"
-													onChange={ (event) => handleTime(event.target.value, app[1].jobseeker_id, index)}/>
-													<Form.Control.Feedback type="invalid">
-														Please enter a time
-													</Form.Control.Feedback>
-											</Form.Group>
-										</Col>
+									<Col style = {{marginLeft: 1, height: 25, width: 250}}>
+										<Form.Group controlId="interview_date">
+											<TextField 
+												className={
+													!datevalidator(app[1].jobseeker_id)
+														? "form-control is-invalid"
+														: "form-control"
+												}
+												required
+												id="interview_date"
+												type="date"
+												min={today}
+												onChange={ (event) => handleDate(event.target.value, app[1].jobseeker_id, app)}/>
+												<Form.Control.Feedback type="invalid">
+													Please enter a date in the future
+												</Form.Control.Feedback>
+										</Form.Group>
+									</Col>
+									<Col style = {{marginRight: 1, height: 25, width: 250}}>
+										<Form.Group controlId="interview_time">
+											<Form.Label>
+												Time
+											</Form.Label>
+											<TextField
+												className={
+													!timevalidator(app[1].jobseeker_id)
+														? "form-control is-invalid"
+														: "form-control"
+												}
+												required
+												id="interview_time"
+												type="time"
+												onChange={ (event) => handleTime(event.target.value, app[1].jobseeker_id, app)}/>
+												<Form.Control.Feedback type="invalid">
+													Please enter a time
+												</Form.Control.Feedback>
+										</Form.Group>
+									</Col>
 								</Form>	
 							</Row>
 						</Col>
