@@ -514,10 +514,39 @@ def offers():
 		#print(posts)
 		for key, val in posts.items():
 			if val["jobseeker_id"] == uid:
+				del val['additional_docs']
+				del val['application_id']
+				del val['date_posted']
+				del val['days']
+				del val['description']
+				del val['end_date']
+				del val['hours']
+				del val['jobseeker_id']
+				del val['recruiter_id']
+				del val['salary']
+				del val['salary_type']
+				del val['start_date']
 				offers.append((key, val))
 		
 
 		return jsonify({'offers': offers}), 200
+	except:
+		print(e)
+		return jsonify({"error": "something bad happened"}),500
+
+@app.route('/getOfferDetails', methods=['POST'])
+def viewOffer():
+	try:
+		print("OK!")
+		offerId = request.json["offerId"]	
+		offer = []
+		posts=ref.child("offer").get()	
+		for key, val in posts.items():
+			if key == offerId:
+				offer.append((key, val))
+		
+
+		return jsonify({'offers': offer}), 200
 	except:
 		print(e)
 		return jsonify({"error": "something bad happened"}),500

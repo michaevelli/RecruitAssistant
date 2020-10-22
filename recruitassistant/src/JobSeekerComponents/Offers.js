@@ -43,7 +43,8 @@ export default function Offers() {
             
             axios.post(url, ndata)
                 .then(function(response) {
-                    console.log("response:", response.data)
+					console.log("response:", response.data)
+					setOffers(response.data.offers)
                 })
                 .catch(function(error) {
                     console.log(error.response)
@@ -52,7 +53,7 @@ export default function Offers() {
     
     const renderOffers = () => {
 		return offers.map((offer) => (
-			<Card style={{margin: 30, height: 180, width:250}}>
+			<Card style={{margin: 30, height: 160, width:250}}>
 				<CardContent>                          
 					<Typography variant="h5" component="h2">
 						{offer[1].title}
@@ -63,10 +64,10 @@ export default function Offers() {
 				</CardContent>
 				<CardActions >
 					<Typography color="textSecondary">
-						{offer[1].status}
+						{offer[1].job_type}
 					</Typography>
-					<Link href= {`/advertisement/${offer[0]}`} style={{marginLeft: 30}}>
-							View Advertisement
+					<Link href= {`/offer/${offer[0]}`} style={{marginLeft: 30}}>
+							View Offer
 					</Link>
 				</CardActions>
 			</Card>
