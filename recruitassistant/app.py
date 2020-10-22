@@ -1,28 +1,17 @@
 import time
 from flask import Flask, request
 from flask import jsonify
-from flask_cors import CORS
-import firebase_admin
-from firebase_admin import credentials, auth, db
-import pyrebase
+# from flask_cors import CORS
+# import firebase_admin
+# from firebase_admin import credentials, auth, db
 import json
 import uuid
 from datetime import date, datetime
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
-from backend import jobs
+from backend import jobs, search, authentication
 from backend.init_app import app, ref, pb
-import re
 
-# initalise app
-# app = Flask(__name__)
-# CORS(app, supports_credentials=True)
-
-# # connect to firebase
-# cred = credentials.Certificate('./backend/recruitassistant_cred.json')
-# firebase = firebase_admin.initialize_app(cred, {"databaseURL": "https://recruitassistant-fe71e.firebaseio.com"})
-# pb = pyrebase.initialize_app(json.load(open('./backend/firebase_config.json')))
-# ref = db.reference('/')
 
 def print_date_time():
     print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
@@ -96,21 +85,6 @@ def post_offer_letter():
 		return jsonify({"message": str(e)}), 400
 
 
-@app.route('/auth', methods=["POST"])
-def check_token():
-	data = request.json
-	try:
-		user = auth.verify_id_token(data["token"])
-		user_uid = user["uid"]
-		print(data["token"])
-		# print(user_uid)
-		user_info = ref.child('user').order_by_key().equal_to(user_uid).get()[user_uid]
-		print("---user info ---" + str(user_info))
-		return jsonify({'message': 'Successfully verified', 'uid': user_uid, 'user_info': user_info}),200
-	except Exception as e:
-		print(e)
-		return jsonify({'message': 'Token verification failed'}),400
-
 @app.route('/upload', methods=["POST"])
 def check_files():
 	print(request.files.to_dict())
@@ -119,9 +93,32 @@ def check_files():
 	jobseekerid = request.args.get('jobseeker_id')
 	try:
 		for key, val in request.files.items():
-			uploadTask = storage.child(jobid + "_" + jobseekerid + "_" + key).put(val)
+			download = storage.child(jobid + "_" + jobseekerid + "_" + key).put(val)
+			ref.child('file').update({
+				jobid + "_" + jobseekerid + "_" + key: download
+			})
 		return jsonify({'message': 'Uploaded files successfully'}),200
-	except Exception as e:		
+	except Exception as e:
+		print(e)
+		return jsonify({"message": str(e)}), 400
+
+@app.route('/download', methods=["GET"])
+def get_files():
+	storage = pb.storage()
+	appid = request.args.get('app_id')
+	jobid = request.args.get('job_id')
+	files = {}
+	try:
+		application = ref.child("jobApplications").get().get(jobid).get(appid)
+		jobseekerid = application["jobseeker_id"]
+		for document in application["submitted_docs"]:
+			download = ref.child("file").get(jobid + "_" + jobseekerid + "_" + document)[0][jobid + "_" + jobseekerid + "_" + document]
+			storedfile = storage.child(jobid + "_" + jobseekerid + "_" + document)
+			files[document] = storedfile.get_url(download["downloadTokens"])
+		print(files)
+		return jsonify({"files": files}), 200
+	except Exception as e:
+		print(e)
 		return jsonify({"message": str(e)}), 400
 
 @app.route('/jobapplications', methods=["POST"])
@@ -175,6 +172,7 @@ def check_applied():
 		return jsonify({"message": str(e)}), 400
 
 
+
 @app.route('/jobapplication', methods=["GET"])
 def get_app_details():
 	#checks if application exists for jobseeker and job
@@ -188,7 +186,24 @@ def get_app_details():
 		print(the_application)
 		return jsonify({'application': the_application}),200
  
-	except Exception as e:		
+	except Exception as e:
+		print(e)
+		return jsonify({"message": str(e)}), 400		
+
+@app.route('/retrieveapplication', methods=["GET"])
+def return_application():
+	appid = request.args.get('app_id')
+	jobid = request.args.get('job_id')
+	app_resp = {}
+	print("here")
+	try:
+		app_resp=ref.child("jobApplications").get().get(jobid).get(appid)
+		print(app_resp)
+		job_info = ref.child("jobAdvert").order_by_key().equal_to(jobid).get().get(jobid)
+		print(job_info)
+
+		return jsonify({"applications": app_resp, "jobinfo": job_info}), 200
+	except Exception as e:
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
@@ -198,41 +213,6 @@ def get_app_details():
 def get_current_time():
 	data = {'time': 10000}
 	return jsonify(data)
-
-@app.route('/jobadverts', methods=["POST"])
-def post_new_job():
-	json_data = request.get_json()
-	job_uid=str(uuid.uuid1())
-	print(job_uid)
-	print( json_data['closing_date'])
-	today = date.today()
-	date_posted = today.strftime("%Y-%m-%y")
-	print("d1 =", date_posted),
-	
-	try:
-		ref.child('jobAdvert').update({
-				job_uid: {
-					'title':json_data["title"],
-					'location':json_data["location"],
-					'description': json_data['description'],
-					'company':json_data["company"],
-					'date_posted': date_posted,
-					'closing_date':json_data["closing_date"],
-					'recruiter_id':json_data["recruiter_id"],
-					'job_type': json_data["job_type"],
-					'salary_pa':json_data["salary_pa"],
-					'experience_level':json_data["experience_level"],
-					'req_qualifications':json_data["qualifications"],
-					'responsibilities': json_data['responsibilities'],
-					'required_docs': json_data["required_docs"],
-					#'min_years_experience': json_data["min_years_experience"],
-					'status': json_data['status'],
-					'additional_questions': json_data['additional_questions']
-				},
-			})
-		return jsonify({'message': f'Successfully created job {job_uid}'}),200
-	except Exception as e:		
-		return jsonify({"message": str(e)}), 400
 		
 
 @app.route('/jobadverts/open', methods=["GET"])
@@ -271,24 +251,32 @@ def get_recruiter_posts(recruiterid):
 	except Exception as e:		
 		print(e)
 		return jsonify({"message": str(e)}), 400
-		
-@app.route('/advertisement', methods=["GET"])
-def get_job_for_page():
-	#gets job from job id
-	try:
-		jobid = request.args.get('job_id')
-		post = ref.child("jobAdvert").order_by_key().equal_to(jobid).get()
 
-		job=[]
-		for key,val in post.items():
-			job.append((key,val))
-		
-		print(job)
-		return jsonify({'job': job}),200
- 
-	except Exception as e:		
+@app.route('/interviews', methods=["POST"])
+def send_interview():
+	json_data = request.get_json()
+	invite_list = json_data["invite_list"]
+	# interview_id=str(uuid.uuid1())
+	i = 0
+	try:
+		for u in invite_list:
+			interview_id=str(uuid.uuid1()) + str(i)
+
+			ref.child('interviews').update({
+					interview_id: {
+						'jobseeker_id': u["jobseeker_id"],
+						'employer_id': u["employer_id"],
+						'application_id': u["app_id"],
+						'job_id': u["job_id"],
+						'interview_date': u["date"],
+						'interview_time': u["time"]
+					},
+				})
+		return jsonify({'message': f'Successfully created interview {interview_id}'}),200
+	except Exception as e:
 		print(e)
 		return jsonify({"message": str(e)}), 400
+	return
 
 @app.route('/applicationslist', methods=["GET"])
 def get_applications_for_job():
@@ -299,11 +287,12 @@ def get_applications_for_job():
 		applications=[]
 		# print(list(post.items().index("qualities_met")))
 		for key,val in post.items():
+			# print(key)
 			# sort on how many qualifications are met
 			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get("qualities_met"))
-			sortedRights = sorted(sortedApps, reverse = True, key = lambda x :val.get(x).get("rights"))
-			for appid in sortedRights:
+			for appid in sortedApps:
 			 	applications.append((appid, val.get(appid)))
+				#applications.append((key, val.get(appid)))
 		
 		print(applications)
 		return jsonify({'applications': applications}),200
@@ -311,123 +300,3 @@ def get_applications_for_job():
 	except Exception as e:		
 		print(e)
 		return jsonify({"message": str(e)}), 400
-
-@app.route('/signup', methods=["POST"])
-def user_signup():
-	json_data = request.get_json()
-	email = json_data["email"]
-	password = json_data["password"]
-	u_type = json_data["type"]
-	if u_type == "jobseeker":
-		company = "null"
-	else:
-		company = json_data["company"]
-
-	print(json_data)
-    
-	if email is None or password is None:
-		return jsonify({'message': 'Error missing email or password'}),400
-	try:
-		user = auth.create_user(
-				email=email,
-				password=password
-		)
-		users_ref = ref.child('user')
-
-		users_ref.update({
-			user.uid: {
-				'first_name': json_data["first_name"],
-				'last_name' : json_data["last_name"],
-				'email' : email,
-				'type' : u_type,
-				'company' : company,
-			},
-		})
-
-		return jsonify({'message': 'Successfully created user {user.uid}'}),200
-	except Exception as e:		
-		return jsonify({"message": str(e)}), 400
-
-@app.route('/login', methods=['POST'])
-def login():
-	try:
-		# json_data = request.get_json()
-
-		fAuth = pb.auth()
-		db = pb.database()
-		
-		datajson = request.json
-		password = datajson["password"]
-		email = datajson["email"]
-		# password = 'hello123'
-		# email = 'hello@gmail.com'
-		print(email, password)
-
-		# login with email password
-		response = fAuth.sign_in_with_email_and_password(email, password)
-		token = fAuth.refresh(response['refreshToken'])['idToken']
-
-		# retrieve user data
-		data = db.child("user").order_by_child("email").equal_to(email).get()
-		# userID = list(data.val().items())[0][0]
-		user = list(data.val().items())[0][1]
-
-		# return jsonify({"token": token, "user": user, "userID": userID}), 200
-		return jsonify({"token": token, "type": user["type"], "name":user["first_name"]}), 200
-
-	except Exception as e:
-		error_message = json.loads(e.args[1])['error']['message']
-		error_code = json.loads(e.args[1])['error']['code']
-		
-		return jsonify({"message": error_message}), error_code
-
-
-@app.route('/jobadverts/search', methods=["POST"])
-def search():
-	try:
-		datajson = request.json
-		print(datajson)
-
-		search = datajson["search"]
-		location = datajson["location"]
-		exp = datajson["exp"]
-		jobtype = datajson["jobtype"]
-		salaryrange = datajson["salaryrange"]
-
-		posts=ref.child("jobAdvert").get()	
-		jobs=[]
-		for key,val in posts.items():
-			# filter: location listed must have location specified
-			if location.lower() != "" and not location.lower() in val["location"].lower():
-				continue
-			# filter: job type asked for must match job type specified
-			if jobtype.lower() != "" and not jobtype.lower() == val["job_type"].lower():
-				continue
-			# filter: experience level asked for must match experience level specified
-			if exp.lower() != "" and not exp.lower() == val["experience_level"].lower():
-				continue
-			# filter: salary specified must fall within the range asked for
-			if (int(val["salary_pa"]) < salaryrange[0]) or (int(val["salary_pa"]) > salaryrange[1] and (salaryrange[1] != 200)):
-				continue
-			
-			if search != "":
-				searchtext = val["company"].lower() + " " + val["description"].lower() + " " + val["title"].lower()
-				searchtext = re.sub(re.compile("\W"), " ", searchtext)
-				searchtext = ' '.join([w for w in searchtext.split() if len(w)>3])
-
-				searchqueries = search.lower()
-				searchqueries = re.sub(re.compile("\W"), " ", searchqueries)
-				for word in searchqueries.split():
-					if len(word) <= 3:
-						continue
-					if word in searchtext:
-						jobs.append((key, val))
-						break
-			else:
-				jobs.append((key, val))
-
-
-		return jsonify({'jobs': jobs}),200
-	except Exception as e:
-		print(e)
-		return jsonify({"error": "something bad happened"}),500

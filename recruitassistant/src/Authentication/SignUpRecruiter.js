@@ -3,6 +3,7 @@ import { TextField, Button } from "@material-ui/core";
 import {Container} from 'react-bootstrap';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import logo from '../SharedComponents/Picture2.png'; 
 
 export const submitSignUp="http://localhost:5000/signup"
 
@@ -47,8 +48,7 @@ function SignUpRecruiter() {
 	return (
 		<div>
 			<Container style={{'textAlign': 'center'}}>
-				<h1>Recruit Assistant</h1>
-				<b>Sign Up</b>
+			<img src={logo} style={{ width:400, height:100, marginBottom:20,marginTop:20, marginLeft:20}}></img>
 
 				<form onSubmit={handleSubmit}>
 					<TextField label="First Name" value={first_name} onChange={e=>setFirstName(e.target.value)}/>
@@ -64,7 +64,7 @@ function SignUpRecruiter() {
 					<TextField label="Re-enter password" type="password" value={repassword} onChange={e=>setRepassword(e.target.value)}/>
 					<br/>
 					<div id="error" style={{color: 'red'}}>{errorMessage}</div>
-					<Button type="submit"> Sign Up </Button>
+					<Button type="submit" variant="contained" style={{margin:20}}> Sign Up </Button>
 				</form>
 			</Container>
 		</div>

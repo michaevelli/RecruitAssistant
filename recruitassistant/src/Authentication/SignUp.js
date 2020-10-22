@@ -4,20 +4,19 @@ import {Card, Container} from 'react-bootstrap';
 // import {Link} from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import Typography from '@material-ui/core/Typography';
-
+import logo from '../SharedComponents/Picture2.png'; 
 
 function SignUp() {
 	const history = useHistory();
 
 	return (
 		<Container style={{'textAlign': 'center'}}>
-			<Typography variant="h3"  style={{color: '#348360' }}>
-				RecruitAssistant
-			</Typography>
-			<p>Sign Up</p>
-			<Container style={{'textAlign': 'center'}}>
+			<img src={logo} style={{ width:400, height:100, marginBottom:20,marginTop:20, marginLeft:20}}></img>
+			<h2>Sign Up</h2>
+			<Container style={{textAlign: 'center'}}>
 			
-				<div>       
+				<div>  
+					<br/>     
 					<p> I am a ...</p>
 				</div>
 					

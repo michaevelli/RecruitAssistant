@@ -8,6 +8,7 @@ import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
+// import SendInterview from "./SendInterview.js";
 
 export const jobUrl="http://localhost:5000/jobadverts/"
 
@@ -58,7 +59,9 @@ export default function RecruiterDashboard() {
 					<Typography color="textSecondary">{job[1].status}</Typography>
 				</CardContent>
 				<CardActions >
-					<Typography color="textSecondary" style={{marginLeft: 10}}>
+					<Typography 
+					style={ (job[1].status=='open')? 
+					{color: 'green', marginRight:10} : {color:'red',marginRight:10}}>
 						{job[1].status}
 					</Typography>
 
@@ -84,7 +87,7 @@ export default function RecruiterDashboard() {
 				<Col sm="2">
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '#','active': true},
-						{'text':'FAQ','href':'#','active': false}]}/>
+						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 
 				<Col sm="9">
@@ -99,7 +102,8 @@ export default function RecruiterDashboard() {
 				<Col>
 					<Button variant="contained" color="secondary" href="/createJobPost" style={{position: 'fixed', right: 0, top: 40, margin: 30}}>
 						+ Job
-					</Button>               
+					</Button>      
+					{/* <SendInterview></SendInterview> */}
 				</Col>
 			</Row>
 		</Grid>

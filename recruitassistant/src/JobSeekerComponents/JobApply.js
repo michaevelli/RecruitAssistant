@@ -178,7 +178,7 @@ export default function JobApply() {
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
 						{'text':'Your Applications','href': '#', 'active': false},         
-						{'text':'FAQ','href':'#','active': false}]}/>
+						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 				</Col >
 
 				<Col sm="10" >
@@ -270,6 +270,9 @@ export default function JobApply() {
 										</li>
 									))}
 								</ul>
+								<Form.Control.Feedback type="invalid">
+									Please upload the files
+								</Form.Control.Feedback>
 							</Col>
 						</Form.Group>
 						<Button disabled = {applied} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
