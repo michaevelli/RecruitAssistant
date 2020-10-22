@@ -178,7 +178,7 @@ export default function JobApply() {
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
 						{'text':'Your Applications','href': '#', 'active': false},         
-						{'text':'FAQ','href':'#','active': false}]}/>
+						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 				</Col >
 
 				<Col sm="10" >

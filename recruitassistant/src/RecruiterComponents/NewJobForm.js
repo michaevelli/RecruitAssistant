@@ -141,7 +141,7 @@ export default function NewJobForm() {
 				<Col sm="2">
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': true},
-						{'text':'FAQ','href':'#','active': false}]}/>
+						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 
 				<Col sm="10" >

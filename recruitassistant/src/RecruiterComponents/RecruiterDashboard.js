@@ -59,7 +59,9 @@ export default function RecruiterDashboard() {
 					<Typography color="textSecondary">{job[1].status}</Typography>
 				</CardContent>
 				<CardActions >
-					<Typography color="textSecondary" style={{marginLeft: 10}}>
+					<Typography 
+					style={ (job[1].status=='open')? 
+					{color: 'green', marginRight:10} : {color:'red',marginRight:10}}>
 						{job[1].status}
 					</Typography>
 
@@ -85,7 +87,7 @@ export default function RecruiterDashboard() {
 				<Col sm="2">
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '#','active': true},
-						{'text':'FAQ','href':'#','active': false}]}/>
+						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 
 				<Col sm="9">

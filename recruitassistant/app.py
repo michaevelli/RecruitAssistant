@@ -119,9 +119,32 @@ def check_files():
 	jobseekerid = request.args.get('jobseeker_id')
 	try:
 		for key, val in request.files.items():
-			uploadTask = storage.child(jobid + "_" + jobseekerid + "_" + key).put(val)
+			download = storage.child(jobid + "_" + jobseekerid + "_" + key).put(val)
+			ref.child('file').update({
+				jobid + "_" + jobseekerid + "_" + key: download
+			})
 		return jsonify({'message': 'Uploaded files successfully'}),200
-	except Exception as e:		
+	except Exception as e:
+		print(e)
+		return jsonify({"message": str(e)}), 400
+
+@app.route('/download', methods=["GET"])
+def get_files():
+	storage = pb.storage()
+	appid = request.args.get('app_id')
+	jobid = request.args.get('job_id')
+	files = {}
+	try:
+		application = ref.child("jobApplications").get().get(jobid).get(appid)
+		jobseekerid = application["jobseeker_id"]
+		for document in application["submitted_docs"]:
+			download = ref.child("file").get(jobid + "_" + jobseekerid + "_" + document)[0][jobid + "_" + jobseekerid + "_" + document]
+			storedfile = storage.child(jobid + "_" + jobseekerid + "_" + document)
+			files[document] = storedfile.get_url(download["downloadTokens"])
+		print(files)
+		return jsonify({"files": files}), 200
+	except Exception as e:
+		print(e)
 		return jsonify({"message": str(e)}), 400
 
 @app.route('/jobapplications', methods=["POST"])
