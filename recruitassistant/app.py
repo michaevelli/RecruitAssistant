@@ -67,7 +67,7 @@ def post_offer_letter():
 	
 	today = date.today()
 	date_posted = today.strftime("%Y-%m-%y")
-	print("d1 =", date_posted),
+	#print("d1 =", date_posted),
 	
 	try:
 		ref.child('offer').update({
@@ -102,10 +102,10 @@ def check_token():
 	try:
 		user = auth.verify_id_token(data["token"])
 		user_uid = user["uid"]
-		print(data["token"])
+		#print(data["token"])
 		# print(user_uid)
 		user_info = ref.child('user').order_by_key().equal_to(user_uid).get()[user_uid]
-		print("---user info ---" + str(user_info))
+		#print("---user info ---" + str(user_info))
 		return jsonify({'message': 'Successfully verified', 'uid': user_uid, 'user_info': user_info}),200
 	except Exception as e:
 		print(e)
@@ -113,7 +113,7 @@ def check_token():
 
 @app.route('/upload', methods=["POST"])
 def check_files():
-	print(request.files.to_dict())
+	#print(request.files.to_dict())
 	storage = pb.storage()
 	jobid = request.args.get('job_id')
 	jobseekerid = request.args.get('jobseeker_id')
@@ -167,7 +167,7 @@ def check_applied():
 				print("Has applied before")
 				return jsonify({'applied': True}),200
 		
-		print("Hasn't applied before")
+		#print("Hasn't applied before")
 		return jsonify({'applied': False}),200
  
 	except Exception as e:		
@@ -183,10 +183,10 @@ def get_app_details():
 		job_id=request.args.get('jobId')
 		job_app_id = request.args.get('jobAppId')
 		specific_child="jobApplications/"+job_id+'/'+job_app_id
-		print(specific_child)
+		#print(specific_child)
 		the_application=ref.child(specific_child).get()
-		print("THE APPP")
-		print(the_application)
+		#print("THE APPP")
+		#print(the_application)
 		return jsonify({'application': the_application}),200
  
 	except Exception as e:
@@ -198,12 +198,12 @@ def return_application():
 	appid = request.args.get('app_id')
 	jobid = request.args.get('job_id')
 	app_resp = {}
-	print("here")
+	#print("here")
 	try:
 		app_resp=ref.child("jobApplications").get().get(jobid).get(appid)
-		print(app_resp)
+		#print(app_resp)
 		job_info = ref.child("jobAdvert").order_by_key().equal_to(jobid).get().get(jobid)
-		print(job_info)
+		#print(job_info)
 
 		return jsonify({"applications": app_resp, "jobinfo": job_info}), 200
 	except Exception as e:
@@ -221,11 +221,11 @@ def get_current_time():
 def post_new_job():
 	json_data = request.get_json()
 	job_uid=str(uuid.uuid1())
-	print(job_uid)
-	print( json_data['closing_date'])
+	#print(job_uid)
+	#print( json_data['closing_date'])
 	today = date.today()
 	date_posted = today.strftime("%Y-%m-%y")
-	print("d1 =", date_posted),
+	#print("d1 =", date_posted),
 	
 	try:
 		ref.child('jobAdvert').update({
@@ -263,7 +263,7 @@ def get_all_posts():
 		for key,val in posts.items():
 			jobs.append((key,val))
 
-		print(jobs)
+		#print(jobs)
 		return jsonify({'jobs': jobs}),200
  
 	except Exception as e:
@@ -283,7 +283,7 @@ def get_recruiter_posts(recruiterid):
 		for key,val in posts.items():
 			jobs.append((key,val))
 		
-		print(jobs)
+		#print(jobs)
 		return jsonify({'jobs': jobs}),200
  
 	except Exception as e:		
@@ -301,7 +301,7 @@ def get_job_for_page():
 		for key,val in post.items():
 			job.append((key,val))
 		
-		print(job)
+		#print(job)
 		return jsonify({'job': job}),200
  
 	except Exception as e:		
@@ -350,7 +350,7 @@ def get_applications_for_job():
 			 	applications.append((appid, val.get(appid)))
 				#applications.append((key, val.get(appid)))
 		
-		print(applications)
+		#print(applications)
 		return jsonify({'applications': applications}),200
  
 	except Exception as e:		
@@ -368,7 +368,7 @@ def user_signup():
 	else:
 		company = json_data["company"]
 
-	print(json_data)
+	#print(json_data)
     
 	if email is None or password is None:
 		return jsonify({'message': 'Error missing email or password'}),400
@@ -406,7 +406,7 @@ def login():
 		email = datajson["email"]
 		# password = 'hello123'
 		# email = 'hello@gmail.com'
-		print(email, password)
+		#print(email, password)
 
 		# login with email password
 		response = fAuth.sign_in_with_email_and_password(email, password)
@@ -431,7 +431,6 @@ def login():
 def search():
 	try:
 		datajson = request.json
-		print(datajson)
 
 		search = datajson["search"]
 		location = datajson["location"]
@@ -474,5 +473,28 @@ def search():
 
 		return jsonify({'jobs': jobs}),200
 	except Exception as e:
+		print(e)
+		return jsonify({"error": "something bad happened"}),500
+
+
+@app.route('/offers', methods=['POST'])
+def offers():
+	try:
+		data = request.json
+		user = auth.verify_id_token(data["token"])
+		uid = user["uid"]
+
+		offers = []
+		posts=ref.child("offer").get()	
+		jobs=[]
+		print(uid)
+		#print(posts)
+		for key, val in posts.items():
+			if val["jobseeker_id"] == uid:
+				offers.append((key, val))
+		
+
+		return jsonify({'offers': offers}), 200
+	except:
 		print(e)
 		return jsonify({"error": "something bad happened"}),500
