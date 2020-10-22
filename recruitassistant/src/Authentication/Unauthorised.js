@@ -7,20 +7,21 @@ export default function Unauthorised() {
 	const history = useHistory();
 
 	const handleBack = () => {
-		history.go(-2);
+		history.go(-1);
 	}
 
 	const handleLogin = () => {
+		window.sessionStorage.clear()
 		window.localStorage.clear()
-		history.push('/login')
+		history.push("/login")
 	}
 
 	return (
 		<div>
-			<br/>
+			<br/><br/><br/><br/><br/><br/><br/><br/><br/>
 			<Container style={{'textAlign': 'center'}}>
 				<div>You don't have permission to view this page</div>
-				<Button onClick={handleBack}>Go back</Button>
+				{/* <Button onClick={handleBack}>Go back</Button> */}
 				<Button onClick={handleLogin}>Login</Button>
 			</Container>
 		</div>

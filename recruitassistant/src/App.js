@@ -14,6 +14,7 @@ import NewJobForm from "./RecruiterComponents/NewJobForm";
 import EditJob from "./RecruiterComponents/EditJob";
 import Advertisement from "./JobSeekerComponents/Advertisement";
 import JobApply from "./JobSeekerComponents/JobApply";
+import Home from "./Home";
 import OfferLetterForm from './RecruiterComponents/OfferLetterForm';
 import ApplicationList from './RecruiterComponents/ApplicationList';
 import ViewApplication from './RecruiterComponents/ViewApplication';
@@ -21,24 +22,12 @@ import RecruiterFAQ from './RecruiterComponents/RecruiterFAQ';
 import JobSeekerFAQ from './JobSeekerComponents/JobSeekerFAQ';
 
 function App() {
-  // const history = useHistory();
-  const [currentTime, setCurrentTime] = useState(0);
-
-
-  function getSession() {
-    return false // TODO: make backend call to check if there is active session
-  }
 
   return (
     <div>
       <BrowserRouter>
         <Switch>
-          <Route exact path="/" render={() => (
-            getSession() ? (
-              <Redirect to="/dashboard"/>
-            ) : (
-              <Redirect to="/login"/>
-            ))}/>
+          <Route exact path="/" component={Home}/>
           <Route path="/login" component={Login}/>
           <Route path="/signuprecruiter" component={SignUpRecruiter}/>
           <Route path="/signupjobseeker" component={SignUpJobSeeker}/>
