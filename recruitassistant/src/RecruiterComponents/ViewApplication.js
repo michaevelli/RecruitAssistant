@@ -68,8 +68,13 @@ export default function ViewApplication() {
     const initialise = (data) => {
         setJob(data.jobinfo)
         setApp(data.applications)
-        setQualifications(data.jobinfo.req_qualifications.split(","))
-        setDocumentsList(data.applications.submitted_docs)
+        if (data.jobinfo.req_qualifications){
+            setQualifications( data.jobinfo.req_qualifications.split(","))
+        }else{
+            setQualifications([])
+        }
+       
+        setDocumentsList(data.applications.submitted_docs || [])
     }
 
     const getDocuments = async () => {
@@ -95,7 +100,7 @@ export default function ViewApplication() {
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard', 'active': true},
-						{'text':'FAQ','href':'#','active': false}]}/>
+						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col >
                 <Col>
                     <Typography component="div" style={{color: 'black', margin: 50}}>
