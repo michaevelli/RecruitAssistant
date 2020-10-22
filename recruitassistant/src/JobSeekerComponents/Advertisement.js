@@ -98,6 +98,7 @@ export default function Advertisement() {
 		}
 	}
 	const advertPanel = () =>{
+		
 		return (
 			job.map((detail) => (
 				<Col>
@@ -111,12 +112,14 @@ export default function Advertisement() {
 							<Box fontSize="h6.fontSize" lineHeight={2}>
 								{detail[1].job_type}
 							</Box>
-							<Box fontSize="h6.fontSize" lineHeight={2}>
+							<Box fontSize="h6.fontSize" lineHeight={2} >
 								Remuneration: ${detail[1].salary_pa * 1000}
 							</Box>
-							<Box fontSize="h6.fontSize" lineHeight={7}>
+							<br/>
+							<Box fontSize="h6.fontSize" >
 								{detail[1].description}
 							</Box>
+							<br/>
 							<Box fontSize="h6.fontSize" lineHeight={2}>
 								Responsibilities:
 								{renderListItems(detail[1].responsibilities)}
@@ -129,13 +132,10 @@ export default function Advertisement() {
 								Experience level: {detail[1].experience_level}
 							</Box>
 							<Box fontSize="h6.fontSize" lineHeight={2}>
-								Job Type: {detail[1].job_type}
-							</Box>
-							<Box fontSize="h6.fontSize" lineHeight={2}>
 								Closing date: {detail[1].closing_date}
 							</Box>
 						</Typography>
-						<Button disabled={applied || recruiter } variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
+						<Button disabled={applied || recruiter || detail[1].status =='closed'} variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
 							Apply
 						</Button>
 					</Col>
@@ -156,7 +156,7 @@ export default function Advertisement() {
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
 						{'text':'Your Applications','href': '#', 'active': false},         
-						{'text':'FAQ','href':'#','active': false}]}/>
+						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 				</Col >
 				{advertPanel()}
 			</Row>

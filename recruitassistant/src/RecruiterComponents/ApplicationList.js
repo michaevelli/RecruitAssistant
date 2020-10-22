@@ -318,7 +318,7 @@ export default function RecruiterDashboard() {
 								{'text':'Offers','href': '#','active': false},
 							]},
 							{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-							{'text':'FAQ','href':'#','active': false}
+							{'text':'FAQ','href':'/recruiterFAQ','active': false}
 						]}/>
 					</Col>
 
