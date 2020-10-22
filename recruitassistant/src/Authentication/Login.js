@@ -6,7 +6,7 @@ import { Redirect } from "react-router-dom";
 import axios from "axios";
 import { useHistory, withRouter } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
-
+import logo from '../SharedComponents/Picture2.png'; 
 export const submitLogin="http://localhost:5000/login"
 
 function Login() {
@@ -63,8 +63,8 @@ function Login() {
 	) : (
 		<div>
 			<Container style={{'textAlign': 'center'}}>
-				<h1>Recruit Assistant</h1>
-				<b>Sign In</b>
+				<img src={logo} style={{ width:400, height:100, marginBottom:10,marginTop:20, marginLeft:20}}></img>
+				<br/>
 				<br/>
 				<form onSubmit={handleSubmit}>
 					<TextField label="Email" value={email} error={errorStatus} onChange={e=>setEmail(e.target.value)}></TextField>
@@ -72,7 +72,8 @@ function Login() {
 					<TextField label="Password" type="password" value={password} error={errorStatus} onChange={e=>setPassword(e.target.value)}></TextField>
 					<br/>
 					<div id="error" style={{color: 'red'}}>{errorMessage}</div>
-					<Button type="submit">Log In</Button>
+					<Button type="submit"
+					variant="contained" style={{margin:25}}>Log In</Button>
 				</form>
 				<br/>
 			

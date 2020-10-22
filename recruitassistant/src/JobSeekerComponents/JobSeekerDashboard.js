@@ -107,7 +107,9 @@ export default function JobSeekerDashboard() {
 					</Typography>
 				</CardContent>
 				<CardActions >
-					<Typography color="textSecondary">
+					<Typography 
+					style={ job[1].status=='open'? 
+					{color: 'green'} : {color:'red'}}>
 						{job[1].status}
 					</Typography>
 					<Link href= {`/advertisement/${job[0]}`} style={{marginLeft: 30}}>
@@ -128,7 +130,7 @@ export default function JobSeekerDashboard() {
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '#', 'active': true},
 						{'text':'Your Applications','href': '#', 'active': false},         
-						{'text':'FAQ','href':'#','active': false}]}/>
+						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 				</Col >
 				<Col>
 					<Typography variant="h4" style={{color: 'black', textAlign: "center",margin:20 }}>
@@ -207,7 +209,7 @@ export default function JobSeekerDashboard() {
 						</Collapse>
 					</Form>
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
-						Open Jobs
+						All Jobs
 					</Typography>
 					<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
 						{renderJobs()}
