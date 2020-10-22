@@ -19,7 +19,9 @@ export default function ViewApplication() {
     const history = useHistory();
     const href = `${window.location.href}`.split("/")
     const offerId = href[4]
-    const [offer, setOffer] = useState({})
+    const [application, setApp] = useState({})
+    const [job, setJob] = useState({})
+    const [qualifications, setQualifications] = useState([])
     const [documentsList, setDocumentsList] = useState([])
     const [files, setFiles] = useState({})
 
@@ -44,10 +46,7 @@ export default function ViewApplication() {
         }
         axios.post(url, ndata)
                 .then(function(response) {
-                    console.log("response:", response.data)
-                    /*initialise(response.data)*/
-                    setOffer(response.data.offers[0][1])
-                    console.log(response.data.offers[0][1].additional_docs)
+					console.log("response:", response.data)
                 })
                 .catch(function(error) {
                     console.log(error.response)
@@ -56,54 +55,38 @@ export default function ViewApplication() {
     }
 
 
-    
-
 
     return (
         <Grid>      
 			<Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
-                    <SideMenu random={[
-						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': false},
-						{'text':'Your Applications','href': '/offers', 'active': true},         
-						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
+					<SideMenu random={[
+						{'text':'Recruiter Dashboard','href': '/recruiterdashboard', 'active': true},
+						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col >
                 <Col>
                     <Typography component="div" style={{color: 'black', margin: 50}}>
                         <Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
-                            Offer: {offer.title}
+                            Offer: {application.first_name} {application.last_name}
                         </Box>
                         <Box fontSize="h5.fontSize">
-                            Company: {offer.company}
+                            Job: {job.title}
                         </Box>
                         <br></br>
-                        <Box fontSize="h8.fontSize">
-                            {offer.description}
-                        </Box>
                         <Box fontSize="h6.fontSize">
-                            Date Posted: {offer.date_posted}
+                            Phone Number: {application.phone_number}
                         </Box>
-                        <Box fontSize="h6.fontSize">
-                            Start Date: {offer.start_date}
-                        </Box>
-                        <Box fontSize="h6.fontSize">
-                            End Date: {offer.end_date}
-                        </Box>
-                        <Box fontSize="h6.fontSize">
-                            Days: {offer.days}
-                        </Box>
-                        <Box fontSize="h6.fontSize">
-                            Hours: {offer.hours}
-                        </Box>
-                        <Box fontSize="h6.fontSize">
-                            Job Type: {offer.job_type}
-                        </Box>
-                        <Box fontSize="h6.fontSize">
-                            Location: {offer.location}
-                        </Box>
-                        <Box fontSize="h6.fontSize">
-                            Salary: {offer.salary} {offer.salary_type}
+                        <br></br>
+                        <Box fontSize="h6.fontSize" lineHeight={2}>
+                            Qualifications:
+                            {qualifications.map((quality) => (
+                                <ul>
+                                    <CheckIcon hidden = {!application.qualifications.includes(quality)}/>
+                                    <ClearIcon hidden = {application.qualifications.includes(quality)}/>
+                                    {quality}
+                                </ul>
+                            ))}
                         </Box>
                         <Box fontSize="h6.fontSize" lineHeight={2}>
                             Documentation:
