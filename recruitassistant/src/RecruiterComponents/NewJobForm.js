@@ -15,8 +15,7 @@ export const jobUrl="http://localhost:5000/jobadverts"
 
 export default function NewJobForm() {
 	const history = useHistory();
-	const today = new Date()
-	
+	const today = new Date()	
 
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
@@ -136,7 +135,7 @@ export default function NewJobForm() {
 
 	return (
 		<Grid>
-			<Row noGutters fluid><TitleBar/></Row>
+			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
 					<SideMenu random={[

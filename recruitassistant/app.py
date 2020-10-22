@@ -373,7 +373,7 @@ def login():
 		user = list(data.val().items())[0][1]
 
 		# return jsonify({"token": token, "user": user, "userID": userID}), 200
-		return jsonify({"token": token, "type": user["type"]}), 200
+		return jsonify({"token": token, "type": user["type"], "name":user["first_name"]}), 200
 
 	except Exception as e:
 		error_message = json.loads(e.args[1])['error']['message']

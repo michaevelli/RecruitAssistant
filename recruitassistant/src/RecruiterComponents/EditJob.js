@@ -163,7 +163,7 @@ export default function EditJob({match}) {
 
 	return (
 		<Grid>
-			<Row noGutters fluid><TitleBar/></Row>
+			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
 					<SideMenu random={[
