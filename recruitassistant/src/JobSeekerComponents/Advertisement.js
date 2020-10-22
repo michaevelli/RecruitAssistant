@@ -21,7 +21,7 @@ export default function Advertisement() {
 	const jobID = href[href.length - 1]
 	const [applied, setApplied] = useState(false);
 	const [job, setJob] = useState([])
-    const [recruiter, setRecruiter] = useState(false);
+	const [recruiter, setRecruiter] = useState(false);
 
 	useEffect(() => {
 		auth();
@@ -32,18 +32,16 @@ export default function Advertisement() {
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
-                console.log("auth success: ", response)
-                setLoading(false)
-                //Both recruiters and job seekers should be able to view an advert
+				console.log("auth success: ", response)
+				setLoading(false)
+				//Both recruiters and job seekers should be able to view an advert
 				if (!response.success) {
-
 					history.push("/unauthorised");
-                }
-                if (response.userInfo["type"] == "recruiter") {
-                        //hide apply button and side menu
-                        //just show the ad
-                        setRecruiter(true)
-                }
+				}
+				if (response.userInfo["type"] == "recruiter") {
+					//hide apply button and side menu, just show the ad
+					setRecruiter(true)
+				}
 			})
 	}
 	
@@ -86,8 +84,7 @@ export default function Advertisement() {
 		if (field == null) {
 			return <div></div>
 		} else {
-			var item = [];
-			item.concat(field);
+			var item = [...field]
 			return (
 				item.map((i) => (
 					<ul>
@@ -102,47 +99,52 @@ export default function Advertisement() {
 		return (
 			job.map((detail) => (
 				<Col>
-						<Typography component="div" style={{color: 'black', margin: 50}}>
-							<Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
-								{detail[1].title}
-							</Box>
-							<Box fontSize="h5.fontSize">
-								{detail[1].company} | {detail[1].location}
-							</Box>
-							<Box fontSize="h6.fontSize" lineHeight={2}>
-								{detail[1].job_type}
-							</Box>
-							<Box fontSize="h6.fontSize" lineHeight={2} >
-								Remuneration: ${detail[1].salary_pa * 1000}
-							</Box>
-							<br/>
-							<Box fontSize="h6.fontSize" >
-								{detail[1].description}
-							</Box>
-							<br/>
-							<Box fontSize="h6.fontSize" lineHeight={2}>
-								Responsibilities:
-								{renderListItems(detail[1].responsibilities)}
-							</Box>
-							<Box fontSize="h6.fontSize" lineHeight={2}>
-								Qualifications:
-								{renderListItems(detail[1].req_qualifications)}
-							</Box>
-							<Box fontSize="h6.fontSize" lineHeight={2}>
-								Experience level: {detail[1].experience_level}
-							</Box>
-							<Box fontSize="h6.fontSize" lineHeight={2}>
-								Closing date: {detail[1].closing_date}
-							</Box>
-						</Typography>
-						<Button disabled={applied || recruiter || detail[1].status =='closed'} variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
-							Apply
-						</Button>
-					</Col>
+					<Typography component="div" style={{color: 'black', margin: 50}}>
+						<Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
+							{detail[1].title}
+						</Box>
+						<Box fontSize="h5.fontSize">
+							{detail[1].company} | {detail[1].location}
+						</Box>
+						<Box fontSize="h6.fontSize" lineHeight={2}>
+							{detail[1].job_type}
+						</Box>
+						<Box fontSize="h6.fontSize" lineHeight={2} >
+							Remuneration: ${detail[1].salary_pa * 1000}
+						</Box>
+						<br/>
+						<Box fontSize="h6.fontSize" >
+							{detail[1].description}
+						</Box>
+						<br/>
+						<Box fontSize="h6.fontSize" lineHeight={2}>
+							Responsibilities:
+							{renderListItems(detail[1].responsibilities)}
+						</Box>
+						<Box fontSize="h6.fontSize" lineHeight={2}>
+							Qualifications:
+							{detail[1].req_qualifications.split(",").map((i) => (
+								<ul>
+									<li> {i} </li>
+								</ul>
+							))}
+						</Box>
+						<Box fontSize="h6.fontSize" lineHeight={2}>
+							Experience level: {detail[1].experience_level}
+						</Box>
+						<Box fontSize="h6.fontSize" lineHeight={2}>
+							Closing date: {detail[1].closing_date}
+						</Box>
+					</Typography>
+					<Button disabled={applied || recruiter || detail[1].status =='closed'} variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
+						Apply
+					</Button>
+				</Col>
 			))
 		);
 	}
-    return recruiter ? (
+
+	return recruiter ? (
 		<Grid>      
 			<Row>
 			{advertPanel()}
@@ -150,7 +152,7 @@ export default function Advertisement() {
 		</Grid>
 	) : (
 		<Grid>      
-			<Row noGutters fluid><TitleBar/></Row>
+			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
 					<SideMenu random={[

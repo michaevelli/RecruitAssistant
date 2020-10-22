@@ -1,28 +1,17 @@
 import time
 from flask import Flask, request
 from flask import jsonify
-from flask_cors import CORS
-import firebase_admin
-from firebase_admin import credentials, auth, db
-import pyrebase
+# from flask_cors import CORS
+# import firebase_admin
+# from firebase_admin import credentials, auth, db
 import json
 import uuid
 from datetime import date, datetime
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
-from backend import jobs
+from backend import jobs, search, authentication
 from backend.init_app import app, ref, pb
-import re
 
-# initalise app
-# app = Flask(__name__)
-# CORS(app, supports_credentials=True)
-
-# # connect to firebase
-# cred = credentials.Certificate('./backend/recruitassistant_cred.json')
-# firebase = firebase_admin.initialize_app(cred, {"databaseURL": "https://recruitassistant-fe71e.firebaseio.com"})
-# pb = pyrebase.initialize_app(json.load(open('./backend/firebase_config.json')))
-# ref = db.reference('/')
 
 def print_date_time():
     print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
