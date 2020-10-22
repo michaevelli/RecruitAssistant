@@ -48,6 +48,7 @@ function Login() {
 			.then(function(response) {
 				console.log("response:", response.data)
 				window.localStorage.setItem("token", response.data.token)
+				window.localStorage.setItem("name", response.data.name)
 				history.push("/"+response.data.type+"dashboard");
 			})
 			.catch(function(error) {

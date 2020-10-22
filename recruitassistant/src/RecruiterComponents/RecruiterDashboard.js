@@ -79,7 +79,7 @@ export default function RecruiterDashboard() {
 		<div></div>
 	) : (
 		<Grid>
-			<Row noGutters fluid><TitleBar/></Row>
+			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm="2">
 					<SideMenu random={[
