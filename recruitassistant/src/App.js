@@ -17,12 +17,9 @@ import JobApply from "./JobSeekerComponents/JobApply";
 import OfferLetterForm from './RecruiterComponents/OfferLetterForm';
 import ApplicationList from './RecruiterComponents/ApplicationList';
 import ViewApplication from './RecruiterComponents/ViewApplication';
-<<<<<<< HEAD
 import Offers from './JobSeekerComponents/Offers'
-=======
 import RecruiterFAQ from './RecruiterComponents/RecruiterFAQ';
 import JobSeekerFAQ from './JobSeekerComponents/JobSeekerFAQ';
->>>>>>> master
 
 function App() {
   // const history = useHistory();
