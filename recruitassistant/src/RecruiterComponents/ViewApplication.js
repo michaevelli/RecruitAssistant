@@ -25,7 +25,7 @@ export default function ViewApplication() {
     const [job, setJob] = useState({})
     const [qualifications, setQualifications] = useState([])
     const [documentsList, setDocumentsList] = useState([])
-  
+    const [loading,setLoading]= useState(true)
 
     useEffect(() => {
         auth();
@@ -74,6 +74,7 @@ export default function ViewApplication() {
         }
        
         setDocumentsList(data.applications.submitted_docs || [])
+        setLoading(false)
     }
     //example of how to download a pdf in browser
 	const downloadFile = async (data,filename) =>{		
@@ -89,7 +90,9 @@ export default function ViewApplication() {
 	}
    
     return (
-        <Grid>      
+        loading?
+        (<h3> loading...</h3>):
+        (<Grid>      
 			<Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
@@ -134,7 +137,7 @@ export default function ViewApplication() {
                 </Col>
 			</Row>
 		</Grid>
-	);
+	))
 }
 
 
