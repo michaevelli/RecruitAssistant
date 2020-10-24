@@ -15,7 +15,6 @@ import checkAuth from "../Authentication/Authenticate";
 
 
 export const jobUrl="http://localhost:5000/retrieveapplication"
-export const docsUrl="http://localhost:5000/download"
 
 export default function ViewApplication() {
     const history = useHistory();
@@ -26,12 +25,12 @@ export default function ViewApplication() {
     const [job, setJob] = useState({})
     const [qualifications, setQualifications] = useState([])
     const [documentsList, setDocumentsList] = useState([])
-    const [files, setFiles] = useState({})
+  
 
     useEffect(() => {
         auth();
         getApplication();
-        getDocuments();
+       
 	}, []);
 
     const auth = async () => {
@@ -56,8 +55,8 @@ export default function ViewApplication() {
         })
         .then(res => {
             initialise(res.data)
-            console.log("response: ", res.data.applications)
-            console.log("response: ", res.data.jobinfo)
+           // console.log("response: ", res.data.applications)
+           // console.log("response: ", res.data.jobinfo)
         })
         .catch((error) => {
             console.log("error: ", error.response)
@@ -76,23 +75,7 @@ export default function ViewApplication() {
        
         setDocumentsList(data.applications.submitted_docs || [])
     }
-
-    const getDocuments = async () => {
-        await axios.get(docsUrl, {
-            params: {
-                app_id: applicationID,
-                job_id: jobID,
-            },
-        })
-        .then(res => {
-            setFiles(res.data.files)
-            console.log("response: ", res.data.files)
-        })
-        .catch((error) => {
-            console.log("error: ", error.response)
-        })
-    }
-
+   
     return (
         <Grid>      
 			<Row noGutters fluid><TitleBar/></Row>
@@ -129,8 +112,8 @@ export default function ViewApplication() {
                             Documentation:
                             {documentsList.map((document) => (
                                 <ul>
-                                    <Link href={files[document]} target="_blank">
-                                        <PictureAsPdfIcon color = "secondary"/>{document}
+                                    <Link href={document.src} target="_blank">
+                                        <PictureAsPdfIcon color = "secondary"/>{document.req_document}
                                     </Link>
                                 </ul>
                             ))}

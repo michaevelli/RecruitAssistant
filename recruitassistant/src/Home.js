@@ -60,7 +60,6 @@ export default function Home() {
 					<div class="row" style={{ margin:120}}>
 						<div class="col-md-7 order-md-2">
 							<h2>Employers</h2>
-							<h3><span class="text-muted">Find your dream Job.</span></h3>
 							<p class="lead">
 								Manage the recruitment process from advertising to offers. 
 								<ul>
