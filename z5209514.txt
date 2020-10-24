@@ -9,3 +9,9 @@ Imported starter files into Github. Registered a firebase project. Started sprin
 
 Week 4
 Started Sprint 2 with team. Was tasked with handling token authentication to prevent unauthorised access between specific pages. Completed logout process. Linked job creation page to backend.
+
+Week 5
+Presented Sprint 1 and Sprint 2 work to the tutor. Started Sprint 3 and worked on functionality for sending invitations from employers to job seekers.
+
+Week 6
+Continued Sprint 3 and completed invitation sending as well as helped Cattleya to create a page to view applications to jobs in depth. 
