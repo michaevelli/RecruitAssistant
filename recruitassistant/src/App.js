@@ -42,7 +42,7 @@ function App() {
           <Route path="/advertisement" component={Advertisement}/>
           <Route path="/jobapply" component={JobApply}/>
           <Route path="/createoffer" component={OfferLetterForm}/>
-          <Route path="/applications" component={ApplicationList}/>
+          <Route path="/applications/:jobID" component={ApplicationList}/>
           <Route path="/viewapplication" component={ViewApplication}/>
           <Route path="/recruiterFAQ" component={RecruiterFAQ}/>
           <Route path="/jobseekerFAQ" component={JobSeekerFAQ}/>
