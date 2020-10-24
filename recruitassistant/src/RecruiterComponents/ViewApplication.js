@@ -75,6 +75,18 @@ export default function ViewApplication() {
        
         setDocumentsList(data.applications.submitted_docs || [])
     }
+    //example of how to download a pdf in browser
+	const downloadFile = async (data,filename) =>{		
+		
+        const linkSource = data;
+        const downloadLink = document.createElement("a");
+        const fileName = filename;
+    
+        downloadLink.href = linkSource;
+        downloadLink.download = fileName;
+        downloadLink.click();	
+		
+	}
    
     return (
         <Grid>      
@@ -112,7 +124,7 @@ export default function ViewApplication() {
                             Documentation:
                             {documentsList.map((document) => (
                                 <ul>
-                                    <Link href={document.src} target="_blank">
+                                    <Link style={{ cursor: 'pointer'}} onClick={()=>downloadFile(document.src,document.filename)} target="_blank">
                                         <PictureAsPdfIcon color = "secondary"/>{document.req_document}
                                     </Link>
                                 </ul>
