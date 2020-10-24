@@ -47,7 +47,8 @@ export default function ViewApplication() {
                     console.log("response:", response.data)
                     /*initialise(response.data)*/
                     setOffer(response.data.offers[0][1])
-                    console.log(response.data.offers[0][1].additional_docs)
+                    setDocumentsList(response.data.offers[0][1].additional_docs)
+                    
                 })
                 .catch(function(error) {
                     console.log(error.response)
@@ -55,7 +56,15 @@ export default function ViewApplication() {
 
     }
 
-
+    const downloadFile = async (data,filename) =>{			
+        const linkSource = data;
+        const downloadLink = document.createElement("a");
+        const fileName = filename;
+    
+        downloadLink.href = linkSource;
+        downloadLink.download = fileName;
+        downloadLink.click();		
+	}
     
 
 
@@ -109,8 +118,8 @@ export default function ViewApplication() {
                             Documentation:
                             {documentsList.map((document) => (
                                 <ul>
-                                    <Link href={files[document]} target="_blank">
-                                        <PictureAsPdfIcon color = "secondary"/>{document}
+                                    <Link style={{ cursor: 'pointer'}} onClick={()=>downloadFile(document.src,document.filename)} target="_blank">
+                                        <PictureAsPdfIcon color = "secondary"/>{document.filename}
                                     </Link>
                                 </ul>
                             ))}
