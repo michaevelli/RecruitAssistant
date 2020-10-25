@@ -9,9 +9,8 @@ import uuid
 from datetime import date, datetime
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
-from backend import jobs, search, authentication
+from backend import jobs, search, authentication, notifications
 from backend.init_app import app, ref, pb
-
 
 def print_date_time():
     print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
@@ -213,6 +212,11 @@ def send_interview():
 	try:
 		for u in invite_list:
 			interview_id=str(uuid.uuid1()) + str(i)
+			
+			notif_data = {
+				"uid": u["jobseeker_id"]
+			}
+			notifications.notify(notif_data,"interview",interview_id)
 
 			ref.child('interviews').update({
 					interview_id: {
