@@ -15,14 +15,6 @@ import {Card, Container,Col,Row,} from 'react-bootstrap';
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
-  modal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow:'scroll',
-    maxHeight: '100vh',
-
-  },
   paper: {
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
@@ -49,20 +41,12 @@ export default function Notifications() {
 
   const checkUrl = "http://localhost:5000/checknotif"
   const delUrl = "http://localhost:5000/remnotif"
+  const recUrl = "http://localhost:5000/recnotif"
 
 
   useEffect(() => {
-    // used to preserve notifications across all windows
-      if(localStorage.getItem("seenNotif") !== null){
-        var a = localStorage.getItem("seenNotif").split(",")
-        for(var i = 0; i < a.length; i++){
-          seen.push(a[i])
-        }
-      }
-      else{
-        getData()
-      }
-      
+      checkSeen()
+      getData()
       const interval = setInterval(() => {
         getData()
       }, 5000);
@@ -84,6 +68,7 @@ export default function Notifications() {
 			})	
   }
 
+  // update the notifications whenever an unviewed notif is retrieved
   const handleData = (data) => {
     var count = 0
     for(var i = 0; i < data.length; i++){
@@ -102,7 +87,8 @@ export default function Notifications() {
         seen.push(data[0])
       }
     });
-    localStorage.setItem("seenNotif", seen)
+    // record in db which notifications have been viewed
+    recordNotif(seen)
     setLength(0)
   }
 
@@ -114,8 +100,6 @@ export default function Notifications() {
     const data={
       id : id
     }
-    console.log("deleting" + id)
-
     await axios.post(delUrl, data)
 			.then(res => {
         console.log(res)
@@ -126,7 +110,39 @@ export default function Notifications() {
 			})	
   }
 
-  
+  // function that records the list of notifications that have been seen
+  const recordNotif = async(list) => {
+    const data={
+      uid: sessionStorage.getItem("uid"),
+      list: list
+    }
+
+    await axios.post(recUrl, data)
+      .then(res => {
+        console.log(res)
+      })
+      .catch((error) => {
+        console.log(error)
+      })	
+  }
+
+  // function that is run on page reload and gets the list of notifications user has seen
+  const checkSeen = async() => {
+    await axios.get(recUrl, {
+			params: {
+				uid: sessionStorage.getItem("uid")
+			}})
+      .then(res => {
+        for(var i = 0; i < res.data.data[0][1].list.length; i++){
+          seen.push(res.data.data[0][1].list[i])
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })	
+  }
+
+
   const renderNotif = () => {
     if(notif.length == 0){
       return ( 
@@ -183,26 +199,6 @@ export default function Notifications() {
         <NotificationsIcon></NotificationsIcon>
       </StyledBadge>
     </IconButton>
-    {/* <Modal
-      aria-labelledby="transition-modal-title"
-      aria-describedby="transition-modal-description"
-      className={classes.modal}
-      open={open}
-      onClose={handleClose}
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
-    >
-    
-      <Fade in={open}>
-        <div className={classes.paper}>
-          {renderNotif()}
-        </div>
-      </Fade>
-    </Modal> */}
-
     <Dialog
         open={open}
         onClose={handleClose}
