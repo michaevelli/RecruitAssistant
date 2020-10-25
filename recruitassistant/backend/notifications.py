@@ -20,6 +20,35 @@ def notify(data, type_notif, obj_id):
 	except Exception as e:		
 		return jsonify({"message": str(e)}), 400
 
+# records notifications viewed by the user
+@app.route('/recnotif', methods=["POST"])
+def rec_notif():
+	data = request.get_json()
+	try:
+		ref.child("seenNotifs").update({
+			data["uid"] : {
+				'list': data["list"]
+			}
+		})
+		return jsonify({'message': "recorded notifications viewed"}),200
+	except Exception as e:
+		print(e)
+		return jsonify({"message": str(e)}), 400
+
+@app.route('/recnotif', methods=["GET"])
+def get_seen():
+	uid = request.args.get("uid")
+	db = pb.database()
+	node_exist = db.shallow().get().val()
+	if "seenNotifs" in list(node_exist):
+		d1 = db.child("seenNotifs").order_by_key().equal_to(uid).get()
+		if list(d1) != []:
+			return jsonify({"exists": "true", "data": list(d1.val().items())}),200
+		else:
+			return jsonify({"exists": "true", "data": []}),200
+	else:
+		return jsonify({"message": "no stored notifications"}), 200
+
 # function removes notifications from user clicking on x button
 @app.route('/remnotif', methods=["POST"])
 def rem_notif():
