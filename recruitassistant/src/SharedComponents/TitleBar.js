@@ -4,6 +4,8 @@ import { TextField, Button, Grid } from "@material-ui/core";
 import Typography from '@material-ui/core/Typography';
 import { useHistory, withRouter } from "react-router-dom";
 import logo from './Picture2.png'; 
+import Notifications from "./Notifications.js";
+
 
 export default function TitleBar() {
 	// console.log("props:", props);
@@ -27,12 +29,14 @@ export default function TitleBar() {
 					<Typography variant="overline" style={{color:"white",marginRight:30}}>
 						Welcome {window.localStorage.getItem("name")}
 					</Typography>
+					<Notifications></Notifications>
 					<Button 
 						onClick={() => {logout()}}
 						variant="contained"
 						style={{"margin":5}}>
 						Log Out
 					</Button>
+
 				</li>
 			</ul>
 		</nav>
