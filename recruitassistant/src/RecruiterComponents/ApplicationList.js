@@ -174,12 +174,12 @@ export default function ApplicationList({match}) {
 
 	const initialise = (applicationList) => {
 		setApplications(applicationList)
-		setSelection(applicationList.length)
 		var considering = {...inviteList}
 		for (let i = 0; i < applicationList.length; i++) {
 			considering[applicationList[i][1]["jobseeker_id"]] = {app_id: applicationList[i][0], date: "", time: ""}
 		}
 		setInviteList(considering)
+		setSelection(applicationList.length)
 	}
 
 	const moveAppUp = (index) => {
@@ -198,7 +198,7 @@ export default function ApplicationList({match}) {
 		setApplications(list)
 	}
 
-	const renderApplications = (selection, status) => {
+	const renderApplications = (status) => {
 		if (selection > 0) {
 			return applications.slice(0, selection).map((app, index) => (
 				<Grid>
@@ -351,7 +351,7 @@ export default function ApplicationList({match}) {
 						</Row>
 						<Row>
 							<div className="card-deck"  style={{ display: 'grid', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
-								{renderApplications(selection, detail[1].status)}
+								{renderApplications(detail[1].status)}
 							</div>
 						</Row>
 					</Col>
