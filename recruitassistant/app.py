@@ -49,6 +49,7 @@ def get_offer_files():
 	except Exception as e:
 		return jsonify({"message": str(e)}), 400
 
+# create an offer
 @app.route('/offer', methods=["POST"])
 def post_offer_letter():
 	json_data = request.get_json()
@@ -84,7 +85,8 @@ def post_offer_letter():
 	except Exception as e:		
 		return jsonify({"message": str(e)}), 400
 
-
+# TODO: to be changed to beccas file storage method
+# uploads file to firebase storage
 @app.route('/upload', methods=["POST"])
 def check_files():
 	print(request.files.to_dict())
@@ -102,6 +104,8 @@ def check_files():
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
+# TODO: to be changed to beccas file storage method
+# downloads files from firebase storage
 @app.route('/download', methods=["GET"])
 def get_files():
 	storage = pb.storage()
@@ -121,6 +125,7 @@ def get_files():
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
+# create new application
 @app.route('/jobapplications', methods=["POST"])
 def post_application():
 	#posts job application to database
@@ -151,9 +156,9 @@ def post_application():
 	except Exception as e:		
 		return jsonify({"message": str(e)}), 400
 
+# checks if application exists for jobseeker and job (to disable button)
 @app.route('/jobapplications', methods=["GET"])
 def check_applied():
-	#checks if application exists for jobseeker and job
 	try:
 		jobid = request.args.get('job_id')
 		jobseekerid = request.args.get('jobseeker_id')
@@ -171,11 +176,10 @@ def check_applied():
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
-
-
+# TODO: duplicate, use the one below
+# checks if application exists for jobseeker and job
 @app.route('/jobapplication', methods=["GET"])
 def get_app_details():
-	#checks if application exists for jobseeker and job
 	try:
 		job_id=request.args.get('jobId')
 		job_app_id = request.args.get('jobAppId')
@@ -190,6 +194,7 @@ def get_app_details():
 		print(e)
 		return jsonify({"message": str(e)}), 400		
 
+# get application info and job info
 @app.route('/retrieveapplication', methods=["GET"])
 def return_application():
 	appid = request.args.get('app_id')
@@ -214,7 +219,7 @@ def get_current_time():
 	data = {'time': 10000}
 	return jsonify(data)
 		
-
+# display all posts for jobseeker dashboard
 @app.route('/jobadverts/open', methods=["GET"])
 def get_all_posts():
 	#gets all posts in the database
@@ -231,6 +236,7 @@ def get_all_posts():
 	except Exception as e:
 		return jsonify({"message": str(e)}), 400
 
+# get the recruiter jobs for dashboard
 @app.route('/jobadverts/<recruiterid>', methods=["GET"])
 def get_recruiter_posts(recruiterid):
 	#TODO:
@@ -252,6 +258,7 @@ def get_recruiter_posts(recruiterid):
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
+# create interview object
 @app.route('/interviews', methods=["POST"])
 def send_interview():
 	json_data = request.get_json()
@@ -278,9 +285,9 @@ def send_interview():
 		return jsonify({"message": str(e)}), 400
 	return
 
+# gets all applications for one job
 @app.route('/applicationslist', methods=["GET"])
 def get_applications_for_job():
-	#gets all posts in the database
 	try:
 		jobid = request.args.get('job_id')
 		post = ref.child("jobApplications").order_by_key().equal_to(jobid).get()
