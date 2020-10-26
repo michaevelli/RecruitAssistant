@@ -44,6 +44,13 @@ def post_offer_letter():
 	date_posted = today.strftime("%Y-%m-%y")
 	print("d1 =", date_posted),
 	
+	notif_data = {
+				"uid": json_data["jobseeker_id"],
+				"obj_id": offer_uid,
+				"type" : "offer",
+			}
+	notifications.notify(notif_data)
+
 	try:
 		ref.child('offer').update({
 				offer_uid: {
@@ -214,9 +221,11 @@ def send_interview():
 			interview_id=str(uuid.uuid1()) + str(i)
 			
 			notif_data = {
-				"uid": u["jobseeker_id"]
+				"uid": u["jobseeker_id"],
+				"obj_id": interview_id,
+				"type" : "interview",
 			}
-			notifications.notify(notif_data,"interview",interview_id)
+			notifications.notify(notif_data)
 
 			ref.child('interviews').update({
 					interview_id: {
