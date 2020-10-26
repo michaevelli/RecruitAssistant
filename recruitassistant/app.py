@@ -16,6 +16,7 @@ from backend.init_app import app, ref, pb
 def print_date_time():
     print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
 
+# check job closing dates and update job status
 def check_postings():
 	posts=ref.child("jobAdvert").get()
 	for key in posts.keys():
@@ -35,19 +36,6 @@ scheduler.add_job(func=check_postings, trigger="interval", seconds=5)
 scheduler.start()
 # atexit.register(lambda: scheduler.shutdown())
 
-#this method is just for testing download of pdf works
-@app.route('/offer', methods=["GET"])
-def get_offer_files():
-	try:
-		posts=ref.child("offer/bc5bd92a-11af-11eb-9fea-005056c00008").child('additional_docs').get()		
-		res= posts[0]	
-		filename=res['filename']
-		content=res['src']
-		content=content[28:] #remove data/application blah
-		return content,200
- 
-	except Exception as e:
-		return jsonify({"message": str(e)}), 400
 
 # create an offer
 @app.route('/offer', methods=["POST"])
@@ -83,46 +71,6 @@ def post_offer_letter():
 			})
 		return jsonify({'message': f'Successfully created offer {offer_uid}'}),200
 	except Exception as e:		
-		return jsonify({"message": str(e)}), 400
-
-# TODO: to be changed to beccas file storage method
-# uploads file to firebase storage
-@app.route('/upload', methods=["POST"])
-def check_files():
-	print(request.files.to_dict())
-	storage = pb.storage()
-	jobid = request.args.get('job_id')
-	jobseekerid = request.args.get('jobseeker_id')
-	try:
-		for key, val in request.files.items():
-			download = storage.child(jobid + "_" + jobseekerid + "_" + key).put(val)
-			ref.child('file').update({
-				jobid + "_" + jobseekerid + "_" + key: download
-			})
-		return jsonify({'message': 'Uploaded files successfully'}),200
-	except Exception as e:
-		print(e)
-		return jsonify({"message": str(e)}), 400
-
-# TODO: to be changed to beccas file storage method
-# downloads files from firebase storage
-@app.route('/download', methods=["GET"])
-def get_files():
-	storage = pb.storage()
-	appid = request.args.get('app_id')
-	jobid = request.args.get('job_id')
-	files = {}
-	try:
-		application = ref.child("jobApplications").get().get(jobid).get(appid)
-		jobseekerid = application["jobseeker_id"]
-		for document in application["submitted_docs"]:
-			download = ref.child("file").get(jobid + "_" + jobseekerid + "_" + document)[0][jobid + "_" + jobseekerid + "_" + document]
-			storedfile = storage.child(jobid + "_" + jobseekerid + "_" + document)
-			files[document] = storedfile.get_url(download["downloadTokens"])
-		print(files)
-		return jsonify({"files": files}), 200
-	except Exception as e:
-		print(e)
 		return jsonify({"message": str(e)}), 400
 
 # create new application
@@ -176,25 +124,25 @@ def check_applied():
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
-# TODO: duplicate, use the one below
-# checks if application exists for jobseeker and job
+
+# get job app only
 @app.route('/jobapplication', methods=["GET"])
 def get_app_details():
 	try:
 		job_id=request.args.get('jobId')
 		job_app_id = request.args.get('jobAppId')
 		specific_child="jobApplications/"+job_id+'/'+job_app_id
-		print(specific_child)
+		#print(specific_child)
 		the_application=ref.child(specific_child).get()
 		print("THE APPP")
-		print(the_application)
+		#print(the_application)
 		return jsonify({'application': the_application}),200
  
 	except Exception as e:
 		print(e)
 		return jsonify({"message": str(e)}), 400		
 
-# get application info and job info
+#get job app and job advert
 @app.route('/retrieveapplication', methods=["GET"])
 def return_application():
 	appid = request.args.get('app_id')
@@ -203,9 +151,9 @@ def return_application():
 	print("here")
 	try:
 		app_resp=ref.child("jobApplications").get().get(jobid).get(appid)
-		print(app_resp)
+		#print(app_resp)
 		job_info = ref.child("jobAdvert").order_by_key().equal_to(jobid).get().get(jobid)
-		print(job_info)
+		#print(job_info)
 
 		return jsonify({"applications": app_resp, "jobinfo": job_info}), 200
 	except Exception as e:
@@ -301,7 +249,7 @@ def get_applications_for_job():
 			 	applications.append((appid, val.get(appid)))
 				#applications.append((key, val.get(appid)))
 		
-		print(applications)
+		#print(applications)
 		return jsonify({'applications': applications}),200
  
 	except Exception as e:		

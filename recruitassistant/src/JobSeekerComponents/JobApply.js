@@ -27,12 +27,12 @@ export default function JobApply() {
 	const [last_name, setLastName] = useState('');
 	const [phone_number, setPhoneNumber] = useState('');
 	const [rights, setRights] = useState('');
-	//will be comma seperated strings - split on the commas to get an array
-	const [submitted_docs, setSubmittedDocs] = useState({});
-	const [required_docs, setRequiredDocs] = useState([]);
+
 	const [qualification_list, setQualificationList] = useState([]);
+	//which required qualifications the user
 	const [matching_list, setMatchingList] = useState([]);
 	const [job, setJob] = useState([]);
+	const [additionalDocs, setAdditionalDocs] = useState([]);
 
 	useEffect(() => {
 		auth();
@@ -60,12 +60,21 @@ export default function JobApply() {
 			},
 		})
 		.then(res => {
-				setJob(res.data.job)
-				console.log("response: ", res)
-			})
-			.catch((error) => {
-				console.log("error: ", error.response)
-			})
+			setJob(res.data.job)
+			//initialise qualifications list
+			const req_quals= res.data.job[0][1].req_qualifications.split(",")
+			setQualificationList(req_quals)
+			//initialise matching qualifications list to all false
+			var initial_list=[]
+			for (var i=0; i<req_quals.length; i++){
+				initial_list.push(false)
+			}
+			setMatchingList(initial_list)
+		
+		})
+		.catch((error) => {
+			console.log("error: ", error.response)
+		})
 	};
 
 	const checkJobApplied = async () => {
@@ -92,20 +101,30 @@ export default function JobApply() {
 		setMatchingList(matching)
 	}
 
-	const handleDocumentInput = (document, event, qualification_array, docs_array) => {
-		setQualificationList(qualification_array)
-		setRequiredDocs(docs_array)
-		const files = {...submitted_docs}
-		files[document] = event.target.files[0]
-		setSubmittedDocs(files)
-	}
-
-	const applyJob = async (data) => {
+	const applyJob = async () => {
 		const url = `${applicationUrl}`
+		//get qualifications the user ticked
+		const final_qualifications = []
+		for (var i = 0; i < qualification_list.length; i++) {
+			if (matching_list[i]) {
+				final_qualifications.push(qualification_list[i]);
+			}
+		}
+		const data={
+			first_name: first_name,
+			last_name: last_name,
+			phone_number: phone_number,
+			rights: rights,
+			qualifications: final_qualifications,
+			qualities_met: final_qualifications.length,
+			jobseeker_id: jobseeker_id,
+			job_id: jobID,
+			submitted_docs: additionalDocs
+		}
+		console.log("data: ",data)
 		await axios.post(url, data)
 			.then(res => {
-				console.log("response: ", res)
-				
+				console.log("response: ", res)			
 				alert("Job application successfully created")
 				history.push("/jobseekerdashboard")
 			})
@@ -115,60 +134,42 @@ export default function JobApply() {
 			})
 	};
 
-	const uploadFiles = async (final_qualifications) => {
-		var formData = new FormData();
-		for (var i = 0; i < required_docs.length; i++) {
-			formData.append(required_docs[i], submitted_docs[required_docs[i]])
-		}
-        const data={
-			first_name: first_name,
-			last_name: last_name,
-			phone_number: phone_number,
-			rights: rights,
-			qualifications: final_qualifications,
-			qualities_met: final_qualifications.length,
-			jobseeker_id: jobseeker_id,
-			job_id: jobID,
-			submitted_docs: required_docs
-		}
-
-		const url = `${uploadUrl}`
-		await axios.post(url, formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data'
-				},
-				params: {
-                    job_id: jobID,
-                    jobseeker_id: sessionStorage.getItem("uid")
-                }
-			})
-			.then(res => {
-				console.log("response: ", res)
-				applyJob(data)
-			})
-			.catch((error) => {
-				console.log("error: ", error.response)
-				alert("Upload failed, please try again")
-			})
-	};
-	
 	const handleSubmit= async (event) =>{	
 		event.preventDefault();
+		
 		const form = event.currentTarget;
 		if (form.checkValidity() === false) {	
 			event.stopPropagation();
 			setValidated(true);
 		} else {
             setValidated(true);
-            const final_qualifications = []
-            for (var i = 0; i < qualification_list.length; i++) {
-                if (matching_list[i]) {
-                    final_qualifications.push(qualification_list[i]);
-                }
-            }
-			uploadFiles(final_qualifications);
+            applyJob();
 		}
 	}
+	
+	//document upload methods
+	const handleChangeDoc = (index,document_name,event) => {	
+		console.log(index)
+		var file=event.target.files[0]
+		var filename=event.target.files[0].name
+		var filetype= event.target.files[0].type
+		console.log(filetype)
+		if(filetype!="application/pdf"){
+			alert("please upload a pdf")
+			return 0
+		}
+		const reader = new FileReader()
+		reader.onload = (e) => handleFileLoad(filename,document_name,index,e);
+		reader.readAsDataURL(file)
+	}
+	
+	const handleFileLoad= (filename,document_name,index,event)=>{
+		var docs = [...additionalDocs]
+		docs[index]={'req_document': document_name,'filename': filename, 'src': event.target.result}
+		console.log(event.target.result); 
+		setAdditionalDocs(docs)
+	}
+
 
 	return job.map((detail) => (
 		<Grid>
@@ -258,20 +259,20 @@ export default function JobApply() {
 							<Form.Label column sm={10}>Please upload the following documents as a pdf.</Form.Label>
 							<Col sm={10}>
 								<ul>
-									{detail[1].required_docs.split(",").map((document) => (
+									{detail[1].required_docs.split(",").map((document,index) => (
 										<li>
 											<Form.File
 												required
-												id = {document}
+												id = {index}
 												name = {document}
 												label = {document}
 												accept = "application/pdf"
-												onChange = { (event) => handleDocumentInput(document, event, detail[1].req_qualifications.split(","), detail[1].required_docs.split(","))}/>
+												onChange = {(e)=>handleChangeDoc(index,document,e)}/> 
 										</li>
 									))}
 								</ul>
 								<Form.Control.Feedback type="invalid">
-									Please upload the files
+									Please upload all files as pdf
 								</Form.Control.Feedback>
 							</Col>
 						</Form.Group>

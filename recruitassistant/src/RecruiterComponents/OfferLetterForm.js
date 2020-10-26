@@ -102,21 +102,7 @@ export default function OfferLetterForm(props) {
 			})
 	}
 	
-	//example of how to download a pdf in browser
-	const downloadFile = async () =>{		
-		await axios.get(offerURL)
-			.then(r => {
-				console.log(r)
-				const linkSource = `data:application/pdf;base64,${r.data}`;
-				const downloadLink = document.createElement("a");
-				const fileName = "filename.pdf";
-			
-				downloadLink.href = linkSource;
-				downloadLink.download = fileName;
-				downloadLink.click();	
-		});
-	}
-	
+
 	const handleAddDoc = () => {
 		setAdditionalDocs([...additionalDocs, ''])
 	}
@@ -381,9 +367,7 @@ export default function OfferLetterForm(props) {
 							}		
 							
 							</Col>
-							<div >
-								<button onClick={()=>downloadFile()} > test download a doc</button>
-							</div>					
+											
 						</Form.Group>
 
 						<Button variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
