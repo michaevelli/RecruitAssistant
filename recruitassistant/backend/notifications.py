@@ -1,19 +1,24 @@
 from flask import Flask, request, jsonify
 from .init_app import app, ref, pb
 import uuid
+from datetime import datetime
+
 
 # receives type of notification (i.e. interview/offer/counteroffer)
 # function is called from hooking into interview/offer/counteroffer functions
 # sets information in database under notification node
 # obj_id is necessary so user can click and view the specified item
-def notify(data, type_notif, obj_id):
+def notify(data):
 	notif_id=str(uuid.uuid1())
+	# now = datetime.now()
+	# date_time = now.strftime("%m/%d/%Y-%H:%M:%S")
 	try:
 		ref.child('notif').update({
 			notif_id: {
-				"type": type_notif,
+				"type": data["type"],
 				"recipient_id": data["uid"],
-				"object_id" : obj_id
+				"object_id" : data["obj_id"],
+				# "date_time": date_time,
 				}
 			})
 		return jsonify({'message': f'Successfully created notif {notif_id}'}),200
