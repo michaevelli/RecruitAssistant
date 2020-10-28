@@ -65,6 +65,7 @@ def post_offer_letter():
 					'end_date': json_data['end_date'],
 					'status': json_data['status'], 
 					'additional_docs': json_data['additional_docs'],
+					'counterable':json_data['counterable']
 				}
 			})
 		return jsonify({'message': f'Successfully created offer {offer_uid}'}),200
@@ -228,6 +229,13 @@ def send_interview():
 	except Exception as e:
 		print(e)
 		return jsonify({"message": str(e)}), 400
+	return
+
+#########TODO################
+# gets interview info given a job seeker, job and job application id
+# which together uniquely identify an interview invite
+@app.route('/interviews', methods=["GET"])
+def get_interview():
 	return
 
 @app.route('/applicationslist', methods=["GET"])
