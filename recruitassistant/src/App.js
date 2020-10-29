@@ -19,6 +19,8 @@ import OfferLetterForm from './RecruiterComponents/OfferLetterForm';
 import CounterOffer from './SharedComponents/CounterOffer';
 import ApplicationList from './RecruiterComponents/ApplicationList';
 import ViewApplication from './RecruiterComponents/ViewApplication';
+import Offers from './JobSeekerComponents/Offers';
+import ViewOffer from './JobSeekerComponents/ViewOffer';
 import RecruiterFAQ from './RecruiterComponents/RecruiterFAQ';
 import JobSeekerFAQ from './JobSeekerComponents/JobSeekerFAQ';
 
@@ -47,6 +49,8 @@ function App() {
           <Route path="/counteroffer" component={CounterOffer}/> {/*test only delete after*/}
           <Route path="/applications/:jobID" component={ApplicationList}/>
           <Route path="/viewapplication" component={ViewApplication}/>
+          <Route path="/offers" component={Offers}/>
+          <Route paty="/offer" component={ViewOffer}/>
           <Route path="/recruiterFAQ" component={RecruiterFAQ}/>
           <Route path="/jobseekerFAQ" component={JobSeekerFAQ}/>
         </Switch>
