@@ -66,6 +66,7 @@ def post_offer_letter():
 					'end_date': json_data['end_date'],
 					'status': json_data['status'], 
 					'additional_docs': json_data['additional_docs'],
+					'counterable':json_data['counterable']
 				}
 			})
 		return jsonify({'message': f'Successfully created offer {offer_uid}'}),200
@@ -205,6 +206,20 @@ def get_recruiter_posts(recruiterid):
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
+#update the status of an interview
+@app.route('/interviews', methods=["PATCH"])
+def update_interview():
+	try:
+		json_data = request.get_json()
+		interview_id =json_data["id"]
+		new_status=json_data["status"]
+		ref.child("interviews").child(interview_id).child("status").set(new_status)
+	except Exception as e:
+		print(e)
+		return jsonify({"message": str(e)}), 400
+	return
+
+
 @app.route('/interviews', methods=["POST"])
 def send_interview():
 	json_data = request.get_json()
@@ -222,13 +237,21 @@ def send_interview():
 						'application_id': u["app_id"],
 						'job_id': u["job_id"],
 						'interview_date': u["date"],
-						'interview_time': u["time"]
+						'interview_time': u["time"],
+						'status': u["status"]
 					},
 				})
 		return jsonify({'message': f'Successfully created interview {interview_id}'}),200
 	except Exception as e:
 		print(e)
 		return jsonify({"message": str(e)}), 400
+	return
+
+#########TODO################
+# gets interview info given a job seeker, job and job application id
+# which together uniquely identify an interview invite
+@app.route('/interviews', methods=["GET"])
+def get_interview():
 	return
 
 @app.route('/applicationslist', methods=["GET"])

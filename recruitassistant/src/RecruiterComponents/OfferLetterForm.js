@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField} from "@material-ui/core";
+import {IconButton,Grid,Button,TextField,FormGroup,FormControlLabel,Switch}
+ from "@material-ui/core";
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
@@ -46,6 +47,7 @@ export default function OfferLetterForm(props) {
     const [hours, setHours]=useState('0 hours per week');
 	const [days, setDays]=useState('Monday - Friday');  
 	const [additionalDocs, setAdditionalDocs] = useState([]);
+	const [counterable, setCounterable]= useState(false)
 	
 	useEffect(() => {
 		auth();
@@ -159,6 +161,7 @@ export default function OfferLetterForm(props) {
             end_date: endDate,
 			status: 'sent', //status of the offer can be sent (first time, or in respnse to counter offer), accepted,rejected
 			additional_docs: additionalDocs,
+			counterable: counterable
 		}
 		console.log(data)
 		await axios.post(url, data)
@@ -210,10 +213,19 @@ export default function OfferLetterForm(props) {
 				
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						Create Offer Letter
+						
 					</Typography>
+					
    
                     <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
-                        <h4>Offer Description</h4>
+						<Form.Group controlId="counterable">
+						<FormControlLabel
+							control={<Switch checked={counterable} onChange={()=> setCounterable(!counterable)} />}
+							label="Allow counter offers"
+						/>
+						</Form.Group>
+					
+					    <h4>Offer Description</h4>
 						<Form.Group controlId="description">
 							<Col sm={10}>
 								<Form.Control as="textarea" rows="10" 
