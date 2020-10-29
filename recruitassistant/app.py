@@ -9,7 +9,7 @@ import uuid
 from datetime import date, datetime
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
-from backend import jobs, search, authentication
+from backend import jobs, search, authentication, counteroffer
 from backend.init_app import app, ref, pb
 
 
