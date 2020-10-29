@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField} from "@material-ui/core";
+import {IconButton,Grid,Button,TextField,Modal} from "@material-ui/core";
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
@@ -12,6 +12,7 @@ export const interviewURL ="http://localhost:5000/interviews"
 
 function InterviewModal() {
     //control modal visibility
+    const history = useHistory();
     const [visible, setVisible] = useState(false);
     const handleClose = () => setVisible(false);
     const handleShow = () => setVisible(true);
@@ -82,7 +83,7 @@ function InterviewModal() {
         Respond
         </Button>
 
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={visible} onHide={handleClose}>
         <Modal.Header closeButton>
             <Modal.Title>Interview Invite</Modal.Title>
         </Modal.Header>
@@ -103,7 +104,7 @@ function InterviewModal() {
         View interview
         </Button>
 
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={visible} onHide={handleClose}>
         <Modal.Header closeButton>
             <Modal.Title>Interview Details</Modal.Title>
         </Modal.Header>
