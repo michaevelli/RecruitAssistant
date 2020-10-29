@@ -129,7 +129,7 @@ export default function JobSeekerDashboard() {
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '#', 'active': true},
-						{'text':'Your Applications','href': '#', 'active': false},         
+						{'text':'Your Applications','href': 'offers', 'active': false},         
 						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 				</Col >
 				<Col>
