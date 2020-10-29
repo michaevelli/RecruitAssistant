@@ -9,3 +9,9 @@ Rewrote project objectives in the proposal and moved them under sprint planning,
 
 Week 4
 Fixed up formatting and refactored code to standardise code style between files worked on by different people. Started sprint 2 in which I worked on deeper authentication flows such as using tokens to prevent unauthorised access from users not logged in. Also implemented passing the logged in user's data upon a successful token validation so that the dashboards and other components know who is logged in and can display relevant information
+
+Week 5
+This week I fixed up a few minor features and helped finish off the sprint before the first demo on Thursday. The tutor gave us some suggestions for features or pages that could also be included, and we planned to incorporate these along with our next user stories in a sprint planning session which involved discussing what was in scope and creating subtasks for clarity. The retro was conducted after the demo and we identified things that worked well and areas for improvement, some of which were implemented immediately in the following sprint planning, but overall everyone was happy with our progress and management.
+
+Week 6
+Completed the edit job user story and worked a little on the home page before it was finished off by Becca. Worked on some of the feedback given by the tutor during the first demo and added a feature on the title bar to display the currently logged in user's name. Also went through and tidied up the code, fixing minor formatting and restructuring backend python files. Had a sprint review session at the end of the sprint to ensure everything was all done and working, then planned the next sprint, discussing and assigning user stories.
