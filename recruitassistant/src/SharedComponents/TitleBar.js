@@ -24,7 +24,7 @@ export default function TitleBar() {
 				style={{ width:255, height:60}}/>
 			<ul className="navbar-nav px-3">
 				<li className="nav-item text-nowrap">
-					<Typography variant="overline" style={{color:"white"}}>
+					<Typography variant="overline" style={{color:"white",marginRight:30}}>
 						Welcome {window.localStorage.getItem("name")}
 					</Typography>
 					<Button 
