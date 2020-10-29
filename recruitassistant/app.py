@@ -205,6 +205,20 @@ def get_recruiter_posts(recruiterid):
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
+#update the status of an interview
+@app.route('/interviews', methods=["PATCH"])
+def update_interview():
+	try:
+		json_data = request.get_json()
+		interview_id =json_data["id"]
+		new_status=json_data["status"]
+		ref.child("interviews").child(interview_id).child("status").set(new_status)
+	except Exception as e:
+		print(e)
+		return jsonify({"message": str(e)}), 400
+	return
+
+
 @app.route('/interviews', methods=["POST"])
 def send_interview():
 	json_data = request.get_json()
