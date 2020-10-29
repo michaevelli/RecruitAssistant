@@ -4,6 +4,7 @@ from flask import jsonify
 # from flask_cors import CORS
 # import firebase_admin
 # from firebase_admin import credentials, auth, db
+from firebase_admin import auth
 import json
 import uuid
 from datetime import date, datetime
@@ -43,7 +44,7 @@ def post_offer_letter():
 	
 	today = date.today()
 	date_posted = today.strftime("%Y-%m-%y")
-	print("d1 =", date_posted),
+	#print("d1 =", date_posted),
 	
 	try:
 		ref.child('offer').update({
@@ -116,7 +117,7 @@ def check_applied():
 				print("Has applied before")
 				return jsonify({'applied': True}),200
 		
-		print("Hasn't applied before")
+		#print("Hasn't applied before")
 		return jsonify({'applied': False}),200
  
 	except Exception as e:		
@@ -134,7 +135,7 @@ def get_app_details():
 		specific_child="jobApplications/"+job_id+'/'+job_app_id
 		#print(specific_child)
 		the_application=ref.child(specific_child).get()
-		print("THE APPP")
+		# print("THE APPP")
 		#print(the_application)
 		return jsonify({'application': the_application}),200
  
@@ -148,7 +149,7 @@ def return_application():
 	appid = request.args.get('app_id')
 	jobid = request.args.get('job_id')
 	app_resp = {}
-	print("here")
+	#print("here")
 	try:
 		app_resp=ref.child("jobApplications").get().get(jobid).get(appid)
 		#print(app_resp)
@@ -178,7 +179,7 @@ def get_all_posts():
 		for key,val in posts.items():
 			jobs.append((key,val))
 
-		print(jobs)
+		#print(jobs)
 		return jsonify({'jobs': jobs}),200
  
 	except Exception as e:
@@ -198,7 +199,7 @@ def get_recruiter_posts(recruiterid):
 		for key,val in posts.items():
 			jobs.append((key,val))
 		
-		print(jobs)
+		#print(jobs)
 		return jsonify({'jobs': jobs}),200
  
 	except Exception as e:		
@@ -275,3 +276,57 @@ def get_applications_for_job():
 	except Exception as e:		
 		print(e)
 		return jsonify({"message": str(e)}), 400
+
+
+
+
+@app.route('/offers', methods=['POST'])
+def offers():
+	try:
+		data = request.json
+		user = auth.verify_id_token(data["token"])
+		uid = user["uid"]
+
+		offers = []
+		posts=ref.child("offer").get()	
+		jobs=[]
+		print(uid)
+		#print(posts)
+		for key, val in posts.items():
+			if val["jobseeker_id"] == uid:
+				del val['additional_docs']
+				del val['application_id']
+				del val['date_posted']
+				del val['days']
+				del val['description']
+				del val['end_date']
+				del val['hours']
+				del val['jobseeker_id']
+				del val['recruiter_id']
+				del val['salary']
+				del val['salary_type']
+				del val['start_date']
+				offers.append((key, val))
+		
+
+		return jsonify({'offers': offers}), 200
+	except Exception as e:
+		print(e)
+		return jsonify({"error": "something bad happened"}),500
+
+@app.route('/getOfferDetails', methods=['POST'])
+def viewOffer():
+	try:
+		print("OK!")
+		offerId = request.json["offerId"]	
+		offer = []
+		posts=ref.child("offer").get()	
+		for key, val in posts.items():
+			if key == offerId:
+				offer.append((key, val))
+		
+
+		return jsonify({'offers': offer}), 200
+	except Exception as e:
+		print(e)
+		return jsonify({"error": "something bad happened"}),500
