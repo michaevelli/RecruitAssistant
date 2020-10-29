@@ -222,7 +222,8 @@ def send_interview():
 						'application_id': u["app_id"],
 						'job_id': u["job_id"],
 						'interview_date': u["date"],
-						'interview_time': u["time"]
+						'interview_time': u["time"],
+						'status': u["status"]
 					},
 				})
 		return jsonify({'message': f'Successfully created interview {interview_id}'}),200

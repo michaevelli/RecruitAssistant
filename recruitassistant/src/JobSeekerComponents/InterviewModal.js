@@ -18,22 +18,21 @@ function InterviewModal() {
     const jobID=""
     const jobAppID=""
     const jobseekerID=""
+    //TODO get from props!!
+    const status="pending"
+    const time=""
+    const date=""
     useEffect(() => {
 		auth();
-		getInterview(jobID,jobAppID,jobseekerID);
-		
+		getInterview(jobID,jobAppID,jobseekerID);	
     },[]);
 
     async function getInterview(interviewID) {
 		await axios.get(interviewURL, {params: {job_id: jobID}})
 			.then(res => {
 				console.log(res.data.job[0][1])
-				const job_data = res.data.job[0][1]
-				setTitle(job_data["title"]);
-				setCompany(job_data["company"]);
-				setLocation(job_data["location"]);
-				setJobType(job_data["job_type"]);
-				setSalary(job_data["salary_pa"]*1000);
+				const interview_data = res.data.job[0][1]
+                setStatus(interview_data["status"])
 				
 			}).catch((error) => {
 				console.log("error: ", error.response)
@@ -51,30 +50,49 @@ function InterviewModal() {
 					history.push("/unauthorised");
 				}
 			})
-	}
+    }
+    
+    //so tile on main page will just say job and status
+    //if main page is loading all the interviews
+    //then just pass as props the status, date and time.
+    //if pending give option to accept/decline
+    //else simply show the date and time info
     return (
-        <>
-            <Button variant="primary" onClick={handleShow}>
-            View invite
+        status=="pending"? 
+        (<>
+        <Button variant="primary" onClick={handleShow}>
+        Respond
+        </Button>
+
+        <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+            <Modal.Title>Interview Invite</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Time and date: </Modal.Body>
+        <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+            Accept
             </Button>
-    
-            <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Interview Invite</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>Time and date: </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                Accept
-                </Button>
-                <Button variant="primary" onClick={handleClose}>
-                Decline
-                </Button>
-            </Modal.Footer>
-            </Modal>
+            <Button variant="primary" onClick={handleClose}>
+            Decline
+            </Button>
+        </Modal.Footer>
+        </Modal>
         </>
-        );
-    
-  }
+        ):(
+        <>
+        <Button variant="primary" onClick={handleShow}>
+        View interview
+        </Button>
+
+        <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+            <Modal.Title>Interview Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Time and date: </Modal.Body>
+        </Modal>
+        </>)
+    )
+}
   
   

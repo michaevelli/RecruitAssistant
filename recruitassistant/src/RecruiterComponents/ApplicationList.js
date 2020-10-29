@@ -126,7 +126,8 @@ export default function ApplicationList({match}) {
 					app_id: applications[i][0],
 					job_id: jobID,
 					date: inviteList[jobseeker]["date"],
-					time: inviteList[jobseeker]["time"]
+					time: inviteList[jobseeker]["time"],
+					status: 'pending'
 				})
 			}
 
