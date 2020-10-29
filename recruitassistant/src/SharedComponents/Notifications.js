@@ -182,6 +182,9 @@ export default function Notifications() {
                     Regards,
                     RecruitAssistant Team.
                   </Typography>
+                  <Typography color="textSecondary">
+                    {data[1].date_time}
+                  </Typography>
                 </Col>
               </Row>
             </Grid>

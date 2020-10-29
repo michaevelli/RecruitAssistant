@@ -10,17 +10,18 @@ from datetime import datetime
 # obj_id is necessary so user can click and view the specified item
 def notify(data):
 	notif_id=str(uuid.uuid1())
-	# now = datetime.now()
-	# date_time = now.strftime("%m/%d/%Y-%H:%M:%S")
+	now = datetime.now()
+	date_time = now.strftime("%m/%d/%Y-%H:%M:%S")
 	try:
-		ref.child('notif').update({
-			notif_id: {
+		ref.child('notif').child(data["uid"]).push({
+			# data["uid"]: {
 				"type": data["type"],
-				"recipient_id": data["uid"],
+				# "recipient_id": data["uid"],
 				"object_id" : data["obj_id"],
-				# "date_time": date_time,
+				"date_time": date_time,
 				}
-			})
+			# }
+			)
 		return jsonify({'message': f'Successfully created notif {notif_id}'}),200
 	except Exception as e:		
 		return jsonify({"message": str(e)}), 400
@@ -74,10 +75,15 @@ def check_notif():
 	notif_exists = db.shallow().get().val()
 	
 	if "notif" in list(notif_exists):
-		d1 = db.child("notif").order_by_child("recipient_id").equal_to(data["uid"]).get()
+		# d1 = db.child("notif").order_by_child("recipient_id").equal_to(data["uid"]).get()
 		# check if it exists then return list of notifications
-		if list(d1) != []:
-			return jsonify({"exists": "true", "data": list(d1.val().items())}),200
+		child_exist = db.child("notif").shallow().get().val()
+		if data["uid"] in list(child_exist):
+			d2 = db.child("notif").child(data["uid"]).order_by_child("date_time").get()
+			return_l = list(d2.val().items())
+			return_l.reverse()
+
+			return jsonify({"exists": "true", "data": return_l}),200
 		else:
 			return jsonify({"exists": "true", "data": []}),200
 	else:
