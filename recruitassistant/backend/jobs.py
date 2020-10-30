@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from .init_app import app, ref
-
+import uuid
+from datetime import date, datetime
+import json
 
 # create new job in database
 @app.route('/jobadverts', methods=["POST"])
@@ -34,7 +36,7 @@ def post_new_job():
 					'additional_questions': json_data['additional_questions']
 				},
 			})
-		return jsonify({'message': f'Successfully created job {job_uid}'}),200
+		return jsonify({'message': f'Successfully created job {job_uid}','jobID':job_uid}),200
 	except Exception as e:		
 		return jsonify({"message": str(e)}), 400
 

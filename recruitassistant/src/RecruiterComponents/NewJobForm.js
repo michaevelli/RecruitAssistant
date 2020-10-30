@@ -106,6 +106,9 @@ export default function NewJobForm() {
 			.then(res => {
 				console.log("response: ", res)
 				alert("Job successfully created")
+				//open created job ad in a new tab for them to view or share to socials
+				window.open( `/advertisement/${res.data['jobID']}`, '_blank');
+				//redirect current tab to dashboard
 				history.push("/recruiterdashboard")
 			})
 			.catch((error) => {
