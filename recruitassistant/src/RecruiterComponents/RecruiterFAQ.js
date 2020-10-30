@@ -64,6 +64,12 @@ export default function RecruiterDashboard() {
                         
                         <p> Yes, click 'Edit Job' on a job from the recruiter dashboard.
                         </p>
+						<h style={{fontWeight: 'bold'}}>  Why are counter offers? </h>
+   
+                        <p> When generating an offer letter for a candidate you may choose to make the offer counterable. This means
+							the candidate can reply with proposed changes to the offer (e.g. salary, days of work)
+							and you may then edit the original offer if you wish.
+                        </p>
                         <br />
                         <p style={{fontWeight: 'bold',fontStyle: 'italic'}}> More Questions? Contact us at fakesupportemail@gmail.com </p>
 					</div>

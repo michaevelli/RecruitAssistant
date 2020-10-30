@@ -328,6 +328,7 @@ export default function ApplicationList({match}) {
 					</Col>
 
 					<Col sm="9">
+						<a href={`/advertisement/${jobID}`} target="_blank" style={{textAlign: "center",margin:20 }}> View Original Job Advert</a>
 						<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 							{detail[1].title} @ {detail[1].company}
 						</Typography>

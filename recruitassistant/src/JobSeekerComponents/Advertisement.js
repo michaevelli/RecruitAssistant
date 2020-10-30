@@ -9,6 +9,9 @@ import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
+import {FacebookShareButton, FacebookIcon,
+		LinkedinShareButton,LinkedinIcon,
+		TwitterIcon,TwitterShareButton} from "react-share";
 
 export const applicationUrl="http://localhost:5000/jobapplications"
 export const advertisementUrl="http://localhost:5000/advertisement"
@@ -23,6 +26,10 @@ export default function Advertisement() {
 	const [job, setJob] = useState([])
 	const [recruiter, setRecruiter] = useState(false);
 
+	//currently cannot share to a localhost url
+	//so can only test social sharing once deployed
+	const shareURL=window.location.href
+	
 	useEffect(() => {
 		auth();
 		getJob();
@@ -95,7 +102,7 @@ export default function Advertisement() {
 		}
 	}
 	const advertPanel = () =>{
-		
+
 		return (
 			job.map((detail) => (
 				<Col>
@@ -139,6 +146,30 @@ export default function Advertisement() {
 					<Button disabled={applied || recruiter || detail[1].status =='closed'} variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
 						Apply
 					</Button>
+					<p style={{fontStyle: 'italic',marginLeft:40}}>Share this job with your network!
+					<FacebookShareButton 
+					url={"www.facebook.com"}
+					quote={`Check out this job on RecruitAssist!\n ${detail[1].title} position at ${detail[1].company}.`}
+					>
+					<FacebookIcon size={36} round={true} style={{marginLeft:30,marginRight: 10}} />
+             		</FacebookShareButton>
+
+					<TwitterShareButton
+					url="www.twitter.com"
+					title={`Check out this job on RecruitAssist!\n ${detail[1].title} position at ${detail[1].company}.`}
+					>
+					<TwitterIcon size={36} round={true} style={{margin: 10}}/>
+					</TwitterShareButton>
+
+							 
+					<LinkedinShareButton
+					url="www.facebook.com"
+					title="Check out this job on RecruitAssist!"
+					description={`${detail[1].title} position at ${detail[1].company}`}
+					>
+					<LinkedinIcon size={36} round={true} style={{margin: 10}}/>
+					</LinkedinShareButton>
+					</p>
 				</Col>
 			))
 		);
