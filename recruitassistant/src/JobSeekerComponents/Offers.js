@@ -13,17 +13,19 @@ export const offerUrl="http://localhost:5000/offers"
 export const searchUrl="http://localhost:5000/search/"
 
 export default function Offers() {
-    const history = useHistory();
-    const [loading, setLoading] = useState(true);
-    const [offers, setOffers]=useState([])
-    
+	const history = useHistory();
+	const [loading, setLoading] = useState(true);
+	const [offers, setOffers]=useState([]);
+	const [userID, setUserID] = useState('');
+	// const [type, setType] = useState('');
+	
 
-    useEffect(() => {
+	useEffect(() => {
 		auth();
 		getOffers();
-    }, []);
+	}, [userID]);
 
-    const auth = async () => {
+	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
@@ -31,27 +33,34 @@ export default function Offers() {
 				if (!response.success || response.userInfo["type"] != "jobseeker") {
 					history.push("/unauthorised");
 				}
+				setUserID(response.userID)
+				// setUserID(response.userID, getOffers()); 
 			})
 	}
 
 	const getOffers = async () => {
-		const url = `${offerUrl}`
-            
-            const ndata = {
-                token: window.localStorage.getItem("token")
-            }
-            
-            axios.post(url, ndata)
-                .then(function(response) {
+		if (userID !== '') {
+			const url = `${offerUrl}`
+			console.log("userID = ", userID)
+			const ndata = {
+				// token: window.localStorage.getItem("token")
+				userid: userID,
+				type: "jobseeker"
+			}
+			
+			await axios.post(url, ndata)
+				.then(function(response) {
 					console.log("response:", response.data)
 					setOffers(response.data.offers)
-                })
-                .catch(function(error) {
-                    console.log(error.response)
-                })
+				})
+				.catch(function(error) {
+					console.log(error.response)
+				})
+		}
+		
 	};
-    
-    const renderOffers = () => {
+	
+	const renderOffers = () => {
 		return offers.map((offer) => (
 			<Card style={{margin: 30, height: 160, width:250}}>
 				<CardContent>                          
@@ -74,7 +83,7 @@ export default function Offers() {
 		))
 	}
 
-    return loading ? (
+	return loading ? (
 		<div></div>
 	) : (
 		<Grid>      
