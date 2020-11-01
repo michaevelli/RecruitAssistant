@@ -21,11 +21,11 @@ export default function ViewApplication({match}) {
 	const offerId = match.params.offerID
 	const [offer, setOffer] = useState({})
 	const [documentsList, setDocumentsList] = useState([])
-	const [files, setFiles] = useState({})
+	const [closed, setClosed] = useState(false)
 
 	useEffect(() => {
 		auth();
-		getApplication();
+		getOffer();
 	}, []);
 
 	const auth = async () => {
@@ -38,7 +38,7 @@ export default function ViewApplication({match}) {
 			})
 	}
 
-	const getApplication = async () => {
+	const getOffer = async () => {
 		const ndata = {
 			offerId: offerId
 		}
@@ -48,7 +48,9 @@ export default function ViewApplication({match}) {
 					/*initialise(response.data)*/
 					setOffer(response.data.offer)
 					setDocumentsList(response.data.offer.additional_docs)
-					
+					if (response.data.offer.status === "accepted" || response.data.offer.status === "rejected") {
+						setClosed(true);
+					}
 				})
 				.catch(function(error) {
 					console.log(error.response)
@@ -142,7 +144,7 @@ export default function ViewApplication({match}) {
 					<Button variant="contained" color="secondary" onClick={handleEdit} style={{margin: 20}}>
 						Edit Offer
 					</Button> 
-					<CounterOffer offerID={offerId}/>
+					<CounterOffer offerID={offerId} closed={closed}/>
 				</Col>
 			</Row>
 		</Grid>
