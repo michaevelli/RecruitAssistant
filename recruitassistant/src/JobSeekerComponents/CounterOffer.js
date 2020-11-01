@@ -15,6 +15,7 @@ export const counterofferurl="http://localhost:5000/counteroffer"
 
 export default function CounterOffer(params) {
 	const offerID = params.offerID;
+	const closed = params.closed;
 	const [counterOffer,setCounterOffer] = useState('');
 
 	async function handleSendCounter(e) {
@@ -30,6 +31,10 @@ export default function CounterOffer(params) {
 			console.log("error: ", error.response)
 			alert("An error occured, please try again")
 		})
+	}
+
+	if (closed === true) {
+		return null
 	}
 	
 	return (
