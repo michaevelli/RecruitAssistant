@@ -307,3 +307,53 @@ def viewOffer():
 	except Exception as e:
 		print(e)
 		return jsonify({"error": "something bad happened"}),500
+
+@app.route('/interviewlist', methods=['POST'])
+def getInterviews():
+	try:
+		data = request.json
+		user = auth.verify_id_token(data["token"])
+		uid = user["uid"]
+
+		interviews = []
+		posts=ref.child("interviews").get()	
+		for key, val in posts.items():
+			interviewDatetime = val["interview_date"] + " " + val["interview_time"]
+			current_date = datetime.now()
+			close_date = datetime.strptime(interviewDatetime, "%Y-%m-%d %H:%M")
+			delta = close_date - current_date
+			if delta.days < 0:
+				continue
+			print(interviewDatetime)
+			if val["jobseeker_id"] == uid:
+				jobId = val["job_id"]
+				job = ref.child("jobAdvert").order_by_key().equal_to(jobId).get()
+				for jkey, jval in job.items():
+					interviews.append((key, val, jkey, jval))
+
+		return jsonify({'interviews': interviews}), 200
+	except Exception as e:
+		print(e)
+		return jsonify({"error": "something bad happened"}),500
+
+@app.route('/pendingapplications', methods=['POST'])
+def getApplications():
+	try:
+		data = request.json
+		user = auth.verify_id_token(data["token"])
+		uid = user["uid"]
+
+		applications = []
+		posts=ref.child("jobApplications").get()	
+		for key, val in posts.items():
+			for key2, val2 in val.items():
+				if val2["jobseeker_id"] == uid:
+					job = ref.child("jobAdvert").order_by_key().equal_to(key).get()
+					for jkey, jval in job.items():
+						applications.append((key2, val2, jkey, jval))
+		
+
+		return jsonify({'applications': applications}), 200
+	except Exception as e:
+		print(e)
+		return jsonify({"error": "something bad happened"}),500
