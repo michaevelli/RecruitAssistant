@@ -4,7 +4,7 @@ import {Link, Grid} from "@material-ui/core";
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
-import {Col,Row} from 'react-bootstrap';
+import {Col,Row, Button} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import TitleBar from "../SharedComponents/TitleBar.js";
@@ -14,12 +14,11 @@ import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 import CounterOffer from "./CounterOffer";
 
-export const url="http://localhost:5000/getOfferDetails"
+export const offerdetailsurl="http://localhost:5000/getOfferDetails"
 
-export default function ViewApplication() {
+export default function ViewApplication({match}) {
 	const history = useHistory();
-	const href = `${window.location.href}`.split("/")
-	const offerId = href[4]
+	const offerId = match.params.offerID
 	const [offer, setOffer] = useState({})
 	const [documentsList, setDocumentsList] = useState([])
 	const [files, setFiles] = useState({})
@@ -43,12 +42,12 @@ export default function ViewApplication() {
 		const ndata = {
 			offerId: offerId
 		}
-		axios.post(url, ndata)
+		axios.post(offerdetailsurl, ndata)
 				.then(function(response) {
 					console.log("response:", response.data)
 					/*initialise(response.data)*/
-					setOffer(response.data.offers[0][1])
-					setDocumentsList(response.data.offers[0][1].additional_docs)
+					setOffer(response.data.offer)
+					setDocumentsList(response.data.offer.additional_docs)
 					
 				})
 				.catch(function(error) {
@@ -81,6 +80,10 @@ export default function ViewApplication() {
 				))
 			)
 		}
+	}
+
+	const handleEdit = () => {
+		history.push("/editoffer/"+offerId)
 	}
 	
 
@@ -136,6 +139,9 @@ export default function ViewApplication() {
 							{renderDocumentItems}
 						</Box>
 					</Typography>
+					<Button variant="contained" color="secondary" onClick={handleEdit} style={{margin: 20}}>
+						Edit Offer
+					</Button> 
 					<CounterOffer offerID={offerId}/>
 				</Col>
 			</Row>

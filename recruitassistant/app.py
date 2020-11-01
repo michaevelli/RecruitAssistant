@@ -285,20 +285,14 @@ def offers():
 	try:
 		data = request.json
 		userid = data["userid"]
-		print("--------userid--------")
-		print(userid)
 		if data["type"] == "jobseeker":
 			user_type = 'jobseeker_id'
 		else:
 			user_type = 'recruiter_id'
-		# user = auth.verify_id_token(data["token"])
-		# uid = user["uid"]
 
 		posts = ref.child("offer").order_by_child(user_type).equal_to(userid).get()
 		offers = []
-		#print(posts)
 		for key, val in posts.items():
-			# print(val["jobseeker_id"])
 			offers.append((key, {
 				"jobseekerid": val["jobseeker_id"],
 				"title": val["title"],
@@ -308,7 +302,7 @@ def offers():
 				"job_type": val["job_type"]
 			}))
 		
-		print(offers)
+		# print(offers)
 		return jsonify({'offers': offers}), 200
 	except Exception as e:
 		print(e)
@@ -317,16 +311,9 @@ def offers():
 @app.route('/getOfferDetails', methods=['POST'])
 def viewOffer():
 	try:
-		print("OK!")
 		offerId = request.json["offerId"]	
-		offer = []
-		posts=ref.child("offer").get()	
-		for key, val in posts.items():
-			if key == offerId:
-				offer.append((key, val))
-		
-
-		return jsonify({'offers': offer}), 200
+		offer=ref.child("offer").child(offerId).get()
+		return jsonify({'offer': offer}), 200
 	except Exception as e:
 		print(e)
 		return jsonify({"error": "something bad happened"}),500
