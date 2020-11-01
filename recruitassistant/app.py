@@ -279,36 +279,36 @@ def get_applications_for_job():
 
 
 
-
+# get list of offers for given user (recruiter or job seeker)
 @app.route('/offers', methods=['POST'])
 def offers():
 	try:
 		data = request.json
-		user = auth.verify_id_token(data["token"])
-		uid = user["uid"]
+		userid = data["userid"]
+		print("--------userid--------")
+		print(userid)
+		if data["type"] == "jobseeker":
+			user_type = 'jobseeker_id'
+		else:
+			user_type = 'recruiter_id'
+		# user = auth.verify_id_token(data["token"])
+		# uid = user["uid"]
 
+		posts = ref.child("offer").order_by_child(user_type).equal_to(userid).get()
 		offers = []
-		posts=ref.child("offer").get()	
-		jobs=[]
-		print(uid)
 		#print(posts)
 		for key, val in posts.items():
-			if val["jobseeker_id"] == uid:
-				del val['additional_docs']
-				del val['application_id']
-				del val['date_posted']
-				del val['days']
-				del val['description']
-				del val['end_date']
-				del val['hours']
-				del val['jobseeker_id']
-				del val['recruiter_id']
-				del val['salary']
-				del val['salary_type']
-				del val['start_date']
-				offers.append((key, val))
+			# print(val["jobseeker_id"])
+			offers.append((key, {
+				"jobseekerid": val["jobseeker_id"],
+				"title": val["title"],
+				"status": val["status"],
+				"company": val["company"],
+				"location": val["location"],
+				"job_type": val["job_type"]
+			}))
 		
-
+		print(offers)
 		return jsonify({'offers': offers}), 200
 	except Exception as e:
 		print(e)

@@ -16,7 +16,7 @@ import Advertisement from "./JobSeekerComponents/Advertisement";
 import JobApply from "./JobSeekerComponents/JobApply";
 import Home from "./Home";
 import OfferLetterForm from './RecruiterComponents/OfferLetterForm';
-import CounterOffer from './SharedComponents/CounterOffer';
+import CounterOffer from './JobSeekerComponents/CounterOffer';
 import ApplicationList from './RecruiterComponents/ApplicationList';
 import ViewApplication from './RecruiterComponents/ViewApplication';
 import Offers from './JobSeekerComponents/Offers';

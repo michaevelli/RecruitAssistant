@@ -9,6 +9,7 @@ def counter_offer():
 	counter = json_data["counteroffer"]
 	try:
 		ref.child("offer").child(offerID).child("counter_offer").set(counter)
+		ref.child("offer").child(offerID).child("status").set("countered")
 		# print('success')
 		return jsonify({'message': f'Successfully updated counter offer {offerID}'}),200
 	except Exception as e:
@@ -43,7 +44,7 @@ def edit_offer():
 
 		# ref.child('jobAdvert').child(job_uid).update(data)
 
-		return jsonify({'message': f'Successfully edited job {}'}),200
+		return jsonify({'message': f'Successfully edited offer {offer_uid}'}),200
 	except Exception as e:
 		print(e)	
 		return jsonify({"message": str(e)}), 400

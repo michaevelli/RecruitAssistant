@@ -13,8 +13,8 @@ import checkAuth from "../Authentication/Authenticate";
 
 export const counterofferurl="http://localhost:5000/counteroffer"
 
-export default function CounterOffer() {
-	const offerID = "fe0b8fe0-14e7-11eb-b0c3-90324b890cb8";
+export default function CounterOffer(params) {
+	const offerID = params.offerID;
 	const [counterOffer,setCounterOffer] = useState('');
 
 	async function handleSendCounter(e) {
