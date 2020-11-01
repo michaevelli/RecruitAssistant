@@ -11,29 +11,26 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
-export const offerURL="http://localhost:5000/offer"
-export const advertisementUrl="http://localhost:5000/advertisement"
-export const applicationsUrl ="http://localhost:5000/jobapplication"
+export const offerdetailsurl="http://localhost:5000/getOfferDetails"
+export const editofferurl="http://localhost:5000/editoffer"
+
 
 export default function EditOffer({match}) {
-	const jobAppID = match.params.appID
-	const jobID= match.params.jobID
+	const offerID = match.params.offerID;
+	const jobID = match.params.jobID;
 	const [recruiterID, setRecruiterID] = useState('');
+	const [jobseekerID,setJobSeekerID]=useState('');
+	const [jobAppID, setJobAppID] = useState('');
 
 	const history = useHistory();
-	//date formatting - to be used in offer letter description
-	const options = {year: 'numeric', month: 'long', day: 'numeric' };
 	const t  = new Date();
-	const todays_date=t.toLocaleDateString("en-US", options);
-
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
 
 	// offer letter form fields
 	const [location,setLocation] = useState('');
 	const [title,setTitle] = useState('');
-	const [company,setCompany] = useState('');	
-	const [jobseekerId,setJobSeekerID]=useState('')
+	const [company,setCompany] = useState('');
 	const [description,setDescription] = useState('');
 	const [jobType, setJobType]=useState('') 
 	const [salary,setSalary] = useState('');
@@ -43,28 +40,35 @@ export default function EditOffer({match}) {
 	const [hours, setHours]=useState('0 hours per week');
 	const [days, setDays]=useState('Monday - Friday');  
 	const [additionalDocs, setAdditionalDocs] = useState([]);
+	const [counterable, setCounterable]= useState(false)
 	
 	useEffect(() => {
 		auth();
-		getJobInfo(jobID);
-		getJobSeekerName(jobAppID);
-		
+		getOfferInfo();
 	},[]);
-
-	// wait on backend: get offer details
-	// frontend: display offer details page
 	
-	// TODO: get existing offer info + recruiter ID
-	async function getJobInfo(jobID) {
-		await axios.get(advertisementUrl, {params: {job_id: jobID}})
+	async function getOfferInfo() {
+		await axios.post(offerdetailsurl, {offerId: offerID})
 			.then(res => {
-				console.log(res.data.job[0][1])
-				const job_data = res.data.job[0][1]
-				setTitle(job_data["title"]);
-				setCompany(job_data["company"]);
-				setLocation(job_data["location"]);
-				setJobType(job_data["job_type"]);
-				setSalary(job_data["salary_pa"]*1000);
+				const offer = res.data.offer
+				setJobSeekerID(offer.jobseeker_id)
+				setRecruiterID(offer.recruiter_id)
+				setJobAppID(offer.application_id)
+				setTitle(offer.title);
+				setCompany(offer.company);
+				setDescription(offer.description)
+				setLocation(offer.location);
+				setJobType(offer.job_type);
+				setSalary(offer.salary);
+				setSalaryType(offer.salary_type);
+				setStartDate(offer.start_date);
+				setEndDate(offer.end_date)
+				setHours(offer.hours)
+				setDays(offer.days)
+				setCounterable(offer.counterable)
+				if (offer.additiona_docs != null) {
+					setAdditionalDocs(offer.additional_docs)
+				}
 				
 			}).catch((error) => {
 				console.log("error: ", error.response)
@@ -78,16 +82,17 @@ export default function EditOffer({match}) {
 			.then(function(response) {
 				console.log("auth success: ", response)
 				// const recruiterID = sessionStorage.getItem("uid")			
-				if (!response.success || response.userID != recruiterID) {
-					history.push("/unauthorised");
-				}
+				// if (!response.success || response.userID != recruiterID) {
+				// 	history.push("/unauthorised");
+				// }
 				// check if correct user
-				if (response.userID != recruiterID) {
-					history.push("/unauthorised");
-				}
+				// if (response.userID != recruiterID) {
+				// 	history.push("/unauthorised");
+				// }
 			})
 	}
 	
+	// --- handle document upload ---
 
 	const handleAddDoc = () => {
 		setAdditionalDocs([...additionalDocs, ''])
@@ -125,17 +130,17 @@ export default function EditOffer({match}) {
 	}
 
 
+	// --- submit edited offer to database ---
 	const postOffer = async () => {
-		const url = offerURL
 		const data={
+			offerid: offerID,
 			title:title,
 			location:location,
 			description: description,
 			company:company,
-			recruiter_id: sessionStorage.getItem("uid"),
+			recruiter_id: recruiterID,
 			jobapplication_id: jobAppID,
-			jobadvert_id: jobID,
-			jobseeker_id: jobseekerId,
+			jobseeker_id: jobseekerID,
 			job_type: jobType,
 			salary: salary,
 			salary_type: salaryType,
@@ -145,12 +150,13 @@ export default function EditOffer({match}) {
 			end_date: endDate,
 			status: 'sent', //status of the offer can be sent (first time, or in respnse to counter offer), accepted,rejected
 			additional_docs: additionalDocs,
+			counterable: counterable
 		}
 		console.log(data)
-		await axios.post(url, data)
+		await axios.post(editofferurl, data)
 			.then(res => {
 				console.log("response: ", res)
-				alert("Offer successfully sent")
+				alert("Edited offer successfully sent")
 				history.push("/recruiterdashboard")
 			})
 			.catch((error) => {
@@ -195,7 +201,7 @@ export default function EditOffer({match}) {
 					<a href={`/advertisement/${jobID}`} target="_blank" style={{textAlign: "center",margin:20 }}> View Original Job Advert</a>
 				
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
-						Create Offer Letter
+						Edit Offer Letter
 					</Typography>
    
 					<Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
@@ -233,6 +239,7 @@ export default function EditOffer({match}) {
 							id="startDate"
 							type="date"
 							min={t}
+							value={startDate}
 							onChange={ (event) => 
 								setStartDate(event.target.value)	
 							}
@@ -251,6 +258,7 @@ export default function EditOffer({match}) {
 								id="endDate"
 								type="date"
 								min={startDate}
+								value={endDate}
 								onChange={ (event) => 
 									setEndDate(event.target.value)	
 								}
