@@ -34,6 +34,7 @@ export default function OfferLetterForm(props) {
 	const [title,setTitle] = useState('');
 	const [company,setCompany] = useState('');	
 	const [jobseekerId,setJobSeekerID]=useState('')
+	const [fullname, setFullname] = useState('')
 	const [description,setDescription] = useState('');
     const [jobType, setJobType]=useState('') 
     //salary 
@@ -80,8 +81,9 @@ export default function OfferLetterForm(props) {
 				const job_data = res.data.application
 				const first=job_data["first_name"]
 				const last= job_data["last_name"]
-				const fullname=first+' '+last
-				setDescription(`${todays_date}\n\nDear ${fullname},\n\n    .......`)	
+				const full=first+' '+last
+				setFullname(full)
+				setDescription(`${todays_date}\n\nDear ${full},\n\n    .......`)	
 				setJobSeekerID(job_data['jobseeker_id'])
 			}).catch((error) => {
 				console.log("error: ", error.response)
@@ -150,6 +152,7 @@ export default function OfferLetterForm(props) {
 			jobapplication_id: jobAppID,
 			jobadvert_id: jobID,
             jobseeker_id: jobseekerId,
+			full_name: fullname,
 			job_type: jobType,
             salary: salary,
             salary_type: salaryType,
