@@ -113,7 +113,42 @@ export default function ApplicationList({match}) {
 		}
 	}
 
-	const postInterview = async () => {
+	const postInterview = async (app) => {
+		if (datevalidator(app[1]["jobseeker_id"]) === true && timevalidator(app[1]["jobseeker_id"]) === true) {
+			var invite_list = []
+			var emp_id = sessionStorage.getItem("uid")
+			console.log(app)
+			const jobseeker = app[1]["jobseeker_id"]
+			invite_list.push({
+				jobseeker_id: jobseeker,
+				employer_id: emp_id,
+				app_id: app[0],
+				job_id: jobID,
+				first_name: app[1]["first_name"],
+				last_name: app[1]["last_name"],
+				date: inviteList[jobseeker]["date"],
+				time: inviteList[jobseeker]["time"]
+			})
+
+			const data={
+				invite_list
+			}
+
+			await axios.post(interviewUrl, data)
+			.then(res => {
+				console.log("response: ", res)
+				alert("Interview Successfully Sent")
+			})
+			.catch((error) => {
+				console.log("error: ", error.response)
+				alert("An error occured, please try again")
+			})
+		} else {
+			alert("Please fill in all fields correctly for " + app[1]["first_name"] + " " + app[1]["last_name"])
+		}
+	};
+
+	const postInterviews = async () => {
 		if (checkFormValidity() === true) {
 			var invite_list = []
 			var emp_id = sessionStorage.getItem("uid")
@@ -231,7 +266,9 @@ export default function ApplicationList({match}) {
 										<Col>
 											<Row>
 												<ButtonToolbar>
-													<Button disabled = {status === "open"} variant="contained" color="secondary">Interview</Button>
+													<Button disabled = {status === "open"} variant="contained" color="secondary" onClick={() => {postInterview(app)}}> 
+															Interview
+													</Button>
 													<Button disabled = {status === "open"} variant="contained" color="secondary">
 														<Link to={{
 															pathname: `/createoffer`,
@@ -348,7 +385,7 @@ export default function ApplicationList({match}) {
 								</Form>
 							</Col>
 							<Col>
-								<Button disabled = {detail[1].status === "open"} variant="contained" color="secondary" onClick={() => {postInterview()}}> Send Interview Invitations</Button>
+								<Button disabled = {detail[1].status === "open"} variant="contained" color="secondary" onClick={() => {postInterviews()}}> Send Interview Invitations</Button>
 							</Col>
 						</Row>
 						<Row>
