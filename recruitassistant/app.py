@@ -4,12 +4,13 @@ from flask import jsonify
 # from flask_cors import CORS
 # import firebase_admin
 # from firebase_admin import credentials, auth, db
+from firebase_admin import auth
 import json
 import uuid
 from datetime import date, datetime
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
-from backend import jobs, search, authentication
+from backend import jobs, search, authentication, counteroffer
 from backend.init_app import app, ref, pb
 
 
@@ -43,7 +44,7 @@ def post_offer_letter():
 	
 	today = date.today()
 	date_posted = today.strftime("%Y-%m-%y")
-	print("d1 =", date_posted),
+	#print("d1 =", date_posted),
 	
 	try:
 		ref.child('offer').update({
@@ -67,6 +68,7 @@ def post_offer_letter():
 					'end_date': json_data['end_date'],
 					'status': json_data['status'], 
 					'additional_docs': json_data['additional_docs'],
+					'counterable':json_data['counterable']
 				}
 			})
 		return jsonify({'message': f'Successfully created offer {offer_uid}'}),200
@@ -117,7 +119,7 @@ def check_applied():
 				print("Has applied before")
 				return jsonify({'applied': True}),200
 		
-		print("Hasn't applied before")
+		#print("Hasn't applied before")
 		return jsonify({'applied': False}),200
  
 	except Exception as e:		
@@ -135,7 +137,7 @@ def get_app_details():
 		specific_child="jobApplications/"+job_id+'/'+job_app_id
 		#print(specific_child)
 		the_application=ref.child(specific_child).get()
-		print("THE APPP")
+		# print("THE APPP")
 		#print(the_application)
 		return jsonify({'application': the_application}),200
  
@@ -149,7 +151,7 @@ def return_application():
 	appid = request.args.get('app_id')
 	jobid = request.args.get('job_id')
 	app_resp = {}
-	print("here")
+	#print("here")
 	try:
 		app_resp=ref.child("jobApplications").get().get(jobid).get(appid)
 		#print(app_resp)
@@ -179,7 +181,7 @@ def get_all_posts():
 		for key,val in posts.items():
 			jobs.append((key,val))
 
-		print(jobs)
+		#print(jobs)
 		return jsonify({'jobs': jobs}),200
  
 	except Exception as e:
@@ -199,12 +201,26 @@ def get_recruiter_posts(recruiterid):
 		for key,val in posts.items():
 			jobs.append((key,val))
 		
-		print(jobs)
+		#print(jobs)
 		return jsonify({'jobs': jobs}),200
  
 	except Exception as e:		
 		print(e)
 		return jsonify({"message": str(e)}), 400
+
+#update the status of an interview
+@app.route('/interviews', methods=["PATCH"])
+def update_interview():
+	try:
+		json_data = request.get_json()
+		interview_id =json_data["id"]
+		new_status=json_data["status"]
+		ref.child("interviews").child(interview_id).child("status").set(new_status)
+	except Exception as e:
+		print(e)
+		return jsonify({"message": str(e)}), 400
+	return
+
 
 @app.route('/interviews', methods=["POST"])
 def send_interview():
@@ -225,7 +241,8 @@ def send_interview():
 						'first_name': u["first_name"],
 						'last_name': u["last_name"],
 						'interview_date': u["date"],
-						'interview_time': u["time"]
+						'interview_time': u["time"],
+						'status': u["status"]
 					},
 				})
 		return jsonify({'message': f'Successfully created interview {interview_id}'}),200
@@ -289,3 +306,93 @@ def get_offers_for_job():
 	except Exception as e:		
 		print(e)
 		return jsonify({"message": str(e)}), 400
+
+
+# get list of offers for given user (recruiter or job seeker)
+@app.route('/offers', methods=['POST'])
+def offers():
+	try:
+		data = request.json
+		userid = data["userid"]
+		if data["type"] == "jobseeker":
+			user_type = 'jobseeker_id'
+		else:
+			user_type = 'recruiter_id'
+
+		posts = ref.child("offer").order_by_child(user_type).equal_to(userid).get()
+		offers = []
+		for key, val in posts.items():
+			offers.append((key, {
+				"jobseekerid": val["jobseeker_id"],
+				"title": val["title"],
+				"status": val["status"],
+				"company": val["company"],
+				"location": val["location"],
+				"job_type": val["job_type"]
+			}))
+		
+		# print(offers)
+		return jsonify({'offers': offers}), 200
+	except Exception as e:
+		print(e)
+		return jsonify({"error": "something bad happened"}),500
+
+@app.route('/getOfferDetails', methods=['POST'])
+def viewOffer():
+	try:
+		offerId = request.json["offerId"]	
+		offer=ref.child("offer").child(offerId).get()
+		return jsonify({'offer': offer}), 200
+	except Exception as e:
+		print(e)
+		return jsonify({"error": "something bad happened"}),500
+
+@app.route('/interviewlist', methods=['POST'])
+def getInterviews():
+	try:
+		data = request.json
+		user = auth.verify_id_token(data["token"])
+		uid = user["uid"]
+
+		interviews = []
+		posts=ref.child("interviews").get()	
+		for key, val in posts.items():
+			interviewDatetime = val["interview_date"] + " " + val["interview_time"]
+			current_date = datetime.now()
+			close_date = datetime.strptime(interviewDatetime, "%Y-%m-%d %H:%M")
+			delta = close_date - current_date
+			if delta.days < 0:
+				continue
+			print(interviewDatetime)
+			if val["jobseeker_id"] == uid:
+				jobId = val["job_id"]
+				job = ref.child("jobAdvert").order_by_key().equal_to(jobId).get()
+				for jkey, jval in job.items():
+					interviews.append((key, val, jkey, jval))
+
+		return jsonify({'interviews': interviews}), 200
+	except Exception as e:
+		print(e)
+		return jsonify({"error": "something bad happened"}),500
+
+@app.route('/pendingapplications', methods=['POST'])
+def getApplications():
+	try:
+		data = request.json
+		user = auth.verify_id_token(data["token"])
+		uid = user["uid"]
+
+		applications = []
+		posts=ref.child("jobApplications").get()	
+		for key, val in posts.items():
+			for key2, val2 in val.items():
+				if val2["jobseeker_id"] == uid:
+					job = ref.child("jobAdvert").order_by_key().equal_to(key).get()
+					for jkey, jval in job.items():
+						applications.append((key2, val2, jkey, jval))
+		
+
+		return jsonify({'applications': applications}), 200
+	except Exception as e:
+		print(e)
+		return jsonify({"error": "something bad happened"}),500

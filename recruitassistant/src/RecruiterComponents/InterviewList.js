@@ -23,7 +23,7 @@ export default function InterviewList({match}) {
 
 	const columns = [
 		{ field: 'candidate', headerName: 'Candidate', width: 300 },
-		{ field: 'datetime', headerName: 'Date & Time', type: 'date', width: 400 },
+		{ field: 'datetime', headerName: 'Date & Time', type: 'dateTime', width: 400 },
 		{ field: 'status', headerName: 'Status', width: 200 },
 	];
 
