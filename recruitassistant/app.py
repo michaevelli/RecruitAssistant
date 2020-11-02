@@ -216,6 +216,7 @@ def update_interview():
 		interview_id =json_data["id"]
 		new_status=json_data["status"]
 		ref.child("interviews").child(interview_id).child("status").set(new_status)
+		return jsonify({'message': f'Successfully updated interview {interview_id}'}),200
 	except Exception as e:
 		print(e)
 		return jsonify({"message": str(e)}), 400
