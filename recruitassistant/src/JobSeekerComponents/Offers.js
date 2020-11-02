@@ -45,21 +45,25 @@ export default function Offers() {
 	}
 
 	const getOffers = async () => {
-		const url = `${offerUrl}`
-            
-            const ndata = {
-                token: window.localStorage.getItem("token")
-            }
-            
-            axios.post(url, ndata)
-                .then(function(response) {
-					console.log("offer response:", response.data)
+		if (userID !== '') {
+			const url = `${offerUrl}`
+			console.log("userID = ", userID)
+			const ndata = {
+				// token: window.localStorage.getItem("token")
+				userid: userID,
+				type: "jobseeker"
+			}
+			
+			await axios.post(url, ndata)
+				.then(function(response) {
+					console.log("response:", response.data)
 					setOffers(response.data.offers)
-                })
-                .catch(function(error) {
-					
-                    console.log(error.response)
-                })
+				})
+				.catch(function(error) {
+					console.log(error.response)
+				})
+		}
+		
 	};
 
 	const getInterviews = async () => {
