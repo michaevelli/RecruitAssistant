@@ -125,6 +125,8 @@ export default function ApplicationList({match}) {
 					employer_id: emp_id,
 					app_id: applications[i][0],
 					job_id: jobID,
+					first_name: applications[i][1]["first_name"],
+					last_name: applications[i][1]["last_name"],
 					date: inviteList[jobseeker]["date"],
 					time: inviteList[jobseeker]["time"]
 				})
@@ -318,8 +320,8 @@ export default function ApplicationList({match}) {
 							{'text':'Job View','href': '#','active': false,
 							'nested':[
 								{'text':'Applications','href': '#','active': true},
-								{'text':'Interviews','href': '#','active': false},
-								{'text':'Offers','href': '#','active': false},
+								{'text':'Interviews','href': `/interviews/${jobID}`,'active': false},
+								{'text':'Offers','href': `/offers/${jobID}`,'active': false},
 							]},
 							{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
 							{'text':'FAQ','href':'/recruiterFAQ','active': false}

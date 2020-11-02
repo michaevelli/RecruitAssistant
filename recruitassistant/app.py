@@ -56,6 +56,8 @@ def post_offer_letter():
 					'recruiter_id': json_data['recruiter_id'],
 					'application_id': json_data['jobapplication_id'],
 					'jobseeker_id': json_data['jobseeker_id'],
+					'full_name': json_data['full_name'],
+					'job_id': json_data['jobadvert_id'],
 					'job_type': json_data['job_type'],
 					'salary': json_data['salary'],
 					'salary_type': json_data['salary_type'],
@@ -220,6 +222,8 @@ def send_interview():
 						'employer_id': u["employer_id"],
 						'application_id': u["app_id"],
 						'job_id': u["job_id"],
+						'first_name': u["first_name"],
+						'last_name': u["last_name"],
 						'interview_date': u["date"],
 						'interview_time': u["time"]
 					},
@@ -230,24 +234,57 @@ def send_interview():
 		return jsonify({"message": str(e)}), 400
 	return
 
+# gets a sorted list of applications for a job
 @app.route('/applicationslist', methods=["GET"])
 def get_applications_for_job():
-	#gets all posts in the database
 	try:
 		jobid = request.args.get('job_id')
-		post = ref.child("jobApplications").order_by_key().equal_to(jobid).get()
+		post = ref.child('jobApplications').order_by_key().equal_to(jobid).get()
 		applications=[]
 		# print(list(post.items().index("qualities_met")))
 		for key,val in post.items():
 			# print(key)
 			# sort on how many qualifications are met
-			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get("qualities_met"))
+			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get('qualities_met'))
 			for appid in sortedApps:
 			 	applications.append((appid, val.get(appid)))
-				#applications.append((key, val.get(appid)))
 		
 		#print(applications)
 		return jsonify({'applications': applications}),200
+ 
+	except Exception as e:		
+		print(e)
+		return jsonify({"message": str(e)}), 400
+
+# gets a list of interviews for a job
+@app.route('/interviewslist', methods=["GET"])
+def get_interviews_for_job():
+	try:
+		jobid = request.args.get('job_id')
+		post = ref.child('interviews').order_by_child('job_id').equal_to(jobid).get()
+		interviews = []
+		for key,val in post.items():
+			interviews.append((key, val))
+		
+		# print(interviews)
+		return jsonify({'interviews': interviews}),200
+ 
+	except Exception as e:		
+		print(e)
+		return jsonify({"message": str(e)}), 400
+
+# gets a list of offers for a job
+@app.route('/offerslist', methods=["GET"])
+def get_offers_for_job():
+	try:
+		jobid = request.args.get('job_id')
+		post = ref.child('offer').order_by_child('job_id').equal_to(jobid).get()
+		offers = []
+		for key,val in post.items():
+			offers.append((key, val))
+		
+		print(offers)
+		return jsonify({'offers': offers}),200
  
 	except Exception as e:		
 		print(e)
