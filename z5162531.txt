@@ -28,7 +28,12 @@ Struggled to figure out how to upload and download pdf's from the database as a 
 
 --week 6--
 Finished sending offers feature and fixed file handling.
-Created a homepage for the website as per the request of the tutor last demo.
+Created a homepage (with Calvin) for the website as per the request of the tutor last demo.
 Created FAQ pages.
 
+-- week 7---
+Worked on small changes to existing code to allow counter-offers to be made such as adding a toggle option for a recruiter to make an offer counterable.
+Created page showing interview invite details and options to accept/decline.
+
+--week 8---
 
