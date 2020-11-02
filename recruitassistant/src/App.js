@@ -16,10 +16,12 @@ import Advertisement from "./JobSeekerComponents/Advertisement";
 import JobApply from "./JobSeekerComponents/JobApply";
 import Home from "./Home";
 import OfferLetterForm from './RecruiterComponents/OfferLetterForm';
+import CounterOffer from './JobSeekerComponents/CounterOffer';
 import ApplicationList from './RecruiterComponents/ApplicationList';
 import ViewApplication from './RecruiterComponents/ViewApplication';
 import Offers from './JobSeekerComponents/Offers';
 import ViewOffer from './JobSeekerComponents/ViewOffer';
+import EditOffer from './RecruiterComponents/EditOffer';
 import RecruiterFAQ from './RecruiterComponents/RecruiterFAQ';
 import JobSeekerFAQ from './JobSeekerComponents/JobSeekerFAQ';
 
@@ -44,10 +46,13 @@ function App() {
           <Route path="/advertisement" component={Advertisement}/>
           <Route path="/jobapply" component={JobApply}/>
           <Route path="/createoffer" component={OfferLetterForm}/>
+          <Route path="/editoffer/:jobID/:appID" component={OfferLetterForm}/>
+          <Route path="/counteroffer" component={CounterOffer}/> {/*test only delete after*/}
           <Route path="/applications/:jobID" component={ApplicationList}/>
           <Route path="/viewapplication" component={ViewApplication}/>
           <Route path="/offers" component={Offers}/>
-          <Route paty="/offer" component={ViewOffer}/>
+          <Route path="/offer/:offerID" component={ViewOffer}/>
+          <Route path="/editoffer/:offerID" component={EditOffer}/>
           <Route path="/recruiterFAQ" component={RecruiterFAQ}/>
           <Route path="/jobseekerFAQ" component={JobSeekerFAQ}/>
         </Switch>
