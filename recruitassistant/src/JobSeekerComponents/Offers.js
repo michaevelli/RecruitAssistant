@@ -132,6 +132,9 @@ export default function Offers() {
 					<Typography color="textSecondary">
 						{interview[1].interview_date}, {interview[1].interview_time}
 					</Typography>
+					<Link href= {``} style={{marginLeft: 30}}>
+							View Interview
+					</Link>
 				</CardActions>
 			</Card>
 		))
