@@ -27,6 +27,7 @@ import ViewOfferRecruiter from './RecruiterComponents/ViewOffer';
 import EditOffer from './RecruiterComponents/EditOffer';
 import RecruiterFAQ from './RecruiterComponents/RecruiterFAQ';
 import JobSeekerFAQ from './JobSeekerComponents/JobSeekerFAQ';
+import InterviewPage from './JobSeekerComponents/InterviewPage';
 
 function App() {
 
@@ -61,6 +62,7 @@ function App() {
           <Route path="/editoffer/:offerID" component={EditOffer}/>
           <Route path="/recruiterFAQ" component={RecruiterFAQ}/>
           <Route path="/jobseekerFAQ" component={JobSeekerFAQ}/>
+          <Route path="/interview/:interviewID" component={InterviewPage}/>
         </Switch>
       </BrowserRouter>
 
