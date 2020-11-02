@@ -14,13 +14,11 @@ def notify(data):
 	date_time = now.strftime("%m/%d/%Y-%H:%M:%S")
 	try:
 		ref.child('notif').child(data["uid"]).push({
-			# data["uid"]: {
 				"type": data["type"],
-				# "recipient_id": data["uid"],
 				"object_id" : data["obj_id"],
 				"date_time": date_time,
+				# "url" : data["url"]
 				}
-			# }
 			)
 		return jsonify({'message': f'Successfully created notif {notif_id}'}),200
 	except Exception as e:		
@@ -75,7 +73,6 @@ def check_notif():
 	notif_exists = db.shallow().get().val()
 	
 	if "notif" in list(notif_exists):
-		# d1 = db.child("notif").order_by_child("recipient_id").equal_to(data["uid"]).get()
 		# check if it exists then return list of notifications
 		child_exist = db.child("notif").shallow().get().val()
 		if data["uid"] in list(child_exist):
