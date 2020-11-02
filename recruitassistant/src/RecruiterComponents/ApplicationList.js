@@ -231,7 +231,7 @@ export default function ApplicationList({match}) {
 											<Row>
 												<ButtonToolbar>
 													<Button disabled = {status === "open"} variant="contained" color="secondary">Interview</Button>
-													<Button disabled = {status === "open"} variant="contained" color="secondary">
+													<Button variant="contained" color="secondary">
 														<Link to={{
 															pathname: `/createoffer`,
 															state: {
