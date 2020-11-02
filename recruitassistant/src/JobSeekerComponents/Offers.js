@@ -20,16 +20,18 @@ export default function Offers() {
 	const [offers, setOffers]=useState([])
 	const [interviews, setInterviews]=useState([])
 	const [applications, setApplications]=useState([])
-    
+	const [userID, setUserID] = useState('');
+	// const [type, setType] = useState('');
+	
 
-    useEffect(() => {
+	useEffect(() => {
 		auth();
 		getOffers();
 		getInterviews();
 		getApplications();
-    }, []);
+	}, [userID]);
 
-    const auth = async () => {
+	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
@@ -37,6 +39,8 @@ export default function Offers() {
 				if (!response.success || response.userInfo["type"] != "jobseeker") {
 					history.push("/unauthorised");
 				}
+				setUserID(response.userID)
+				// setUserID(response.userID, getOffers()); 
 			})
 	}
 
@@ -93,8 +97,8 @@ export default function Offers() {
                     console.log(error.response)
                 })
 	};
-    
-    const renderOffers = () => {
+	
+	const renderOffers = () => {
 		return offers.map((offer) => (
 			<Card style={{margin: 30, height: 160, width:250}}>
 				<CardContent>                          

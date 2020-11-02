@@ -126,7 +126,8 @@ export default function ApplicationList({match}) {
 					app_id: applications[i][0],
 					job_id: jobID,
 					date: inviteList[jobseeker]["date"],
-					time: inviteList[jobseeker]["time"]
+					time: inviteList[jobseeker]["time"],
+					status: 'pending'
 				})
 			}
 
@@ -230,7 +231,7 @@ export default function ApplicationList({match}) {
 											<Row>
 												<ButtonToolbar>
 													<Button disabled = {status === "open"} variant="contained" color="secondary">Interview</Button>
-													<Button disabled = {status === "open"} variant="contained" color="secondary">
+													<Button variant="contained" color="secondary">
 														<Link to={{
 															pathname: `/createoffer`,
 															state: {
