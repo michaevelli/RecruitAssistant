@@ -23,6 +23,17 @@ Worked on the feature for recruiters to create a new job posting. Created NewJob
 Created Logo for site and added it to title bar of all pages.
 Had team retospective A. Planned to make subtasks for user stories, and improve
 planning of sprints.
-Began work on a form for customising and sending an offer letter to a candidate. 
+Began work on a form for customising and sending an offer letter to a candidate.
+Struggled to figure out how to upload and download pdf's from the database as a blob.
 
+--week 6--
+Finished sending offers feature and fixed file handling.
+Created a homepage (with Calvin) for the website as per the request of the tutor last demo.
+Created FAQ pages.
+
+-- week 7---
+Worked on small changes to existing code to allow counter-offers to be made such as adding a toggle option for a recruiter to make an offer counterable.
+Created page showing interview invite details and options to accept/decline.
+
+--week 8---
 
