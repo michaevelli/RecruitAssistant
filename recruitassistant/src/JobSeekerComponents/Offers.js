@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link,Slider, Grid,Card,CardContent,Button,CardActions ,TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
+import {Slider, Grid,Card,CardContent,Button,CardActions ,TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
 import {Form,Container,Col,Row,Collapse} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import TabPanel from "./TabPanel.js"
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { useHistory,Link } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
 export const offerUrl="http://localhost:5000/offers"
 export const searchUrl="http://localhost:5000/search/"
 export const interviewUrl="http://localhost:5000/interviewlist"
 export const applicationUrl="http://localhost:5000/pendingapplications"
+
+
 
 export default function Offers() {
     const history = useHistory();
@@ -21,8 +26,13 @@ export default function Offers() {
 	const [interviews, setInterviews]=useState([])
 	const [applications, setApplications]=useState([])
 	const [userID, setUserID] = useState('');
-	// const [type, setType] = useState('');
 	
+	//controls which tab is selected (tabs are labelled 0,1,2 from left to right)
+	const [value, setValue] = React.useState(1);
+
+	const handleChange = (event, newValue) => {
+	  setValue(newValue);
+	};
 
 	useEffect(() => {
 		auth();
@@ -117,7 +127,7 @@ export default function Offers() {
 					<Typography color="textSecondary">
 						{offer[1].job_type}
 					</Typography>
-					<Link href= {`/offer/${offer[0]}`} style={{marginLeft: 30}}>
+					<Link to={{pathname: `/offer/${offer[0]}`}} style={{marginLeft: 30}}>
 							View Offer
 					</Link>
 				</CardActions>
@@ -138,9 +148,16 @@ export default function Offers() {
 				</CardContent>
 				<CardActions >
 					<Typography color="textSecondary">
-						{interview[1].interview_date}, {interview[1].interview_time}
+						{interview[1].status}
 					</Typography>
-					<Link href= {``} style={{marginLeft: 30}}>
+					
+					<Link style={{marginLeft: 30}} 
+							to={{pathname: `/interview/${interview[0]}`,
+							state: {
+								interviewID: interview[0],
+								status: interview[1].status,
+								time: interview[1].interview_time,
+								date:interview[1].interview_date }}}>
 							View Interview
 					</Link>
 				</CardActions>
@@ -160,11 +177,8 @@ export default function Offers() {
 					</Typography>
 				</CardContent>
 				<CardActions >
-					<Typography color="textSecondary">
-						{application[3].job_type}
-					</Typography>
-					<Link href= {`/applications/${application[2]}`} style={{marginLeft: 30}}>
-							View Application
+					<Link to={{pathname: `/applications/${application[2]}`}} style={{marginLeft: 30}}>
+						View Application
 					</Link>
 				</CardActions>
 			</Card>
@@ -179,29 +193,50 @@ export default function Offers() {
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
 					<SideMenu random={[
-						{'text':'Job Seeker Dashboard','href': 'jobseekerdashboard', 'active': false},
-						{'text':'Your Applications','href': 'offers', 'active': true},         
-						{'text':'FAQ','href':'#','active': false}]}/>
+						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': false},
+						{'text':'Your Applications','href': '/offers', 'active': true},         
+						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 				</Col >
 				<Col>	
-					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
-						Your Offers
-					</Typography>
-					<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
-						{renderOffers()}
-					</div>
-					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
-						Your Interviews
-					</Typography>
-					<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
-						{renderInterviews()}
-					</div>
-					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
-						Your Applications
-					</Typography>
-					<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
-						{renderApplications()}
-					</div>
+					<Tabs
+					centered
+					value={value}
+					indicatorColor="primary"
+					textColor="primary"
+					onChange={handleChange}
+					style={{marginTop:10}}
+					>
+						<Tab label="Applications" style={{marginRight:200}}/>
+						<Tab label="Interviews" />
+						<Tab label="Offers"  style={{marginLeft:200}}/>
+      				</Tabs>
+					  <TabPanel value={value} index={0}>
+						<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
+							Your Applications
+						</Typography>
+						<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
+							{renderApplications()}
+						</div>
+					</TabPanel>
+
+					<TabPanel value={value} index={1} >
+						<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
+							Your Interviews
+						</Typography>
+						<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
+							{renderInterviews()}
+						</div>
+					</TabPanel>
+
+
+					<TabPanel value={value} index={2} >
+						<Typography variant="h4"  style={{color: 'black', textAlign: "center",marginTop:20, marginBottom:20 }}>
+							Your Offers
+						</Typography>
+						<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
+							{renderOffers()}
+						</div>
+					</TabPanel>
 				</Col>
 			</Row>
 		</Grid>
