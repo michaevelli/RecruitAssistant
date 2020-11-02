@@ -7,7 +7,7 @@ import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import { DataGrid } from '@material-ui/data-grid';
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
 export const advertisementUrl="http://localhost:5000/advertisement"
@@ -24,7 +24,11 @@ export default function OfferList({match}) {
 	const columns = [
 		{ field: 'candidate', headerName: 'Candidate', width: 300 },
 		{ field: 'status', headerName: 'Status', width: 400 },
-		{ field: 'counteroffer', headerName: 'Counter Offer', width: 300 },
+        { field: 'offer',
+            headerName: 'Offer',
+            sortable: false,
+            renderCell: (row) => (<Link to={{ pathname: `/offer/r/${jobID}/${row.data.id}` }}> {row.value}</Link>),
+            width: 300 },
 	];
 
 	useEffect(() => {
@@ -85,7 +89,7 @@ export default function OfferList({match}) {
                 id: offer[0],
                 candidate: offer[1].full_name,
                 status: offer[1].status,
-                counteroffer: null})
+                offer: "View Offer"})
 		))
 		return rows
 	};
