@@ -56,7 +56,6 @@ export default function RecruiterDashboard() {
 				<CardContent>                          
 					<Typography variant="h5" component="h2">{job[1].title}</Typography>
 					<Typography color="textSecondary">{job[1].company} | {job[1].location}</Typography>
-					<Typography color="textSecondary">{job[1].status}</Typography>
 				</CardContent>
 				<CardActions >
 					<Typography 

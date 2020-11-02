@@ -28,5 +28,12 @@ Week 5
 	Performed sprint retrospective
 	Assign new sprint tasks
 	Did search and filter functionality
+
 Week 6
 	Do job seeker view offers
+
+Week 7
+	Work on page for viewing all offers/interviews/applications
+
+Week 8
+	Work on viewing/edit applications from backend, for job seeker

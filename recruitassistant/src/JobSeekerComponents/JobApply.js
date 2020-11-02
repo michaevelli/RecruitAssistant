@@ -121,10 +121,10 @@ export default function JobApply() {
 			job_id: jobID,
 			submitted_docs: additionalDocs
 		}
-		console.log("data: ",data)
+		//console.log("data: ",data)
 		await axios.post(url, data)
 			.then(res => {
-				console.log("response: ", res)			
+				//console.log("response: ", res)			
 				alert("Job application successfully created")
 				history.push("/jobseekerdashboard")
 			})
@@ -166,7 +166,6 @@ export default function JobApply() {
 	const handleFileLoad= (filename,document_name,index,event)=>{
 		var docs = [...additionalDocs]
 		docs[index]={'req_document': document_name,'filename': filename, 'src': event.target.result}
-		console.log(event.target.result); 
 		setAdditionalDocs(docs)
 	}
 
