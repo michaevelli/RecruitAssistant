@@ -11,6 +11,8 @@ import Badge from '@material-ui/core/Badge';
 import DeleteIcon from '@material-ui/icons/Delete';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Link from '@material-ui/core/Link';
+import Menu from '@material-ui/core/Menu';
+
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {Card, Container,Col,Row,} from 'react-bootstrap';
@@ -40,6 +42,7 @@ export default function Notifications() {
   const [open, setOpen] = useState(false)
   const classes = useStyles()
   const [seen, setSeen] = useState([])
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const checkUrl = "http://localhost:5000/checknotif"
   const delUrl = "http://localhost:5000/remnotif"
@@ -82,8 +85,10 @@ export default function Notifications() {
     setNotif(data)
   }
 
-  const handleOpen = () => {
+  const handleOpen = (event) => {
     setOpen(true)
+    setAnchorEl(event.currentTarget);
+
     notif.map((data) => {
       if(!seen.includes(data[0])){
         seen.push(data[0])
@@ -96,6 +101,7 @@ export default function Notifications() {
 
   const handleClose = () => {
     setOpen(false)
+    setAnchorEl(null);
   }
 
   const deleteNotif = async(id) => {
@@ -210,25 +216,26 @@ export default function Notifications() {
         <NotificationsIcon></NotificationsIcon>
       </StyledBadge>
     </IconButton>
-    <Dialog
+      <Menu
+        id="long-menu"
+        anchorEl={anchorEl}
+        keepMounted
         open={open}
         onClose={handleClose}
-        scroll="paper"
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
+        PaperProps={{
+          style: {
+            // maxHeight: ITEM_HEIGHT * 4.5,
+            width: '300px',
+          },
+        }}
       >
-        <DialogTitle id="scroll-dialog-title">Notifications</DialogTitle>
-        <DialogContent>
-          <DialogContentText
-            id="scroll-dialog-description"
-            tabIndex={-1}
-          >
-             {renderNotif()}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-        </DialogActions>
-      </Dialog>
+        {/* {options.map((option) => (
+          <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
+            {option}
+          </MenuItem>
+        ))} */}
+        {renderNotif()}
+      </Menu>
 
     </>
   );
