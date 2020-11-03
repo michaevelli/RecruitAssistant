@@ -152,12 +152,8 @@ export default function Offers() {
 					</Typography>
 					
 					<Link style={{marginLeft: 30}} 
-							to={{pathname: `/interview/${interview[0]}`,
-							state: {
-								interviewID: interview[0],
-								status: interview[1].status,
-								time: interview[1].interview_time,
-								date:interview[1].interview_date }}}>
+							to={{pathname: `/interview/${interview[0]}`}}
+							>
 							View Interview
 					</Link>
 				</CardActions>
