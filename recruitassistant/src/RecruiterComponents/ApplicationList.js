@@ -15,7 +15,7 @@ import checkAuth from "../Authentication/Authenticate";
 export const advertisementUrl="http://localhost:5000/advertisement"
 export const applicationUrl="http://localhost:5000/applicationslist"
 export const interviewUrl="http://localhost:5000/interviews"
-
+export const dismissUrl="http://localhost:5000/dismiss"
 
 export default function ApplicationList({match}) {
 	const today = new Date()
@@ -47,7 +47,6 @@ export default function ApplicationList({match}) {
 
 	const getJob = async () => {
 		const url = `${advertisementUrl}`
-		console.log(url)
 		await axios.get(url, {
 			params: {
 				job_id: jobID
@@ -64,7 +63,6 @@ export default function ApplicationList({match}) {
 
 	const getApplications = async () => {
 		const url = `${applicationUrl}`
-		console.log(url)
 		await axios.get(url, {
 			params: {
 				job_id: jobID
@@ -72,6 +70,7 @@ export default function ApplicationList({match}) {
 		})
 			.then(res => {
 				initialise(res.data.applications)
+				console.log("applications: ", res.data.applications)
 				console.log("response: ", res)
 			})
 			.catch((error) => {
@@ -113,11 +112,37 @@ export default function ApplicationList({match}) {
 		}
 	}
 
+	const removeApp = (index) => {
+		var apps = [...applications]
+		apps.splice(index, 1)
+		setApplications(apps)
+		if (selection > apps.length) {
+			setSelection(apps.length)
+		}
+	};
+
+	const dismiss = async (app, index) => {
+		const data={
+			job_id: jobID,
+			app_id: app[0]
+		}
+		await axios.patch(dismissUrl, data)
+		.then(res => {
+			console.log("response: ", res)
+			removeApp(index)
+			alert(app[1]["first_name"] + " " + app[1]["last_name"] + "'s application dismissed")
+		})
+		.catch((error) => {
+			console.log("error: ", error.response)
+			alert("An error occured, please try again")
+		})
+	};
+
 	const postInterview = async (app) => {
 		if (datevalidator(app[1]["jobseeker_id"]) === true && timevalidator(app[1]["jobseeker_id"]) === true) {
 			var invite_list = []
 			var emp_id = sessionStorage.getItem("uid")
-			console.log(app)
+			console.log("application: ", app)
 			const jobseeker = app[1]["jobseeker_id"]
 			invite_list.push({
 				jobseeker_id: jobseeker,
@@ -152,7 +177,7 @@ export default function ApplicationList({match}) {
 		if (checkFormValidity() === true) {
 			var invite_list = []
 			var emp_id = sessionStorage.getItem("uid")
-			console.log(applications.slice(0, selection))
+			console.log("applications: ", applications.slice(0, selection))
 			for (let i = 0; i < selection; i++) {
 				const jobseeker = applications[i][1]["jobseeker_id"]
 				invite_list.push({
@@ -280,7 +305,7 @@ export default function ApplicationList({match}) {
 															Offer
 														</Link>
 													</Button>
-													<Button variant="contained" color="secondary">Dismiss</Button>
+													<Button variant="contained" color="secondary" onClick={() => {dismiss(app, index)}}>Dismiss</Button>
 												</ButtonToolbar>
 											</Row>
 											<Row style = {{marginTop: 15, width: 500}}>
