@@ -29,7 +29,7 @@ import EditOffer from './RecruiterComponents/EditOffer';
 import RecruiterFAQ from './RecruiterComponents/RecruiterFAQ';
 import JobSeekerFAQ from './JobSeekerComponents/JobSeekerFAQ';
 import InterviewPage from './JobSeekerComponents/InterviewPage';
-
+import EditApplication from './JobSeekerComponents/EditApplication';
 function App() {
 
   return (
@@ -54,7 +54,7 @@ function App() {
           <Route path="/editoffer/:jobID/:appID" component={OfferLetterForm}/>
           <Route path="/counteroffer" component={CounterOffer}/> {/*test only delete after*/}
           <Route path="/applications/:jobID" component={ApplicationList}/>
-          <Route path="/viewapplication" component={ViewApplication}/>
+          <Route path="/viewapplication/:jobID/:applicationID" component={ViewApplication}/>
           <Route path="/interviews/:jobID" component={InterviewList}/>
           <Route path="/offers/:jobID" component={OfferList}/>
           <Route path="/offers" component={Offers}/>
@@ -65,6 +65,7 @@ function App() {
           <Route path="/recruiterFAQ" component={RecruiterFAQ}/>
           <Route path="/jobseekerFAQ" component={JobSeekerFAQ}/>
           <Route path="/interview/:interviewID" component={InterviewPage}/>
+          <Route path="/editApplication/:jobID/:applicationID" component={EditApplication}/>
         </Switch>
       </BrowserRouter>
 
