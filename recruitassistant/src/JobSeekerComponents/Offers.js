@@ -125,7 +125,7 @@ export default function Offers() {
 				</CardContent>
 				<CardActions >
 					<Typography color="textSecondary">
-						{offer[1].job_type}
+						Status: {offer[1].status}
 					</Typography>
 					<Link to={{pathname: `/offer/${offer[0]}`}} style={{marginLeft: 30}}>
 							View Offer
@@ -152,12 +152,8 @@ export default function Offers() {
 					</Typography>
 					
 					<Link style={{marginLeft: 30}} 
-							to={{pathname: `/interview/${interview[0]}`,
-							state: {
-								interviewID: interview[0],
-								status: interview[1].status,
-								time: interview[1].interview_time,
-								date:interview[1].interview_date }}}>
+							to={{pathname: `/interview/${interview[0]}`}}
+							>
 							View Interview
 					</Link>
 				</CardActions>
@@ -166,6 +162,7 @@ export default function Offers() {
 	}
 
 	const renderApplications = () => {
+		console.log(applications)
 		return applications.map((application) => (
 			<Card style={{margin: 30, height: 160, width:250}}>
 				<CardContent>                          

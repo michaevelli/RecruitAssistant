@@ -15,6 +15,9 @@ import checkAuth from "../Authentication/Authenticate";
 import CounterOffer from "../JobSeekerComponents/CounterOffer";
 
 export const offerdetailsurl="http://localhost:5000/getOfferDetails"
+export const accepturl = "http://localhost:5000/acceptoffer"
+export const declineurl = "http://localhost:5000/declineoffer"
+export const updateurl = "http://localhost:5000/updateoffer"
 
 export default function ViewOffer({match}) {
 	const history = useHistory();
@@ -124,7 +127,7 @@ export default function ViewOffer({match}) {
 						<Button variant="contained" color="secondary" onClick={handleDecline} style={{margin: 20}}>
 							Decline Offer
 						</Button>
-						<CounterOffer offerID={offerId}/>
+						{offer.counterable && <CounterOffer offerID={offerId}/>}
 					</div>
 				)
 			} else if (offer.status == 'countered') {
@@ -153,15 +156,33 @@ export default function ViewOffer({match}) {
 
 	// --- event handlers ---
 	const handleEdit = () => {
-		history.push("/editoffer/"+offerId)
+		history.push("/editoffer/"+offer.job_id+"/"+offerId)
 	}
 
 	const handleAccept = () => {
-		// history.push("/editoffer/"+offerId)
+		const ndata = { offer_id: offerId, status: "accepted" }
+		axios.post(updateurl, ndata)
+			.then(() => {
+				alert("Accepted offer!");
+				window.location.reload();
+			})
+			.catch((error) => {
+				console.log("error: ", error.response)
+				alert("An error occured, please try again")
+			})
 	}
 
 	const handleDecline = () => {
-		// history.push("/editoffer/"+offerId)
+		const ndata = { offer_id: offerId, status: "declined" }
+		axios.post(updateurl, ndata)
+			.then(() => {
+				alert("Delined offer");
+				window.location.reload();
+			})
+			.catch((error) => {
+				console.log("error: ", error.response)
+				alert("An error occured, please try again")
+			})
 	}
 	
 

@@ -176,7 +176,7 @@ export default function Notifications() {
                   </Typography>
                   <br></br>
                   <Typography color="textSecondary">
-                    You have an urgent {data[1].type} to view!
+                    You have one {data[1].type} to view!
                   </Typography>
                   <br></br>
                   <Typography color="textSecondary">
