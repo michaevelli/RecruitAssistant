@@ -236,6 +236,18 @@ def update_interview():
 		return jsonify({"message": str(e)}), 400
 	return
 
+#get details of just one interview
+@app.route('/interviews/<interviewid>', methods=["GET"])
+def get_specific_interview(interviewid):
+	try:
+		json_data = request.get_json()
+		interview=ref.child("interviews").child(interviewid).get()	
+		return jsonify({'interview': interview}),200
+	except Exception as e:
+		print(e)
+		return jsonify({"message": str(e)}), 400
+	return
+
 
 @app.route('/interviews', methods=["POST"])
 def send_interview():
