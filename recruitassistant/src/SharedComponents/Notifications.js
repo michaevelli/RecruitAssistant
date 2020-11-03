@@ -229,12 +229,7 @@ export default function Notifications() {
           },
         }}
       >
-        {/* {options.map((option) => (
-          <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
-            {option}
-          </MenuItem>
-        ))} */}
-        {renderNotif()}
+      {renderNotif()}
       </Menu>
 
     </>
