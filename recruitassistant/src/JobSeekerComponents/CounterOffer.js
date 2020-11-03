@@ -25,7 +25,7 @@ export default function CounterOffer(params) {
 		.then(res => {
 			console.log("response: ", res)
 			alert("Comments/counter offer successfully sent")
-			// history.push("/recruiterdashboard")
+			window.location.reload();
 		})
 		.catch((error) => {
 			console.log("error: ", error.response)

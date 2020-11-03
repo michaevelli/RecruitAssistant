@@ -36,6 +36,14 @@ def edit_offer():
 		today = date.today()
 		date_posted = today.strftime("%Y-%m-%y")
 
+		notif_data = {
+				"uid": json_data["jobseeker_id"],
+				"obj_id": offerID,
+				"type" : "offer update",
+				"url" : f"http://localhost:3000/offer/{offerID}",
+			}
+		notifications.notify(notif_data)
+
 		data = {
 			'title':json_data["title"],
 			'location':json_data["location"],
@@ -47,7 +55,7 @@ def edit_offer():
 			'jobseeker_id': json_data['jobseeker_id'],
 			'full_name': json_data['full_name'],
 			'job_type': json_data['job_type'],
-			'job_id': json_data['jobadvert_id'],
+			'job_id': json_data['job_id'],
 			'salary': json_data['salary'],
 			'salary_type': json_data['salary_type'],
 			'hours': json_data['hours'],
