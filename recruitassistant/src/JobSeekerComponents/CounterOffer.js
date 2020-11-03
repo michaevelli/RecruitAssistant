@@ -24,7 +24,7 @@ export default function CounterOffer(params) {
 		await axios.post(counterofferurl, data)
 		.then(res => {
 			console.log("response: ", res)
-			alert("Counter offer successfully sent")
+			alert("Comments/counter offer successfully sent")
 			// history.push("/recruiterdashboard")
 		})
 		.catch((error) => {

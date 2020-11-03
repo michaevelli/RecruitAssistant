@@ -26,7 +26,6 @@ def edit_offer():
 		today = date.today()
 		date_posted = today.strftime("%Y-%m-%y")
 
-		# also change offer status
 		data = {
 			'title':json_data["title"],
 			'location':json_data["location"],
@@ -36,7 +35,9 @@ def edit_offer():
 			'recruiter_id': json_data['recruiter_id'],
 			'application_id': json_data['jobapplication_id'],
 			'jobseeker_id': json_data['jobseeker_id'],
+			'full_name': json_data['full_name'],
 			'job_type': json_data['job_type'],
+			'job_id': json_data['jobadvert_id'],
 			'salary': json_data['salary'],
 			'salary_type': json_data['salary_type'],
 			'hours': json_data['hours'],
