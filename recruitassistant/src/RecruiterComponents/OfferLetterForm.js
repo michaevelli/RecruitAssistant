@@ -25,11 +25,11 @@ export default function OfferLetterForm(props) {
 	const history = useHistory();
 	//date formatting - to be used in offer letter description
 	const options = {year: 'numeric', month: 'long', day: 'numeric' };
-    const t  = new Date();
-    const todays_date=t.toLocaleDateString("en-US", options);
+	const t  = new Date();
+	const todays_date=t.toLocaleDateString("en-US", options);
 
 	//Used for form validation
-    const [validated, setValidated] = useState(false);
+	const [validated, setValidated] = useState(false);
 
 	const [location,setLocation] = useState('');
 	const [title,setTitle] = useState('');
@@ -37,15 +37,15 @@ export default function OfferLetterForm(props) {
 	const [jobseekerId,setJobSeekerID]=useState('')
 	const [fullname, setFullname] = useState('')
 	const [description,setDescription] = useState('');
-    const [jobType, setJobType]=useState('') 
-    //salary 
-    const [salary,setSalary] = useState('');
-    //type - p.a or hourly
-    const [salaryType,setSalaryType] = useState(''); 
-    const [startDate, setStartDate]=useState('');
-    const [endDate, setEndDate]=useState('n/a');
-    //hours per week
-    const [hours, setHours]=useState('0 hours per week');
+	const [jobType, setJobType]=useState('') 
+	//salary 
+	const [salary,setSalary] = useState('');
+	//type - p.a or hourly
+	const [salaryType,setSalaryType] = useState(''); 
+	const [startDate, setStartDate]=useState('');
+	const [endDate, setEndDate]=useState('n/a');
+	//hours per week
+	const [hours, setHours]=useState('0 hours per week');
 	const [days, setDays]=useState('Monday - Friday');  
 	const [additionalDocs, setAdditionalDocs] = useState([]);
 	const [counterable, setCounterable]= useState(false)
@@ -144,24 +144,24 @@ export default function OfferLetterForm(props) {
 
 
 	const postOffer = async () => {
-        const url = offerURL
-        const data={
+		const url = offerURL
+		const data={
 			title:title,
 			location:location,
 			description: description,
 			company:company,
-            recruiter_id: sessionStorage.getItem("uid"),
+			recruiter_id: sessionStorage.getItem("uid"),
 			jobapplication_id: jobAppID,
 			jobadvert_id: jobID,
-            jobseeker_id: jobseekerId,
+			jobseeker_id: jobseekerId,
 			full_name: fullname,
 			job_type: jobType,
-            salary: salary,
-            salary_type: salaryType,
-            hours: hours,
-            days: days,
-            start_date: startDate,
-            end_date: endDate,
+			salary: salary,
+			salary_type: salaryType,
+			hours: hours,
+			days: days,
+			start_date: startDate,
+			end_date: endDate,
 			status: 'sent', //status of the offer can be sent (first time, or in respnse to counter offer), accepted,rejected
 			additional_docs: additionalDocs,
 			counterable: counterable
@@ -181,12 +181,12 @@ export default function OfferLetterForm(props) {
 	
 
 	//check start date is after todays date
-    const startDatevalidator =()=>{
+	const startDatevalidator =()=>{
 		return startDate !== "" && t < Date.parse(startDate)
-    }
-    
+	}
+	
    
-    const handleSubmit= async (event) =>{	
+	const handleSubmit= async (event) =>{	
 		event.preventDefault();
 		const form = event.currentTarget;
 		if (form.checkValidity() === false) {	
@@ -199,14 +199,14 @@ export default function OfferLetterForm(props) {
 		}
 	}
 
-    
+	
 	return (
 		<Grid>
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
 					<SideMenu random={[
-                        {'text':'Job Applications','href': `/applications/${jobID}`,'active': true},
+						{'text':'Job Applications','href': `/applications/${jobID}`,'active': true},
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
@@ -220,7 +220,7 @@ export default function OfferLetterForm(props) {
 					</Typography>
 					
    
-                    <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
+					<Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
 						<Form.Group controlId="counterable">
 						<FormControlLabel
 							control={<Switch checked={counterable} onChange={()=> setCounterable(!counterable)} />}
@@ -228,19 +228,19 @@ export default function OfferLetterForm(props) {
 						/>
 						</Form.Group>
 					
-					    <h4>Offer Description</h4>
+						<h4>Offer Description</h4>
 						<Form.Group controlId="description">
 							<Col sm={10}>
 								<Form.Control as="textarea" rows="10" 
 								required
 								onChange={ (event) => setDescription(event.target.value)}                              
-                                value={description}/>
+								value={description}/>
 							</Col>
 						</Form.Group>
-                        <br/>
-                        <h4>Details </h4>
-                        <Form.Label column sm={12}>Position Title: {title} at {company} </Form.Label>
-                        <Form.Group controlId="location">
+						<br/>
+						<h4>Details </h4>
+						<Form.Label column sm={12}>Position Title: {title} at {company} </Form.Label>
+						<Form.Group controlId="location">
 							<Form.Label column sm={2}>*Location: </Form.Label>
 							<Col sm={10}>
 								<Form.Control 
@@ -250,7 +250,7 @@ export default function OfferLetterForm(props) {
 							</Col>
 						</Form.Group>
 
-                        <Form.Group controlId="startDate">
+						<Form.Group controlId="startDate">
 							<Form.Label column sm={2}>
 							*Start Date:</Form.Label>
 							<Col sm={10}>
@@ -272,7 +272,7 @@ export default function OfferLetterForm(props) {
 							</Col>
 						</Form.Group>
 
-                        <Form.Group controlId="endDate">
+						<Form.Group controlId="endDate">
 							<Form.Label column sm={2}>
 							End Date:</Form.Label>
 							<Col sm={10}>
@@ -288,12 +288,12 @@ export default function OfferLetterForm(props) {
 							</Col>
 						</Form.Group>
 
-                        <Form.Group controlId="jobType">
+						<Form.Group controlId="jobType">
 						<Form.Label column sm={2}>*Job Type:</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
-                                required
-                                value={jobType}
+								required
+								value={jobType}
 								onChange={e=>setJobType(e.target.value)} 
 								>
 									<option value="">--Select-- </option>
@@ -305,7 +305,7 @@ export default function OfferLetterForm(props) {
 							</Col>	
 						</Form.Group>
 
-                        <Form.Group controlId="salary">
+						<Form.Group controlId="salary">
 							<Form.Label column sm={2}>
 							 *Renumeration:
 							</Form.Label>	
@@ -318,25 +318,25 @@ export default function OfferLetterForm(props) {
 									value={salary}
 									required
 									onChange={ (event) => setSalary(event.target.value)}/>
-                                   
-                                    <Form.Control as="select" 
-                                    required
-                                    value={salaryType}
-                                    type="number"
-                                    onChange={e=>setSalaryType(e.target.value)} 
-                                    >    
-                                        <option value="">--Select-- </option>
-                                        <option>p.a (base)</option>
-                                        <option>p.a (fixed,includes super)</option>
-                                        <option>per hour</option>	
+								   
+									<Form.Control as="select" 
+									required
+									defaultValue={"p.a (base)"}
+									type="number"
+									onChange={e=>setSalaryType(e.target.value)} 
+									>    
+										<option value="">--Select-- </option>
+										<option>p.a (base)</option>
+										<option>p.a (fixed,includes super)</option>
+										<option>per hour</option>	
 
-                                    </Form.Control>
+									</Form.Control>
 									
 								</InputGroup>
 							</Col>
 						</Form.Group>
 
-                        <Form.Group controlId="hours">
+						<Form.Group controlId="hours">
 							<Form.Label column sm={2}>*Hours: </Form.Label>
 							<Col sm={10}>
 								<Form.Control 
@@ -346,7 +346,7 @@ export default function OfferLetterForm(props) {
 							</Col>
 						</Form.Group>
 
-                        <Form.Group controlId="days">
+						<Form.Group controlId="days">
 							<Form.Label column sm={2}>*Days of Work: </Form.Label>
 							<Col sm={10}>
 								<Form.Control 
@@ -356,7 +356,7 @@ export default function OfferLetterForm(props) {
 							</Col>
 						</Form.Group>
 
-                        <Form.Group controlId="additionalDocs">
+						<Form.Group controlId="additionalDocs">
 							<Form.Label column sm={2}>
 							Additional Documents
 							</Form.Label>

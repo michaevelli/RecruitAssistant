@@ -21,6 +21,7 @@ export default function EditOffer({match}) {
 	const [recruiterID, setRecruiterID] = useState('');
 	const [jobseekerID,setJobSeekerID]=useState('');
 	const [jobAppID, setJobAppID] = useState('');
+	const [fullName, setFullName] = useState('');
 
 	const history = useHistory();
 	const t  = new Date();
@@ -53,6 +54,7 @@ export default function EditOffer({match}) {
 				const offer = res.data.offer
 				setJobSeekerID(offer.jobseeker_id)
 				setRecruiterID(offer.recruiter_id)
+				setFullName(offer.full_name)
 				setJobAppID(offer.application_id)
 				setTitle(offer.title);
 				setCompany(offer.company);
@@ -140,7 +142,9 @@ export default function EditOffer({match}) {
 			company:company,
 			recruiter_id: recruiterID,
 			jobapplication_id: jobAppID,
+			job_id: jobID,
 			jobseeker_id: jobseekerID,
+			full_name: fullName,
 			job_type: jobType,
 			salary: salary,
 			salary_type: salaryType,

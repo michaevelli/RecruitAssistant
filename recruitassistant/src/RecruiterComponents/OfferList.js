@@ -12,10 +12,12 @@ import checkAuth from "../Authentication/Authenticate";
 
 export const advertisementUrl="http://localhost:5000/advertisement"
 export const offerUrl="http://localhost:5000/offerslist"
+// export const offerUrl="http://localhost:5000/offers"
 
 export default function OfferList({match}) {
 	const jobID = match.params.jobID;
-	const recruiterID = sessionStorage.getItem("uid")
+	const [userID, setUserID] = useState('');
+	// const recruiterID = sessionStorage.getItem("uid")
 	const history = useHistory();
 	const [loading, setLoading] = useState(true);
 	const [offers, setOffers] = useState([])
@@ -27,7 +29,7 @@ export default function OfferList({match}) {
         { field: 'offer',
             headerName: 'Offer',
             sortable: false,
-            renderCell: (row) => (<Link to={{ pathname: `/offer/r/${jobID}/${row.data.id}` }}> {row.value}</Link>),
+            renderCell: (row) => (<Link to={{ pathname: `/offer/${row.data.id}` }}> {row.value}</Link>),
             width: 300 },
 	];
 
@@ -35,7 +37,7 @@ export default function OfferList({match}) {
 		auth();
 		getJob();
 		getOffers();
-	}, [recruiterID]);
+	}, [userID]);
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -45,6 +47,7 @@ export default function OfferList({match}) {
 				if (!response.success || response.userInfo["type"] != "recruiter") {
 					history.push("/unauthorised");
 				}
+				setUserID(response.userID)
 			})
 	}
 
