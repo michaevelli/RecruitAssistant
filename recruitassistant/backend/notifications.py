@@ -17,7 +17,7 @@ def notify(data):
 				"type": data["type"],
 				"object_id" : data["obj_id"],
 				"date_time": date_time,
-				# "url" : data["url"]
+				"url" : data["url"],
 				}
 			)
 		return jsonify({'message': f'Successfully created notif {notif_id}'}),200
@@ -58,9 +58,10 @@ def get_seen():
 def rem_notif():
 	data = request.get_json()
 	rem_id = data["id"]
+	uid = data["uid"]
 	db = pb.database()
 	try:
-		db.child('notif').child(rem_id).remove()
+		db.child('notif').child(uid).child(rem_id).remove()
 		return jsonify({'message': 'removed'}), 200
 	except Exception as e:
 		return jsonify({'message': str(e)}), 400
