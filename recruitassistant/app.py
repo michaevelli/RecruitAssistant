@@ -10,7 +10,7 @@ import uuid
 from datetime import date, datetime
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
-from backend import jobs, search, authentication, counteroffer
+from backend import jobs, search, authentication, offer, counteroffer
 from backend.init_app import app, ref, pb
 
 
@@ -306,62 +306,6 @@ def get_interviews_for_job():
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
-# gets a list of offers for a job
-@app.route('/offerslist', methods=["GET"])
-def get_offers_for_job():
-	try:
-		jobid = request.args.get('job_id')
-		post = ref.child('offer').order_by_child('job_id').equal_to(jobid).get()
-		offers = []
-		for key,val in post.items():
-			offers.append((key, val))
-		
-		print(offers)
-		return jsonify({'offers': offers}),200
- 
-	except Exception as e:		
-		print(e)
-		return jsonify({"message": str(e)}), 400
-
-
-# get list of offers for given user (recruiter or job seeker)
-@app.route('/offers', methods=['POST'])
-def offers():
-	try:
-		data = request.json
-		userid = data["userid"]
-		if data["type"] == "jobseeker":
-			user_type = 'jobseeker_id'
-		else:
-			user_type = 'recruiter_id'
-
-		posts = ref.child("offer").order_by_child(user_type).equal_to(userid).get()
-		offers = []
-		for key, val in posts.items():
-			offers.append((key, {
-				"jobseekerid": val["jobseeker_id"],
-				"title": val["title"],
-				"status": val["status"],
-				"company": val["company"],
-				"location": val["location"],
-				"job_type": val["job_type"]
-			}))
-		
-		# print(offers)
-		return jsonify({'offers': offers}), 200
-	except Exception as e:
-		print(e)
-		return jsonify({"error": "something bad happened"}),500
-
-@app.route('/getOfferDetails', methods=['POST'])
-def viewOffer():
-	try:
-		offerId = request.json["offerId"]	
-		offer=ref.child("offer").child(offerId).get()
-		return jsonify({'offer': offer}), 200
-	except Exception as e:
-		print(e)
-		return jsonify({"error": "something bad happened"}),500
 
 @app.route('/interviewlist', methods=['POST'])
 def getInterviews():
