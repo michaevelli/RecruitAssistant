@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from datetime import date
 from .init_app import app, ref
+from backend import notifications
 
 # submit counter offer
 @app.route('/counteroffer', methods=["POST"])
@@ -8,6 +9,15 @@ def counter_offer():
 	json_data = request.get_json()
 	offerID = json_data["offerID"]
 	counter = json_data["counteroffer"]
+
+	notif_data = {
+				"uid": ref.child("offer").child(offerID).child("recruiter_id").get(),
+				"obj_id": offerID,
+				"type" : "offer update",
+				"url" : f"http://localhost:3000/offer/{offerID}",
+			}
+	notifications.notify(notif_data)
+
 	try:
 		ref.child("offer").child(offerID).child("counter_offer").set(counter)
 		ref.child("offer").child(offerID).child("status").set("countered")

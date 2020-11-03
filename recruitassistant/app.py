@@ -236,6 +236,18 @@ def update_interview():
 		json_data = request.get_json()
 		interview_id =json_data["id"]
 		new_status=json_data["status"]
+
+		# notification to recruiter
+		job_id = ref.child("interviews").child(interview_id).child("job_id").get()
+		status_lower = new_status.lower()
+		notif_data = {
+					"uid": ref.child("interviews").child(interview_id).child("employer_id").get(),
+					"obj_id": interview_id,
+					"type" : f"{status_lower} interview",
+					"url" : f"http://localhost:3000/interviews/{job_id}",
+				}
+		notifications.notify(notif_data)
+
 		ref.child("interviews").child(interview_id).child("status").set(new_status)
 		return jsonify({'message': f'Successfully updated interview {interview_id}'}),200
 	except Exception as e:

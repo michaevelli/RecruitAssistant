@@ -178,7 +178,7 @@ export default function Notifications() {
                   </Typography>
                   <br></br>
                   <Typography color="textSecondary">
-                    Please click on the following link to see it in more details.
+                    Please make sure to check it out for more details!
                   </Typography>
                   <br></br>
                   <Link href={data[1].url}>
