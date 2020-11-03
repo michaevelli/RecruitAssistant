@@ -10,6 +10,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import DeleteIcon from '@material-ui/icons/Delete';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import Link from '@material-ui/core/Link';
+
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {Card, Container,Col,Row,} from 'react-bootstrap';
 import axios from "axios";
@@ -98,7 +100,8 @@ export default function Notifications() {
 
   const deleteNotif = async(id) => {
     const data={
-      id : id
+      id : id,
+      uid: sessionStorage.getItem("uid"),
     }
     await axios.post(delUrl, data)
 			.then(res => {
@@ -178,10 +181,15 @@ export default function Notifications() {
                     Please click on the following link to see it in more details.
                   </Typography>
                   <br></br>
+                  <Link href={data[1].url}>
+                      Link
+                  </Link>
+                  <br></br>
                   <Typography color="textSecondary">
                     Regards,
                     RecruitAssistant Team.
                   </Typography>
+                  <br></br>
                   <Typography color="textSecondary">
                     {data[1].date_time}
                   </Typography>

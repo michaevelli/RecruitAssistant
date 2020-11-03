@@ -48,7 +48,8 @@ def post_offer_letter():
 	notif_data = {
 				"uid": json_data["jobseeker_id"],
 				"obj_id": offer_uid,
-				"type" : "offer",
+				"type" : "offer update",
+				"url" : f"http://localhost:3000/offer/{offer_uid}",
 			}
 	notifications.notify(notif_data)
 
@@ -257,6 +258,7 @@ def send_interview():
 				"uid": u["jobseeker_id"],
 				"obj_id": interview_id,
 				"type" : "interview",
+				"url" : f"http://localhost:3000/interview/{interview_id}",
 			}
 			notifications.notify(notif_data)
 
