@@ -98,13 +98,27 @@ def post_application():
 					'qualifications':json_data["qualifications"],
 					'qualities_met':json_data["qualities_met"],
 					'submitted_docs': json_data["submitted_docs"],
-					'jobseeker_id':json_data["jobseeker_id"]
-					# 'job_id':json_data["job_id"],
+					'jobseeker_id':json_data["jobseeker_id"],
+					'status': "active" # status can be active or dismissed
 				},
 			})
 		return jsonify({'message': f'Successfully created application {application_uid}'}),200
 	except Exception as e:		
 		return jsonify({"message": str(e)}), 400
+
+# updates status of application to dismissed
+@app.route('/dismiss', methods=["PATCH"])
+def dismiss_application():
+	try:
+		json_data = request.get_json()
+		job_id = json_data["job_id"]
+		application_id =json_data["app_id"]
+		ref.child("jobApplications").child(job_id).child(application_id).child("status").set("dismissed")
+		return jsonify({'message': f'Dismissed application {application_id}'}),200
+	except Exception as e:
+		print(e)
+		return jsonify({"message": str(e)}), 400
+	return
 
 @app.route('/jobapplications', methods=["GET"])
 def check_applied():
@@ -265,7 +279,8 @@ def get_applications_for_job():
 			# sort on how many qualifications are met
 			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get('qualities_met'))
 			for appid in sortedApps:
-			 	applications.append((appid, val.get(appid)))
+				if val.get(appid).get('status') == "active":
+			 		applications.append((appid, val.get(appid)))
 		
 		#print(applications)
 		return jsonify({'applications': applications}),200
