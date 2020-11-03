@@ -12,17 +12,18 @@ import checkAuth from "../Authentication/Authenticate";
 
 export const interviewURL ="http://localhost:5000/interviews"
 
-export default function InterviewPage(props) {
+export default function InterviewPage({match}) {
     const history = useHistory()
-
-    //passed as props from the Offer.js
-    const [status, setStatus]= useState(props.location.state.status)
-    const [time, setTime]= useState(props.location.state.time)
-    const [date, setDate]= useState(props.location.state.date)
-    const interviewID = props.location.state.interviewID
+    const interviewID = match.params.interviewID;
+   
+    const [status, setStatus]= useState('')
+    const [time, setTime]= useState('')
+    const [date, setDate]= useState('')
+    const [loading, setLoading]=useState(true)
   
     useEffect(() => {
-		auth();
+        auth();
+        getInterviewDetails();
     },[]);
 
     
@@ -37,6 +38,19 @@ export default function InterviewPage(props) {
 			})
     }
 
+    const getInterviewDetails = async () => {
+        await axios.get(`${interviewURL}/${interviewID}`)
+        .then(res => {   
+            const interview_data = res.data.interview
+            console.log(interview_data)
+            setDate(interview_data["interview_date"]);
+            setTime(interview_data["interview_time"]);
+            setStatus(interview_data["status"] || 'pending'); 
+            setLoading(false)
+        }).catch((error) => {
+            console.log("error: ", error.response)
+        })	
+    }
     //response can be "accepted" or "declined"
     const handleResponse = async (response) => {
         //update interview status
@@ -103,6 +117,8 @@ export default function InterviewPage(props) {
     }
 
     return (
+        loading? (<p> Loading...</p>):
+        (
         <Grid>      
 			<Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
@@ -116,7 +132,8 @@ export default function InterviewPage(props) {
                 {interviewInfo()}
                 </Col>
             </Row>
-        </Grid>   
+        </Grid>  
+        ) 
     )
 }
   
