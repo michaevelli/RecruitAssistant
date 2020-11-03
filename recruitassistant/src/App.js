@@ -22,8 +22,9 @@ import ViewApplication from './RecruiterComponents/ViewApplication';
 import InterviewList from './RecruiterComponents/InterviewList';
 import OfferList from './RecruiterComponents/OfferList';
 import Offers from './JobSeekerComponents/Offers';
-import ViewOfferJobseeker from './JobSeekerComponents/ViewOffer';
-import ViewOfferRecruiter from './RecruiterComponents/ViewOffer';
+import ViewOffer from './SharedComponents/ViewOffer';
+// import ViewOfferJobseeker from './JobSeekerComponents/ViewOffer';
+// import ViewOfferRecruiter from './RecruiterComponents/ViewOffer';
 import EditOffer from './RecruiterComponents/EditOffer';
 import RecruiterFAQ from './RecruiterComponents/RecruiterFAQ';
 import JobSeekerFAQ from './JobSeekerComponents/JobSeekerFAQ';
@@ -57,8 +58,9 @@ function App() {
           <Route path="/interviews/:jobID" component={InterviewList}/>
           <Route path="/offers/:jobID" component={OfferList}/>
           <Route path="/offers" component={Offers}/>
-          <Route path="/offer/j/:offerID" component={ViewOfferJobseeker}/>
-          <Route path="/offer/r/:jobID/:offerID" component={ViewOfferRecruiter}/>
+          <Route path="/offer/:offerID" component={ViewOffer}/>
+          {/* <Route path="/offer/j/:offerID" component={ViewOfferJobseeker}/>
+          <Route path="/offer/r/:jobID/:offerID" component={ViewOfferRecruiter}/> */}
           <Route path="/editoffer/:offerID" component={EditOffer}/>
           <Route path="/recruiterFAQ" component={RecruiterFAQ}/>
           <Route path="/jobseekerFAQ" component={JobSeekerFAQ}/>

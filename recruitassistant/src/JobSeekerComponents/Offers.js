@@ -127,11 +127,7 @@ export default function Offers() {
 					<Typography color="textSecondary">
 						{offer[1].job_type}
 					</Typography>
-<<<<<<< HEAD
-					<Link href= {`/offer/j/${offer[0]}`} style={{marginLeft: 30}}>
-=======
 					<Link to={{pathname: `/offer/${offer[0]}`}} style={{marginLeft: 30}}>
->>>>>>> 991138282d5af79cb091137e89bc9ef227bd8bd2
 							View Offer
 					</Link>
 				</CardActions>
