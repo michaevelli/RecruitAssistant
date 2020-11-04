@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Grid} from "@material-ui/core";
+import {Link, Grid, Button} from "@material-ui/core";
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
@@ -21,11 +21,13 @@ export default function ViewApplication() {
     const href = `${window.location.href}`.split("/")
     const applicationID = href[href.length - 1]
     const jobID = href[href.length - 2]
+    const editLink = "/editApplication/"+ jobID +"/" + applicationID
     const [application, setApp] = useState({})
     const [job, setJob] = useState({})
     const [qualifications, setQualifications] = useState([])
     const [documentsList, setDocumentsList] = useState([])
     const [loading,setLoading]= useState(true)
+    const [usertype, setUsertype] = useState("")
 
     useEffect(() => {
         auth();
@@ -39,11 +41,17 @@ export default function ViewApplication() {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
                 console.log("auth success: ", response)
-				if (!response.success || response.userInfo["type"] != "recruiter") {
+                if (response.userInfo["type"] == "recruiter") {
+                    setUsertype("recruiter")
+                } else if (response.userInfo["type"] == "jobseeker") {
+                    setUsertype("jobseeker")
+                }
+				if (!response.success) {
 					history.push("/unauthorised");
 				}
 			})
     }
+    
     
 
     const getApplication = async () => {
@@ -87,7 +95,9 @@ export default function ViewApplication() {
         downloadLink.download = fileName;
         downloadLink.click();	
 		
-	}
+    }
+    
+
    
     return (
         loading?
@@ -134,6 +144,7 @@ export default function ViewApplication() {
                             ))}
                         </Box>
                     </Typography>
+                    
                 </Col>
 			</Row>
 		</Grid>

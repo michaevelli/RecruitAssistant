@@ -174,7 +174,7 @@ export default function Offers() {
 					</Typography>
 				</CardContent>
 				<CardActions >
-					<Link to={{pathname: `/applications/${application[2]}`}} style={{marginLeft: 30}}>
+					<Link to={{pathname: `/viewapplication/${application[2]}/${application[0]}`}} style={{marginLeft: 30}}>
 						View Application
 					</Link>
 				</CardActions>
