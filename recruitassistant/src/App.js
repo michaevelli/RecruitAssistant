@@ -65,7 +65,6 @@ function App() {
           <Route path="/recruiterFAQ" component={RecruiterFAQ}/>
           <Route path="/jobseekerFAQ" component={JobSeekerFAQ}/>
           <Route path="/interview/:interviewID" component={InterviewPage}/>
-          <Route path="/editApplication/:jobID/:applicationID" component={EditApplication}/>
         </Switch>
       </BrowserRouter>
 
