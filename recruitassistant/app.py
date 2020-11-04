@@ -348,3 +348,4 @@ def getApplications():
 	except Exception as e:
 		print(e)
 		return jsonify({"error": "something bad happened"}),500
+
