@@ -304,7 +304,7 @@ export default function EditOffer({match}) {
 								   
 									<Form.Control as="select" 
 									required
-									value={salaryType}
+									defaultValue={salaryType}
 									type="number"
 									onChange={e=>setSalaryType(e.target.value)} 
 									>    

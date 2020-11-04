@@ -38,9 +38,9 @@ def edit_offer():
 
 		notif_data = {
 				"uid": json_data["jobseeker_id"],
-				"obj_id": offerID,
+				"obj_id": offer_uid,
 				"type" : "offer update",
-				"url" : f"http://localhost:3000/offer/{offerID}",
+				"url" : f"http://localhost:3000/offer/{offer_uid}",
 			}
 		notifications.notify(notif_data)
 

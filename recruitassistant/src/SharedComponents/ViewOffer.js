@@ -173,7 +173,7 @@ export default function ViewOffer({match}) {
 	}
 
 	const handleDecline = () => {
-		const ndata = { offer_id: offerId, status: "declined" }
+		const ndata = { offer_id: offerId, status: "rejected" }
 		axios.post(updateurl, ndata)
 			.then(() => {
 				alert("Delined offer");

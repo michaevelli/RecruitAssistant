@@ -51,7 +51,7 @@ function App() {
           <Route path="/advertisement" component={Advertisement}/>
           <Route path="/jobapply" component={JobApply}/>
           <Route path="/createoffer" component={OfferLetterForm}/>
-          <Route path="/editoffer/:jobID/:appID" component={OfferLetterForm}/>
+          {/* <Route path="/editoffer/:jobID/:appID" component={OfferLetterForm}/> */}
           <Route path="/counteroffer" component={CounterOffer}/> {/*test only delete after*/}
           <Route path="/applications/:jobID" component={ApplicationList}/>
           <Route path="/viewapplication" component={ViewApplication}/>
@@ -61,7 +61,7 @@ function App() {
           <Route path="/offer/:offerID" component={ViewOffer}/>
           {/* <Route path="/offer/j/:offerID" component={ViewOfferJobseeker}/>
           <Route path="/offer/r/:jobID/:offerID" component={ViewOfferRecruiter}/> */}
-          <Route path="/editoffer/:offerID" component={EditOffer}/>
+          <Route path="/editoffer/:jobID/:offerID" component={EditOffer}/>
           <Route path="/recruiterFAQ" component={RecruiterFAQ}/>
           <Route path="/jobseekerFAQ" component={JobSeekerFAQ}/>
           <Route path="/interview/:interviewID" component={InterviewPage}/>
