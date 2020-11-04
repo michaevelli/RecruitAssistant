@@ -29,7 +29,6 @@ import EditOffer from './RecruiterComponents/EditOffer';
 import RecruiterFAQ from './RecruiterComponents/RecruiterFAQ';
 import JobSeekerFAQ from './JobSeekerComponents/JobSeekerFAQ';
 import InterviewPage from './JobSeekerComponents/InterviewPage';
-import EditApplication from './JobSeekerComponents/EditApplication';
 function App() {
 
   return (
