@@ -68,9 +68,10 @@ export default function EditOffer({match}) {
 				setHours(offer.hours)
 				setDays(offer.days)
 				setCounterable(offer.counterable)
-				if (offer.additiona_docs != null) {
+				if (offer.additional_docs != null) {
 					setAdditionalDocs(offer.additional_docs)
 				}
+				console.log(offer.salary_type)
 				
 			}).catch((error) => {
 				console.log("error: ", error.response)
@@ -304,8 +305,7 @@ export default function EditOffer({match}) {
 								   
 									<Form.Control as="select" 
 									required
-									defaultValue={salaryType}
-									type="number"
+									value={salaryType}
 									onChange={e=>setSalaryType(e.target.value)} 
 									>    
 										<option value="">--Select-- </option>

@@ -321,7 +321,6 @@ export default function OfferLetterForm(props) {
 								   
 									<Form.Control as="select" 
 									required
-									defaultValue={"p.a (base)"}
 									type="number"
 									onChange={e=>setSalaryType(e.target.value)} 
 									>    
