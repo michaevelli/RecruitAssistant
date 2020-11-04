@@ -349,30 +349,3 @@ def getApplications():
 		print(e)
 		return jsonify({"error": "something bad happened"}),500
 
-@app.route('/editapplication', methods=['POST'])
-def editApplication():
-	json_data = request.get_json()
-	# print(json_data)
-	today = date.today()
-	date_posted = today.strftime("%Y-%m-%y")
-	# print("d1 =", date_posted)
-
-	try:
-		ref.child('jobApplications').child(json_data["job_id"]).update({
-				json_data["app_id"]: {
-					'first_name': json_data["first_name"],
-					'last_name' : json_data["last_name"],
-					'phone_number': json_data['phone_number'],
-					'rights':json_data["rights"],
-					'date_posted': date_posted,
-					'qualifications':json_data["qualifications"],
-					'qualities_met':json_data["qualities_met"],
-					'submitted_docs': json_data["submitted_docs"],
-					'jobseeker_id':json_data["jobseeker_id"],
-					'status': "active" # status can be active or dismissed
-				},
-			})
-		return jsonify({'message': f'Successfully edited application {json_data["app_id"]}'}),200
-	except Exception as e:		
-		print(e)
-		return jsonify({"message": str(e)}), 400

@@ -97,15 +97,7 @@ export default function ViewApplication() {
 		
     }
     
-    const renderEdit = () => {
-        if (usertype == "jobseeker") {
-		    return (
-                <Button variant="contained" color="secondary" href={editLink}>
-                    Edit
-                </Button>
-            )
-        }
-	}
+
    
     return (
         loading?
@@ -151,7 +143,6 @@ export default function ViewApplication() {
                                 </ul>
                             ))}
                         </Box>
-                        {renderEdit()}
                     </Typography>
                     
                 </Col>
