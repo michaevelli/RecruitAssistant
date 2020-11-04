@@ -297,7 +297,7 @@ export default function ApplicationList({match}) {
 													</Button>
 													<Button variant="contained" color="secondary" style={{'font-colour':'white'}}>
 
-														<Link to={{
+														<Link style={{color: '#FFF'}} to={{
 															pathname: `/createoffer`,
 															state: {
 																jobAppID: app[0],
