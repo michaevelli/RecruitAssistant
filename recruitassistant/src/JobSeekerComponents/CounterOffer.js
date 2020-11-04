@@ -38,7 +38,7 @@ export default function CounterOffer(params) {
 	}
 	
 	return (
-		<Form onSubmit={(e) => handleSendCounter(e)} style={{marginLeft:'15%'}}>     
+		<Form onSubmit={(e) => handleSendCounter(e)} style={{marginRight: 20}}>     
 			<h4>Additional comments or counter offers</h4>
 			<Form.Group controlId="description">
 				<Col sm={10}>
