@@ -292,10 +292,16 @@ export default function ApplicationList({match}) {
 										<Col>
 											<Row>
 												<ButtonToolbar>
-													<Button disabled = {status === "open"} variant="contained" color="secondary" onClick={() => {postInterview(app)}}> 
+													<Button disabled = {status === "open"} 
+													variant="contained" 
+													color="secondary"
+													style={{marginRight:10, margnLeft:10}}
+													onClick={() => {postInterview(app)}}> 
 															Interview
 													</Button>
-													<Button variant="contained" color="secondary" style={{'font-colour':'white'}}>
+													<Button variant="contained" 
+													color="secondary" 
+													style={{marginRight:10, margnLeft:10}}>
 
 														<Link style={{color: '#FFF'}} to={{
 															pathname: `/createoffer`,

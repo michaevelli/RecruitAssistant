@@ -1,10 +1,10 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Grid} from "@material-ui/core";
+import {Link, Grid,Button} from "@material-ui/core";
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
-import {Col,Row, Button} from 'react-bootstrap';
+import {Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import TitleBar from "./TitleBar.js";
@@ -25,6 +25,7 @@ export default function ViewOffer({match}) {
 	const [offer, setOffer] = useState({})
 	const [isRecruiter, setIsRecruiter] = useState(false)
 	const [loading, setLoading] = useState(true)
+	const [counter_offer_shown, setCounterOfferShown]= useState('none')
 
 	useEffect(() => {
 		auth();
@@ -115,26 +116,38 @@ export default function ViewOffer({match}) {
 			}
 		} else {
 			if (offer.status == 'accepted') {
-				return <p>You have accepted this offer!</p>
-			} else if (offer.status == 'rejected') {
-				return <p>You have declined this offer</p>
+				return <p style={{fontStyle: "italic", color: 'red'}}>You have accepted this offer!</p>
+			} else if (offer.status == 'declined') {
+				return <p style={{fontStyle: "italic", color: 'red'}}>You have declined this offer</p>
 			} else if (offer.status == 'sent') {
 				return (
 					<div>
-						<Button variant="contained" color="secondary" onClick={handleAccept} style={{margin: 20}}>
+						<Button variant="contained" color="secondary" onClick={handleAccept} style={{marginRight: 20}}>
 							Accept Offer
 						</Button>
 						<Button variant="contained" color="secondary" onClick={handleDecline} style={{margin: 20}}>
 							Decline Offer
 						</Button>
-						{offer.counterable && <CounterOffer offerID={offerId}/>}
+
+						{offer.counterable && 
+						<Button variant="contained" 
+						color="secondary" 
+						onClick={() => setCounterOfferShown( 
+						counter_offer_shown==='none'? 'block': 'none')} 
+						style={{margin: 20}}>
+							Counter Offer
+						</Button>}
+						<div style={{display: counter_offer_shown}}>
+						<CounterOffer  offerID={offerId}/>
+						</div>
 					</div>
 				)
 			} else if (offer.status == 'countered') {
 				return (
 					<div>
-						<p>Counter offer is pending response from recruiter</p>
-						<p>Your counter offer:</p>
+						<p style={{fontStyle: "italic", color: 'red'}}>Counter offer is pending response from recruiter</p>
+						<Typography variant="h6" gutterBottom>
+							Your counter offer:</Typography>
 						{offer.counter_offer}
 					</div>
 				)
@@ -176,7 +189,7 @@ export default function ViewOffer({match}) {
 		const ndata = { offer_id: offerId, status: "rejected" }
 		axios.post(updateurl, ndata)
 			.then(() => {
-				alert("Delined offer");
+				alert("Declined offer");
 				window.location.reload();
 			})
 			.catch((error) => {
@@ -200,43 +213,45 @@ export default function ViewOffer({match}) {
 				</Col >
 				<Col>
 					<Typography component="div" style={{color: 'black', margin: 50}}>
-						<Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
-							Offer: {offer.title}
+						<Box fontSize="h3.fontSize" >
+							Offer:  {offer.title}
 						</Box>
-						<Box fontSize="h5.fontSize">
-							Company: {offer.company}
+						<Box fontSize="h6.fontSize">
+							Company:  {offer.company}
 						</Box>
-						<Box fontSize="h8.fontSize">
-							Date Posted: {offer.date_posted}
+						<Box fontSize="h6.fontSize">
+							Date Posted:  {offer.date_posted}
 						</Box>
 						<br/><br/>
-						<Box fontSize="h7.fontSize">
+						<Box fontSize="h7.fontSize" fontStyle="italic">
 							{renderDesc()}
 						</Box>
 						<br/><br/>
 						<Box fontSize="h6.fontSize">
 							Offer details:
 						</Box>
+						<br/>
+						
 						<Box fontSize="h8.fontSize">
-							Job Type: {offer.job_type}
+							<span style={{"font-weight": 'bold'}}>Job Type:</span> {offer.job_type}
 						</Box>
 						<Box fontSize="h8.fontSize">
-							Location: {offer.location}
+						<span style={{"font-weight": 'bold'}}>Location:</span> {offer.location}
 						</Box>
 						<Box fontSize="h8.fontSize">
-							Salary: {offer.salary} {offer.salary_type}
+						<span style={{"font-weight": 'bold'}}>Salary:</span> {offer.salary} {offer.salary_type}
 						</Box>
 						<Box fontSize="h8.fontSize">
-							Start Date: {offer.start_date}
+						<span style={{"font-weight": 'bold'}}>Start Date:</span> {offer.start_date}
 						</Box>
 						<Box fontSize="h8.fontSize">
-							End Date: {offer.end_date}
+						<span style={{"font-weight": 'bold'}}>End Date:</span> {offer.end_date}
 						</Box>
 						<Box fontSize="h8.fontSize">
-							Days: {offer.days}
+						<span style={{"font-weight": 'bold'}}>Days:</span> {offer.days}
 						</Box>
 						<Box fontSize="h8.fontSize">
-							Hours: {offer.hours}
+						<span style={{"font-weight": 'bold'}}>Hours:</span>	{offer.hours}
 						</Box>
 						<br/><br/>
 						{renderDocumentItems()}
