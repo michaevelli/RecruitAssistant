@@ -46,7 +46,7 @@ export default function Notifications() {
 
 
   useEffect(() => {
-      checkSeen()
+      // checkSeen()
       getData()
       const interval = setInterval(() => {
         getData()
@@ -54,7 +54,7 @@ export default function Notifications() {
       return () => clearInterval(interval);
     }, []);
 
-  
+  // setting which data to retrieve
   const getData = async() => {
     const data={
       uid : sessionStorage.getItem("uid")
@@ -63,59 +63,34 @@ export default function Notifications() {
     await axios.post(checkUrl, data)
 			.then(res => {
         handleData(res.data.data)
+        // setNotif(res.data.data)
 			})
 			.catch((error) => {
         console.log(error)
 			})	
   }
+
 
   // update the notifications whenever an unviewed notif is retrieved
   const handleData = (data) => {
     var count = 0
-    for(var i = 0; i < data.length; i++){
-      if(!seen.includes(data[i][0])){
-        count++;
+    if(data != null){
+      for(var i = 0; i < data.length; i++){
+        if(data[i][1]["seen"] != true){
+          count++;
+        }
       }
+      setLength(count)
+      setNotif(data)
     }
-    setLength(count)
-    setNotif(data)
-  }
-
-  const handleOpen = (event) => {
-    setOpen(true)
-    setAnchorEl(event.currentTarget);
-
-    notif.map((data) => {
-      if(!seen.includes(data[0])){
-        seen.push(data[0])
-      }
-    });
-    // record in db which notifications have been viewed
-    recordNotif(seen)
-    setLength(0)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-    setAnchorEl(null);
-  }
-
-  const deleteNotif = async(id) => {
-    const data={
-      id : id,
-      uid: sessionStorage.getItem("uid"),
+    else{
+      setLength(0)
+      renderNotif()
     }
-    await axios.post(delUrl, data)
-			.then(res => {
-        console.log(res)
-        getData()
-			})
-			.catch((error) => {
-        console.log(error)
-			})	
   }
 
   // function that records the list of notifications that have been seen
+  // reroute to update function in backend
   const recordNotif = async(list) => {
     const data={
       uid: sessionStorage.getItem("uid"),
@@ -131,20 +106,37 @@ export default function Notifications() {
       })	
   }
 
-  // function that is run on page reload and gets the list of notifications user has seen
-  const checkSeen = async() => {
-    await axios.get(recUrl, {
-			params: {
-				uid: sessionStorage.getItem("uid")
-			}})
-      .then(res => {
-        for(var i = 0; i < res.data.data[0][1].list.length; i++){
-          seen.push(res.data.data[0][1].list[i])
-        }
-      })
-      .catch((error) => {
+  const deleteNotif = async(id) => {
+    const data={
+      id : id,
+      uid: sessionStorage.getItem("uid"),
+    }
+    await axios.post(delUrl, data)
+			.then(res => {
+        console.log(res)
+        notif.length--
+        getData()
+			})
+			.catch((error) => {
         console.log(error)
-      })	
+			})	
+  }
+
+  const handleOpen = (event) => {
+    setOpen(true)
+    setAnchorEl(event.currentTarget);
+    var list_seen = []
+    notif.map((data) => {
+      list_seen.push(data[0])
+    });
+    // record in db which notifications have been viewed
+    recordNotif(list_seen)
+    setLength(0)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+    setAnchorEl(null);
   }
 
 
