@@ -295,7 +295,7 @@ export default function ApplicationList({match}) {
 													<Button disabled = {status === "open"} variant="contained" color="secondary" onClick={() => {postInterview(app)}}> 
 															Interview
 													</Button>
-													<Button variant="contained" color="secondary">
+													<Button variant="contained" color="secondary" style={{'font-colour':'white'}}>
 
 														<Link to={{
 															pathname: `/createoffer`,

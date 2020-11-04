@@ -249,7 +249,7 @@ def send_interview():
 						'last_name': u["last_name"],
 						'interview_date': u["date"],
 						'interview_time': u["time"],
-						'status': u["status"]
+						'status': "pending"
 					},
 				})
 		return jsonify({'message': f'Successfully created interview {interview_id}'}),200

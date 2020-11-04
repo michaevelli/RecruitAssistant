@@ -13,7 +13,7 @@ def counter_offer():
 	notif_data = {
 				"uid": ref.child("offer").child(offerID).child("recruiter_id").get(),
 				"obj_id": offerID,
-				"type" : "offer update",
+				"type" : "counter offer",
 				"url" : f"http://localhost:3000/offer/{offerID}",
 			}
 	notifications.notify(notif_data)
