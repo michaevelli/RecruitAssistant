@@ -26,6 +26,8 @@ def check_postings():
 		try:
 			if(delta.days < 0 and posts[key]["status"] == "open"):
 				ref.child("jobAdvert").child(key).child("status").set("closed")
+			elif(delta.days > 0 and posts[key]["status"] == "closed"):
+				ref.child("jobAdvert").child(key).child("status").set("open")
 		except:
 			print("failed to update for some reason")
 			print(key)
