@@ -107,7 +107,9 @@ export default function ViewApplication() {
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
 					<SideMenu random={[
-						{'text':'Recruiter Dashboard','href': '/recruiterdashboard', 'active': true},
+                        usertype=="jobseeker"?
+                        ({'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true}):({'text':'Recruiter Dashboard','href': '/recruiterdashboard', 'active': true})
+                        ,
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col >
                 <Col>
