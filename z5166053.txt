@@ -15,3 +15,6 @@ This week I fixed up a few minor features and helped finish off the sprint befor
 
 Week 6
 Completed the edit job user story and worked a little on the home page before it was finished off by Becca. Worked on some of the feedback given by the tutor during the first demo and added a feature on the title bar to display the currently logged in user's name. Also went through and tidied up the code, fixing minor formatting and restructuring backend python files. Had a sprint review session at the end of the sprint to ensure everything was all done and working, then planned the next sprint, discussing and assigning user stories.
+
+Week 7
+Worked on counter-offer functionality as well as accept/decline buttons for both offers and counter-offers. Built off the 'view offer' page to support both jobseeker and recruiter views and render dynamically based on offer status. 
