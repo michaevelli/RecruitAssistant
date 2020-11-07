@@ -8,6 +8,8 @@ import SideMenu from "../SharedComponents/SideMenu.js";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 import axios from "axios";
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 
 
@@ -19,7 +21,7 @@ export default function AdminDashboard() {
 	const [jobType,setJobType] = useState('');
 	const [experienceLevel,setExperienceLevel] = useState('');
 	//salary range units are in k/$1000
-	const [salaryRange,setSalaryRange] = useState([0,10]);
+	const [salaryRange,setSalaryRange] = useState([0,200]);
 	//open is used to toggle advanced filters div
 	const [open, setOpen]=useState(false)
 	const [jobs, setJobs]=useState([])
@@ -104,8 +106,14 @@ export default function AdminDashboard() {
 
 	const renderJobs = () => {
 		return jobs.map((job) => (
-			<Card style={{margin: 30, height: 180, width:250}}>
-				<CardContent>                          
+			<Card style={{margin: 30, height: 220, width:250}}>
+
+				<CardContent>     
+					<CardActions style={{ width: '100%', justifyContent: 'flex-end' }}>
+					<IconButton aria-label="delete" onClick={() => {deleteJob(job[0])}}>
+						<DeleteIcon />
+					</IconButton> 
+					</CardActions>
 					<Typography variant="h5" component="h2">
 						{job[1].title}
 					</Typography>
@@ -127,12 +135,11 @@ export default function AdminDashboard() {
 		))
 	}
 
-
 	const deleteJob = async(job_id) => {
 		const data={
 			id: job_id
 		}
-
+		console.log(data)
 		await axios.post(deleteJobUrl, data)
 		.then(res => {
 			console.log(res)
@@ -142,19 +149,19 @@ export default function AdminDashboard() {
 		})	
 	} 
 
-	const deleteUser = async(user_id) => {
-		const data={
-			uid: user_id
-		}
+	// const deleteUser = async(user_id) => {
+	// 	const data={
+	// 		uid: user_id
+	// 	}
 		
-		await axios.post(deleteUserUrl, data)
-		.then(res => {
-			console.log(res)
-		})
-		.catch((error) => {
-			console.log(error)
-		})
-	}
+	// 	await axios.post(deleteUserUrl, data)
+	// 	.then(res => {
+	// 		console.log(res)
+	// 	})
+	// 	.catch((error) => {
+	// 		console.log(error)
+	// 	})
+	// }
 
 	return loading ? (
 		<div></div>
