@@ -83,6 +83,7 @@ export default function JobSeekerDashboard() {
 				})
 			
 	}
+
 	const handleSliderChange = (event, newValue) => {
 		setSalaryRange(newValue);
 	}
