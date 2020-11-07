@@ -29,6 +29,8 @@ import EditOffer from './RecruiterComponents/EditOffer';
 import RecruiterFAQ from './RecruiterComponents/RecruiterFAQ';
 import JobSeekerFAQ from './JobSeekerComponents/JobSeekerFAQ';
 import InterviewPage from './JobSeekerComponents/InterviewPage';
+import UserList from './AdminComponents/UserList';
+
 function App() {
 
   return (
@@ -64,6 +66,7 @@ function App() {
           <Route path="/recruiterFAQ" component={RecruiterFAQ}/>
           <Route path="/jobseekerFAQ" component={JobSeekerFAQ}/>
           <Route path="/interview/:interviewID" component={InterviewPage}/>
+          <Route path="/admin/userlist" component={UserList}/>
         </Switch>
       </BrowserRouter>
 

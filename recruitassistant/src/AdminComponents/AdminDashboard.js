@@ -143,25 +143,12 @@ export default function AdminDashboard() {
 		await axios.post(deleteJobUrl, data)
 		.then(res => {
 			console.log(res)
+			getJobs()
 		})
 		.catch((error) => {
 			console.log(error)
 		})	
 	} 
-
-	// const deleteUser = async(user_id) => {
-	// 	const data={
-	// 		uid: user_id
-	// 	}
-		
-	// 	await axios.post(deleteUserUrl, data)
-	// 	.then(res => {
-	// 		console.log(res)
-	// 	})
-	// 	.catch((error) => {
-	// 		console.log(error)
-	// 	})
-	// }
 
 	return loading ? (
 		<div></div>
@@ -172,7 +159,7 @@ export default function AdminDashboard() {
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Jobs','href': '#', 'active': true},
-						{'text':'Users','href': '#', 'active': false}]}/>
+						{'text':'Users','href': '/admin/userlist', 'active': true}]}/>
 				</Col >
 				<Col>
 					<Typography variant="h4" style={{color: 'black', textAlign: "center",margin:20 }}>
