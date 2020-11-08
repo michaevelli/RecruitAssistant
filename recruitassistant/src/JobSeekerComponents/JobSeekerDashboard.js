@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link,Slider, Grid,Card,CardContent,Button,CardActions ,TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
-import {Form,Container,Col,Row,Collapse} from 'react-bootstrap';
+import {Link,Slider, Grid,TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
+// Card,CardContent,Button,CardActions 
+import {Form,Container,Col,Row,Collapse, Card, Button} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -95,28 +96,37 @@ export default function JobSeekerDashboard() {
 		setSalaryRange([0,200])
 	}
 
+	function truncateText(text) {
+		if (text.length > 180) {
+			return text.slice(0, 180) + "..."
+		}
+		return text
+	}
+
 	const renderJobs = () => {
 		return jobs.map((job) => (
-			<Card style={{margin: 30, height: 180, width:250}}>
-				<CardContent>                          
-					<Typography variant="h5" component="h2">
-						{job[1].title}
-					</Typography>
-					<Typography color="textSecondary">
-						{job[1].company} | {job[1].location}
-					</Typography>
-				</CardContent>
-				<CardActions >
-					<Typography 
-					style={ job[1].status=='open'? 
-					{color: 'green'} : {color:'red'}}>
-						{job[1].status}
-					</Typography>
-					<Link href= {`/advertisement/${job[0]}`} style={{marginLeft: 30}}>
-							View Advertisement
-					</Link>
-				</CardActions>
-			</Card>
+			<div>
+				<Card style={ job[1].status=='open'? {} : {backgroundColor:'lightgrey', opacity:"0.5"}} >
+					<Card.Body style={{cursor:"pointer"}} onClick={() => {history.push("/advertisement/"+job[0])}}>
+						<Row>
+							<Col>
+								<Card.Title link>{job[1].title}</Card.Title>
+								<Card.Text style={{fontStyle: 'italic'}}>{job[1].company} | {job[1].location} | {job[1].job_type}</Card.Text>
+								{job[1].status == "open" ? 
+									<Card.Text>Closing date: {job[1].closing_date}</Card.Text> :
+									<Card.Text>This job is closed</Card.Text>
+								}
+							</Col>
+							<Col xs={8}>
+								<div style={{flex: 1, alignItems: 'center'}}>
+									<Card.Text>{truncateText(job[1].description)}</Card.Text>
+								</div>
+							</Col>
+						</Row>
+					</Card.Body>
+				</Card>
+				<br/>
+			</div>
 		))
 	}
 
@@ -208,12 +218,14 @@ export default function JobSeekerDashboard() {
 							</div>
 						</Collapse>
 					</Form>
-					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
+					{/* <Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						All Jobs
-					</Typography>
-					<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
+					</Typography> */}
+					<br/><br/>
+					<Container>{renderJobs()}</Container>
+					{/* <div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
 						{renderJobs()}
-					</div>
+					</div> */}
 				</Col>
 			</Row>
 		</Grid>

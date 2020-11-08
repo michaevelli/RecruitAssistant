@@ -21,7 +21,6 @@ export default function ViewApplication() {
     const href = `${window.location.href}`.split("/")
     const applicationID = href[href.length - 1]
     const jobID = href[href.length - 2]
-    const editLink = "/editApplication/"+ jobID +"/" + applicationID
     const [application, setApp] = useState({})
     const [job, setJob] = useState({})
     const [qualifications, setQualifications] = useState([])

@@ -7,25 +7,24 @@ import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
+import Unauthorised from "../Authentication/Unauthorised";
 
 
 export default function JobSeekerFAQ() {
-	const recruiterID = sessionStorage.getItem("uid")
 	const history = useHistory();
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		auth();
-	}, [recruiterID]);
+	}, []);
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
 				setLoading(false)
-				// const recruiterID = sessionStorage.getItem("uid")			
 				if (!response.success || response.userInfo["type"] != "jobseeker") {
-					history.push("/unauthorised");
+					return <Unauthorised/>
 				}
 			})
 	}
