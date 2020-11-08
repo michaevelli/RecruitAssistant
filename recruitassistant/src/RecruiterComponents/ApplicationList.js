@@ -262,6 +262,11 @@ export default function ApplicationList({match}) {
 	}
 
 	const renderApplications = (status) => {
+		if( applications.length==0){
+			return (	
+				<p style={{marginLeft: 500,marginTop:200}}>No Applications.</p>	
+			)
+		}
 		if (selection > 0) {
 			return applications.slice(0, selection).map((app, index) => (
 				<Grid>
@@ -400,21 +405,25 @@ export default function ApplicationList({match}) {
 
 					<Col sm="9">
 						<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
-							{detail[1].title} @ {detail[1].company}
+							{detail[1].title} @ {detail[1].company} <span style={{color: detail[1].status==="open"? 'green':'red'}}>
+							 ({detail[1].status}) </span>
 						</Typography>
 						<Row>
 							<Col sm = "8">
 								<Form inline>
-									<Form.Group controlId="selection" style ={{marginLeft:100}}>
+									<Form.Group controlId="selection" style ={{ marginLeft:100}}>
 										<Form.Label>Select top </Form.Label>
 										<Form.Control
 											required
 											type = "number"
 											min = {1}
+											style={{width:80,margin:10}}
 											max = {applications.length}
+											placeholder='X'
 											disabled = {detail[1].status === "open"}
 											onChange = { (event) => setSelection(event.target.value)}/>
 									</Form.Group>
+									  applicants
 								</Form>
 							</Col>
 							<Col>

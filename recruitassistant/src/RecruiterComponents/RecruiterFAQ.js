@@ -52,8 +52,7 @@ export default function RecruiterDashboard() {
 						
                         <h style={{fontWeight: 'bold'}}> How do I see the interviews or offers I have sent?</h>
                         <p> On the Recruiter Dashboard click "view applications"
-                            on a job. You will be taken to a new page where you will find menu links
-                            to view interviews or offers related to this job.
+                            on a job. You will now see menu links for 'offers' and 'interviews' related to this job
                         </p>
 
                         <h style={{fontWeight: 'bold'}}>  Why can't I send interview invites? </h>
@@ -62,10 +61,20 @@ export default function RecruiterDashboard() {
                         </p>
                         <h style={{fontWeight: 'bold'}}>  Can I extend the closing date of a job advert? </h>
                         
-                        <p> Yes, click 'Edit Job' on a job from the recruiter dashboard.
+                        <p> Yes, click 'Edit Job' on a job from the recruiter dashboard, and update the closing date field.
                         </p>
+						<h style={{fontWeight: 'bold'}}>  How can I close an open job? </h>
+                        
+                        <p> Click 'Edit Job' on the job from the recruiter dashboard, and update the closing date field.
+                        </p>
+
+						<h style={{fontWeight: 'bold'}}>  What are counter offers? </h>
+						<p> When generating an offer letter for a candidate you may choose to make the offer counterable. This means
+							the candidate can reply with proposed changes to the offer (e.g. salary, days of work)
+							and you may then edit the original offer if you wish.
+						</p>
                         <br />
-                        <p style={{fontWeight: 'bold',fontStyle: 'italic'}}> More Questions? Contact us at fakesupportemail@gmail.com </p>
+                        <p style={{fontWeight: 'bold',fontStyle: 'italic'}}> More Questions? Contact us at fakesupportemail@recruitassistant.com </p>
 					</div>
 				</Col>
 			</Row>

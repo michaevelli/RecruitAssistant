@@ -50,17 +50,21 @@ export default function JobSeekerFAQ() {
 					<div style={{paddingLeft: 40}}>
 						
                         <h style={{fontWeight: 'bold'}}> How do I see the status of my applications?</h>
-                        <p> On the Job Seeker Dashboard click 'My applications' to view all your past applications. You can filter this list
-                            of applications by status such as "applied","rejected", "interview invite" or "offer".
+                        <p> On the Job Seeker Dashboard click 'My applications' to view all your past applications.
+							Click on the 'InterviewS' tab to see which jobs you have interview invites,
+							and the 'Offers' tabs to view all received offers.
                         </p>
 
                         <h style={{fontWeight: 'bold'}}>  Why can't I apply for a job?</h>
-   
                         <p> You have already applied for this job or the job is closed.
+                        </p>
+
+						<h style={{fontWeight: 'bold'}}> Can a recruiter cancel my offer?</h>
+                        <p> If you request a counter offer that the recruiter deems unreasonable, they may cancel your offer.
                         </p>
                        
                         <br />
-                        <p style={{fontWeight: 'bold',fontStyle: 'italic'}}> More Questions? Contact us at fakesupportemail@gmail.com </p>
+                        <p style={{fontWeight: 'bold',fontStyle: 'italic'}}> More Questions? Contact us at fakesupportemail@recruitassistant.com </p>
 					</div>
 				</Col>
 			</Row>
