@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from firebase_admin import auth
 from .init_app import app, ref, pb
-
+import json
 # check validity of token and return user info
 @app.route('/auth', methods=["POST"])
 def check_token():

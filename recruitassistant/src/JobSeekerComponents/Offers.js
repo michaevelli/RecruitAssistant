@@ -5,6 +5,7 @@ import {Form,Container,Col,Row,Collapse} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import TabPanel from "./TabPanel.js"
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -21,7 +22,9 @@ export const applicationUrl="http://localhost:5000/pendingapplications"
 
 export default function Offers() {
     const history = useHistory();
-    const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(true);
+	//for applications tab loading
+	const [loading_apps, setLoadingApps] = useState(true)
 	const [offers, setOffers]=useState([])
 	const [interviews, setInterviews]=useState([])
 	const [applications, setApplications]=useState([])
@@ -105,6 +108,7 @@ export default function Offers() {
                 .then(function(response) {
 					console.log("application response:", response.data)
 					setApplications(response.data.applications)
+					setLoadingApps(false)
                 })
                 .catch(function(error) {
 					console.log("error in applications")
@@ -162,8 +166,8 @@ export default function Offers() {
 	}
 
 	const renderApplications = () => {
-		console.log(applications)
-		return applications.map((application) => (
+		
+		return loading_apps===true? (<CircularProgress />) : (applications.map((application) => (
 			<Card style={{margin: 30, height: 160, width:250}}>
 				<CardContent>                          
 					<Typography variant="h5" component="h2">
@@ -179,12 +183,10 @@ export default function Offers() {
 					</Link>
 				</CardActions>
 			</Card>
-		))
+		)))
 	}
 
-    return loading ? (
-		<div></div>
-	) : (
+    return (
 		<Grid>      
 			<Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
