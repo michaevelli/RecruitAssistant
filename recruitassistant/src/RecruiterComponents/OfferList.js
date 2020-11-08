@@ -25,12 +25,12 @@ export default function OfferList({match}) {
 
 	const columns = [
 		{ field: 'candidate', headerName: 'Candidate', width: 300 },
-		{ field: 'status', headerName: 'Status', width: 400 },
+		{ field: 'status', headerName: 'Status', width: 200 },
         { field: 'offer',
             headerName: 'Offer',
             sortable: false,
             renderCell: (row) => (<Link to={{ pathname: `/offer/${row.data.id}` }}> {row.value}</Link>),
-            width: 300 },
+            width: 400 },
 	];
 
 	useEffect(() => {

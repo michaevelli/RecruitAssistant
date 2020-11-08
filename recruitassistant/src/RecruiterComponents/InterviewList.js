@@ -22,9 +22,10 @@ export default function InterviewList({match}) {
 	const [job, setJob] = useState([])
 
 	const columns = [
-		{ field: 'candidate', headerName: 'Candidate', width: 300 },
-		{ field: 'datetime', headerName: 'Date & Time', type: 'dateTime', width: 400 },
-		{ field: 'status', headerName: 'Status', width: 200 },
+		{ field: 'candidate', headerName: 'Candidate', width: 200 },
+		{ field: 'datetime', headerName: 'Date & Time', type: 'dateTime', width: 200 },
+		{ field: 'status', headerName: 'Status', width: 100 },
+		{ field: 'reason', headerName: 'Reason', width: 400, sortable: false },
 	];
 
 	useEffect(() => {
@@ -89,7 +90,8 @@ export default function InterviewList({match}) {
 				id: interview[0],
 				candidate: returnFull(interview[1].first_name, interview[1].last_name),
 				datetime: returnFull(interview[1].interview_date, interview[1].interview_time),
-				status: interview[1].status})
+				status: interview[1].status,
+				reason: interview[1].reason})
 		))
 		return rows
 	};

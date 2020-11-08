@@ -191,6 +191,7 @@ def update_interview():
 		json_data = request.get_json()
 		interview_id =json_data["id"]
 		new_status=json_data["status"]
+		reason = json_data["reason"]
 
 		# notification to recruiter
 		job_id = ref.child("interviews").child(interview_id).child("job_id").get()
@@ -204,6 +205,7 @@ def update_interview():
 		notifications.notify(notif_data)
 
 		ref.child("interviews").child(interview_id).child("status").set(new_status)
+		ref.child("interviews").child(interview_id).child("reason").set(reason)
 		return jsonify({'message': f'Successfully updated interview {interview_id}'}),200
 	except Exception as e:
 		print(e)
@@ -251,7 +253,7 @@ def send_interview():
 						'last_name': u["last_name"],
 						'interview_date': u["date"],
 						'interview_time': u["time"],
-						'status': "pending"
+						'status': "Pending"
 					},
 				})
 		return jsonify({'message': f'Successfully created interview {interview_id}'}),200
