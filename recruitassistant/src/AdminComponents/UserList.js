@@ -23,7 +23,7 @@ export default function UserList() {
         { field: 'last_name', headerName: 'Last Name', width: 200 },
         { field: 'email', headerName: 'Email', width: 200 },
         { field: 'type', headerName: 'Type', width: 100},
-        {field: 'delete', headerName: 'Delete', width:100,
+        {field: 'delete', headerName: 'Delete', width:300,
         renderCell: (params) => {
             const click = () => {
                 const api = params.api;
@@ -32,8 +32,8 @@ export default function UserList() {
                 .map((c) => c.field)
                 .filter((c) => c !== "__check__" && !!c);
 
-                console.log(params.getValue("id"))
                 // send to delete user function
+                deleteUser(params.getValue("id"), params.getValue("type"))
             }
             return (<IconButton aria-label="delete" onClick={click}><DeleteIcon /></IconButton> )
         }}
@@ -70,14 +70,16 @@ export default function UserList() {
     }
 
 
-    const deleteUser = async(user_id) => {
+    const deleteUser = async(user_id, u_type) => {
 		const data={
-			uid: user_id
+            uid: user_id,
+            type: u_type,
 		}
 		
 		await axios.post(deleteUserUrl, data)
 		.then(res => {
-			console.log(res)
+            console.log(res)
+            getUsers();
 		})
 		.catch((error) => {
 			console.log(error)
@@ -87,15 +89,17 @@ export default function UserList() {
 
     const renderUsers = () => {
 		const rows = []
-		users.map((user) => (
-			rows.push({
-                id: user[0],
-                first_name: user[1].first_name,
-                last_name: user[1].last_name,
-                email: user[1].email,
-                type: user[1].type,
-            })
-        ))
+		users.map((user) => {
+            if(user[1].type != "admin"){
+                rows.push({
+                    id: user[0],
+                    first_name: user[1].first_name,
+                    last_name: user[1].last_name,
+                    email: user[1].email,
+                    type: user[1].type,
+                })
+            }
+        })
         console.log(rows)
 		return rows
 	};
