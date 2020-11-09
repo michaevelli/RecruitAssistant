@@ -4,7 +4,7 @@ from .init_app import app, ref
 from backend import notifications
 from firebase_admin import auth
 from datetime import date, datetime
-
+import uuid
 #TODO comment what is this function doing
 @app.route('/interviewlist', methods=['POST'])
 def getInterviews():
@@ -124,6 +124,7 @@ def send_interview():
 						'status': "pending"
 					},
 				})
+		print(invite_list)
 		return jsonify({'message': f'Successfully created interview {interview_id}'}),200
 	except Exception as e:
 		print(e)
