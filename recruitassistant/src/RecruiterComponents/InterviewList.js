@@ -23,9 +23,9 @@ export default function InterviewList({match}) {
 
 	const columns = [
 		{ field: 'candidate', headerName: 'Candidate', width: 200 },
-		{ field: 'datetime', headerName: 'Date & Time', type: 'dateTime', width: 200 },
+		{ field: 'datetime', headerName: 'Date & Time', type: 'dateTime', width: 150 },
 		{ field: 'status', headerName: 'Status', width: 100 },
-		{ field: 'reason', headerName: 'Reason', width: 400, sortable: false },
+		{ field: 'reason', headerName: 'Reason', width: 470, resizable: true, sortable: false },
 	];
 
 	useEffect(() => {
@@ -122,7 +122,7 @@ export default function InterviewList({match}) {
 						</Typography>
 						<Row>
 							<div style={{ height: 600, width: '100%', marginLeft: 100 }}>
-								<DataGrid rows={renderInterviews()} columns={columns} pageSize={10}/>
+								<DataGrid rows={renderInterviews()} columns={columns} disableColumnResize={true} disableSelectionOnClick={true} pageSize={10}/>
 							</div>
 						</Row>
 					</Col>
