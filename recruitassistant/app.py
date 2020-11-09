@@ -185,10 +185,6 @@ def get_recruiter_posts(recruiterid):
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
-
-
-
-
 # gets a sorted list of applications for a job
 @app.route('/applicationslist', methods=["GET"])
 def get_applications_for_job():

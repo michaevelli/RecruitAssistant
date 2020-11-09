@@ -1,6 +1,6 @@
 import React, { useState,useEffect,useLayoutEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Grid,Button} from "@material-ui/core";
+import {Grid,Button,TextField} from "@material-ui/core";
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import {Col,Row,Alert} from 'react-bootstrap';
@@ -19,7 +19,9 @@ export default function InterviewPage({match}) {
     const [status, setStatus]= useState('')
     const [time, setTime]= useState('')
     const [date, setDate]= useState('')
+    const [reason, setReason] = useState('')
     const [loading, setLoading]=useState(true)
+    const [show, setShow] = useState('none')
 
     //for alert bar
     const [desc, setDesc] = useState('')
@@ -33,7 +35,7 @@ export default function InterviewPage({match}) {
 
     useLayoutEffect(() => {
 		updateAlert()
-    },[status]);
+    },[status, reason]);
 
     //update color/text of alert bar
     const updateAlert = ()=>{
@@ -42,8 +44,12 @@ export default function InterviewPage({match}) {
 			setDesc("Interview invite has been accepted.")
         }
         else if(status==='Declined'){
-            setVariant('secondary')	
-			setDesc("Interview invite has been declined.")
+            setVariant('secondary')
+            if(reason===''){
+                setDesc("Interview invite has been declined.")
+            } else {
+                setDesc("Interview invite has been declined with reason: '" + reason + "'")
+            }
         }else{
             setVariant('info')	
 			setDesc("Please respond to interview invite.")
@@ -69,16 +75,23 @@ export default function InterviewPage({match}) {
             console.log(interview_data)
             setDate(interview_data["interview_date"]);
             setTime(interview_data["interview_time"]);
-            setStatus(interview_data["status"] || 'pending'); 
+            setStatus(interview_data["status"] || 'Pending'); 
+            setReason(interview_data["reason"] || ''); 
             setLoading(false)
         }).catch((error) => {
             console.log("error: ", error.response)
         })	
     }
+
     //response can be "Accepted" or "Declined"
     const handleResponse = async (response) => {
         //update interview status
-        await axios.patch(interviewURL, {'status': response, 'id':interviewID})
+        var givenreason = reason
+        if (response === "Accepted") {
+            givenreason = ""
+            setShow('none')
+        }
+        await axios.patch(interviewURL, {'status': response, 'id':interviewID, 'reason': givenreason})
         .then(res => {
             console.log("response: ", res)
             window.location.reload()
@@ -89,6 +102,29 @@ export default function InterviewPage({match}) {
         })	
         
     }
+    
+    //field showing up when declined
+    const renderDecline = () => {
+        return (
+            <div style={{display: show, color: 'black', margin: 50}}>
+                <p>Optionally provide a reason (up to 70 characters) for declining and confirm you want to decline the interview.</p>
+                <div>
+                    <TextField
+                        name = "Reason"
+                        variant = "outlined"
+                        inputProps={{maxLength: 70}}
+                        style = {{width: 750, marginRight: 50}}
+                        value = {reason}
+                        placeholder = "Optional reason (up to 70 characters)"
+                        onChange = { (event) => setReason(event.target.value)}/>
+                    <Button onClick={() => handleResponse("Declined")} variant = "contained" color="secondary" style = {{marginTop: 8.5}}>
+                        Confirm
+                    </Button>
+                </div>
+            </div>
+        )
+    }
+
     //if status is pending give option to accept/decline
     //else simply show the date and time info
     const interviewInfo = () => {
@@ -111,12 +147,12 @@ export default function InterviewPage({match}) {
                 <span style={{fontWeight: "bold"}}>Time:</span> {time}
             </Box>
             <br/>
-            {status=="pending" &&
+            {status=="Pending" &&
             <Box style={{marginTop: 50}}>
                 <Button variant="contained"  color="secondary" style={{marginRight:30,backgroundColor: 'green'}} onClick={()=>handleResponse("Accepted")}>
                 Accept
                 </Button>
-                <Button variant="contained" color="secondary" onClick={()=>handleResponse("Declined")}>
+                <Button variant="contained" color="secondary" onClick={()=>setShow(show==='none'? 'block': 'none')}>
                 Decline
                 </Button>
             </Box>
@@ -128,8 +164,9 @@ export default function InterviewPage({match}) {
     return (
         loading? (<p> Loading...</p>):
         (
-        <Grid>      
-			<Row noGutters fluid><TitleBar/></Row>
+        
+        <Grid>
+            <Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
 					<SideMenu random={[
@@ -139,6 +176,7 @@ export default function InterviewPage({match}) {
 				</Col >
 				<Col>	
                 {interviewInfo()}
+                {renderDecline()}
                 </Col>
             </Row>
         </Grid>  
