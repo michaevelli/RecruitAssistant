@@ -7,6 +7,10 @@ import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
+import axios from "axios";
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+
 
 
 export default function AdminDashboard() {
@@ -17,9 +21,16 @@ export default function AdminDashboard() {
 	const [jobType,setJobType] = useState('');
 	const [experienceLevel,setExperienceLevel] = useState('');
 	//salary range units are in k/$1000
-	const [salaryRange,setSalaryRange] = useState([0,10]);
+	const [salaryRange,setSalaryRange] = useState([0,200]);
 	//open is used to toggle advanced filters div
 	const [open, setOpen]=useState(false)
+	const [jobs, setJobs]=useState([])
+
+	const deleteJobUrl = "http://localhost:5000/admin-delete-post"
+	const deleteUserUrl = "http://localhost:5000/admin-delete-user"
+	const jobUrl="http://localhost:5000/jobadverts/"
+
+
 
 	//marks are labels on the salary range slider
 	const marks = [
@@ -31,6 +42,7 @@ export default function AdminDashboard() {
 	
 	useEffect(() => {
 		auth();
+		getJobs();
 	}, []);
 
 	const auth = async () => {
@@ -44,20 +56,42 @@ export default function AdminDashboard() {
 			})
 	}
 
+	const getJobs = async () => {
+		const url = `${jobUrl}open`
+		console.log(url)
+		await axios.get(url)
+			.then(res => {
+				setJobs(res.data.jobs)
+				console.log("response: ", res)
+			})
+			.catch((error) => {
+				console.log("error: ", error.response)
+			})
+	};
+
 	const handleSubmit= async (event) =>{
 			event.preventDefault();
-			console.log('searchstring ',searchString)
-			console.log('location', location)
-			console.log('exp', experienceLevel)
-			console.log('jobtype', jobType)
-			console.log('salary range', salaryRange)
+			const url = `${jobUrl}search`
 			//TODO
-			const data={
-					
+			const ndata={
+				search: searchString,
+				location: location,
+				exp: experienceLevel,
+				jobtype: jobType,
+				salaryrange: salaryRange		
 			};
+			console.log(ndata)
+			axios.post(url, ndata)
+				.then(function(response) {
+					setJobs(response.data.jobs)
+					console.log(response)
+				})
+				.catch(function(error) {
+					console.log(error.response)
+				})
 			
 	}
-	
+
 	const handleSliderChange = (event, newValue) => {
 		setSalaryRange(newValue);
 	}
@@ -67,57 +101,66 @@ export default function AdminDashboard() {
 		//reset search criteria when toggle closed again
 		setJobType('')
 		setExperienceLevel('')
-		setSalaryRange([0,10])
+		setSalaryRange([0,200])
 	}
 
+	const renderJobs = () => {
+		return jobs.map((job) => (
+			<Card style={{margin: 30, height: 220, width:250}}>
 
+				<CardContent>     
+					<CardActions style={{ width: '100%', justifyContent: 'flex-end' }}>
+					<IconButton aria-label="delete" onClick={() => {deleteJob(job[0])}}>
+						<DeleteIcon />
+					</IconButton> 
+					</CardActions>
+					<Typography variant="h5" component="h2">
+						{job[1].title}
+					</Typography>
+					<Typography color="textSecondary">
+						{job[1].company} | {job[1].location}
+					</Typography>
+				</CardContent>
+				<CardActions >
+					<Typography 
+					style={ job[1].status=='open'? 
+					{color: 'green'} : {color:'red'}}>
+						{job[1].status}
+					</Typography>
+					<Link href= {`/advertisement/${job[0]}`} style={{marginLeft: 30}}>
+							View Advertisement
+					</Link>
+				</CardActions>
+			</Card>
+		))
+	}
 
-//   return (
-//     <Grid>      
-//       <Row noGutters fluid><TitleBar/></Row>
-//       <Row noGutters style={{height:'100vh',paddingTop: 40}}>
-//         <Col sm={2}>
-//           <SideMenu random={[
-//             {'text':'Jobs','href': '#', 'active': true},
-//             {'text':'Users','href': '#', 'active': false}]}/>
-//         </Col>
-//         <Col>
-//           <Typography variant="h4" style={{color: 'black', textAlign: "center",margin:20 }}>
-//             Job Search
-//           </Typography>
-//           <Form onSubmit={handleSubmit}>
-//             <Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>
-//               <TextField size="small"
-//                 onChange={ (event) => setSearchString(event.target.value)}
-//                 style={{ margin: 8 }}
-//                 placeholder="Job Title, Company,Skills"
-//                 margin="normal"
-//                 InputLabelProps={{shrink: true,}}
-//                 variant="outlined"/>
-//               <TextField size="small"
-//                 onChange={ (event) => setLocation(event.target.value)}
-//                 style={{ margin: 8 }}
-//                 placeholder="Location"
-//                 margin="normal"
-//                 InputLabelProps={{shrink: true,}}
-//                 variant="outlined"/>
-//               <Button type="submit" variant="contained" style={{margin:10}}>
-//                 Search
-//               </Button>
-//             </Col>
-
+	const deleteJob = async(job_id) => {
+		const data={
+			id: job_id
+		}
+		console.log(data)
+		await axios.post(deleteJobUrl, data)
+		.then(res => {
+			console.log(res)
+			getJobs()
+		})
+		.catch((error) => {
+			console.log(error)
+		})	
+	} 
 
 	return loading ? (
-			<div></div>
-		) : (
+		<div></div>
+	) : (
 		<Grid>      
-			<Row noGutters fluid><TitleBar/></Row>
+			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Jobs','href': '#', 'active': true},
-						{'text':'Users','href': '#', 'active': false}]}/>
-				</Col>
+						{'text':'Users','href': '/admin/userlist', 'active': true}]}/>
+				</Col >
 				<Col>
 					<Typography variant="h4" style={{color: 'black', textAlign: "center",margin:20 }}>
 						Job Search
@@ -193,9 +236,15 @@ export default function AdminDashboard() {
 								</Col>
 							</div>
 						</Collapse>
-					</Form>             
-				</Col>          
+					</Form>
+					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
+						All Jobs
+					</Typography>
+					<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
+						{renderJobs()}
+					</div>
+				</Col>
 			</Row>
 		</Grid>
-	)
+	);
 }
