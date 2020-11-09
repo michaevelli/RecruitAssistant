@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Slider, Grid,Card,CardContent,Button,CardActions ,TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
-import {Form,Container,Col,Row,Collapse} from 'react-bootstrap';
+import {Slider, Grid, Button, TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
+// Card,CardContent,Button,CardActions
+import {Form,Container,Col,Row,Collapse, Card} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -21,7 +22,7 @@ export const applicationUrl="http://localhost:5000/pendingapplications"
 
 
 export default function Offers() {
-    const history = useHistory();
+	const history = useHistory();
 	const [loading, setLoading] = useState(true);
 	//for applications tab loading
 	const [loading_apps, setLoadingApps] = useState(true)
@@ -31,7 +32,7 @@ export default function Offers() {
 	const [userID, setUserID] = useState('');
 	
 	//controls which tab is selected (tabs are labelled 0,1,2 from left to right)
-	const [value, setValue] = React.useState(1);
+	const [value, setValue] = React.useState(0);
 
 	const handleChange = (event, newValue) => {
 	  setValue(newValue);
@@ -50,13 +51,17 @@ export default function Offers() {
 				console.log("auth success: ", response)
 				setLoading(false)				
 				if (!response.success || response.userInfo["type"] != "jobseeker") {
-					history.push("/unauthorised");
+					return history.push("/unauthorised");
 				}
 				setUserID(response.userID)
+				// if (response.userID != getOffers()) {
+				// 	return history.push("/unauthorised");
+				// }
 				// setUserID(response.userID, getOffers()); 
 			})
 	}
 
+	// --- database calls ---
 	const getOffers = async () => {
 		if (userID !== '') {
 			const url = `${offerUrl}`
@@ -71,129 +76,197 @@ export default function Offers() {
 				.then(function(response) {
 					console.log("response:", response.data)
 					setOffers(response.data.offers)
+					console.log(response.data.offers)
+					return response.data.offers[1].jobseeker_id
 				})
 				.catch(function(error) {
 					console.log(error.response)
 				})
 		}
+		return null
 		
 	};
 
 	const getInterviews = async () => {
 		const url = `${interviewUrl}`
-            
-            const ndata = {
-                token: window.localStorage.getItem("token")
-            }
-            
-            axios.post(url, ndata)
-                .then(function(response) {
+			
+			const ndata = {
+				token: window.localStorage.getItem("token")
+			}
+			
+			axios.post(url, ndata)
+				.then(function(response) {
 					console.log("interview response:", response.data)
 					setInterviews(response.data.interviews)
-                })
-                .catch(function(error) {
+				})
+				.catch(function(error) {
 					console.log("error in interview")
-                    console.log(error.response)
-                })
+					console.log(error.response)
+				})
 	};
 
 	const getApplications = async () => {
 		const url = `${applicationUrl}`
-            
-            const ndata = {
-                token: window.localStorage.getItem("token")
-            }
-            
-            axios.post(url, ndata)
-                .then(function(response) {
+			
+			const ndata = {
+				token: window.localStorage.getItem("token")
+			}
+			
+			axios.post(url, ndata)
+				.then(function(response) {
 					console.log("application response:", response.data)
 					setApplications(response.data.applications)
 					setLoadingApps(false)
-                })
-                .catch(function(error) {
+				})
+				.catch(function(error) {
 					console.log("error in applications")
-                    console.log(error.response)
-                })
+					console.log(error.response)
+				})
 	};
 	
+	// --- render posts ---
+
+	const renderOfferStatus = (offer) => {
+		if (offer.status === "sent") {
+			return <Card.Text>Congratulations, you have a job offer!</Card.Text>
+		} else if (offer.status == "accepted") {
+			return <Card.Text>You have accepted this offer!</Card.Text>
+		} else if (offer.status == "declined") {
+			return <Card.Text>You have declined this offer</Card.Text>
+		} else if (offer.status == "countered") {
+			return <Card.Text>Your counter offer is pending review</Card.Text>
+		} else {
+			return <Card.Text>(old status field)</Card.Text>
+		}
+	}
+
 	const renderOffers = () => {
-		return offers.map((offer) => (
-			<Card style={{margin: 30, height: 160, width:250}}>
-				<CardContent>                          
-					<Typography variant="h5" component="h2">
-						{offer[1].title}
-					</Typography>
-					<Typography color="textSecondary">
-						{offer[1].company} | {offer[1].location}
-					</Typography>
-				</CardContent>
-				<CardActions >
-					<Typography color="textSecondary">
-						Status: {offer[1].status}
-					</Typography>
-					<Link to={{pathname: `/offer/${offer[0]}`}} style={{marginLeft: 30}}>
-							View Offer
-					</Link>
-				</CardActions>
-			</Card>
-		))
-	}
-
-	const renderInterviews = () => {
-		return interviews.map((interview) => (
-			<Card style={{margin: 30, height: 160, width:250}}>
-				<CardContent>                          
-					<Typography variant="h5" component="h2">
-						{interview[3].title}
-					</Typography>
-					<Typography color="textSecondary">
-						{interview[3].company} | {interview[3].location}
-					</Typography>
-				</CardContent>
-				<CardActions >
-					<Typography color="textSecondary">
-						{interview[1].status}
-					</Typography>
-					
-					<Link style={{marginLeft: 30}} 
-							to={{pathname: `/interview/${interview[0]}`}}
-							>
-							View Interview
-					</Link>
-				</CardActions>
-			</Card>
-		))
-	}
-
-	const renderApplications = () => {
-		
-		return loading_apps===true? (<CircularProgress />) : (applications.map((application) => (
-			<Card style={{margin: 30, height: 160, width:250}}>
-				<CardContent>                          
-					<Typography variant="h5" component="h2">
-						{application[3].title}
-					</Typography>
-					<Typography color="textSecondary">
-						{application[3].company} | {application[3].location}
-					</Typography>
-				</CardContent>
-				<CardActions >
-					<Link to={{pathname: `/viewapplication/${application[2]}/${application[0]}`}} style={{marginLeft: 30}}>
-						View Application
-					</Link>
-				</CardActions>
-			</Card>
+		return loading_apps===true? (
+			<div style={{
+				position: 'absolute', left: '50%', top: '50%',
+				transform: 'translate(-50%, -50%)'
+				}}>
+				<CircularProgress/>
+			</div>
+		) : (offers.map((offer) => (
+			<div><div style={{display: 'flex', justifyContent: 'center'}}>
+				<Card style={{width:"60%"}}>
+					<Card.Body>
+						<Row>
+							<Col>
+								<Card.Title>{offer[1].title}</Card.Title>
+								<Card.Text>{offer[1].company} | {offer[1].job_type}</Card.Text>
+								{renderOfferStatus(offer[1])}
+							</Col>
+							<Col style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+								<Button onClick={() => {history.push("/offer/"+offer[0])}}>View Offer</Button>
+							</Col>
+						</Row>
+					</Card.Body>
+				</Card>
+			</div><br/></div>
 		)))
 	}
 
-    return (
+	const renderInterviewStatus = (interview) => {
+		if (interview.status === "Pending") {
+			return <Card.Text>You have an interview offer!</Card.Text>
+		} else if (interview.status == "Accepted") {
+			return <Card.Text>You have an interview on {interview.interview_date} at {interview.interview_time} </Card.Text>
+		} else if (interview.status == "Declined") {
+			return <Card.Text>You declined this interview</Card.Text>
+		} else {
+			return <Card.Text>(old status field)</Card.Text>
+		}
+	}
+
+	const renderInterviews = () => {
+		return loading_apps===true? (
+			<div style={{
+				position: 'absolute', left: '50%', top: '50%',
+				transform: 'translate(-50%, -50%)'
+				}}>
+				<CircularProgress/>
+			</div>
+		) : (interviews.map((interview) => (
+			<div><div style={{display: 'flex', justifyContent: 'center'}}>
+				<Card style={{width:"60%"}}>
+					<Card.Body>
+						<Row>
+							<Col>
+								<Card.Title>{interview[3].title}</Card.Title>
+								<Card.Text>{interview[3].company} | {interview[3].job_type}</Card.Text>
+								{renderInterviewStatus(interview[1])}
+							</Col>
+							<Col style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+								<Button onClick={() => {history.push("/interview/"+interview[0])}}>View Interview</Button>
+							</Col>
+						</Row>
+					</Card.Body>
+				</Card>
+			</div><br/></div>
+		)))
+	}
+
+	const renderAppStatus = (status) => {
+		if (status === "pending") {
+			return <Card.Text>Your application is being reviewed by the recruiter</Card.Text>
+		} else if (status == "dismissed") {
+			return <Card.Text>This application has been dismissed</Card.Text>
+		} else if (status == "offer") {
+			return <Card.Text>You have an offer for this application!</Card.Text>
+		} else if (status == "interview") {
+			return <Card.Text>You have an interview for this application!</Card.Text>
+		} else {
+			return <Card.Text>{status}</Card.Text>
+		}
+	}
+
+	const renderApplications = () => {
+		return loading_apps===true? (
+			<div style={{
+				position: 'absolute', left: '50%', top: '50%',
+				transform: 'translate(-50%, -50%)'
+				}}>
+				<CircularProgress/>
+			</div>
+		) : (applications.map((application) => (
+			<div><div style={{display: 'flex', justifyContent: 'center'}}>
+				<Card style={{width:"60%"}}>
+					<Card.Body>
+						<Row>
+							<Col>
+								<Card.Title>{application[3].title}</Card.Title>
+								<Card.Text>{application[3].company} | {application[3].job_type}</Card.Text>
+								{renderAppStatus(application[1].status)}
+							</Col>
+							<Col style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+								<Button onClick={() => {history.push("/viewapplication/"+application[2]+"/"+application[0])}}>View Application</Button>
+								&nbsp;&nbsp;&nbsp;
+								<Button onClick={() => {history.push("/advertisement/"+application[2])}}>View Job</Button>
+							</Col>
+						</Row>
+					</Card.Body>
+				</Card>
+			</div><br/></div>
+		)))
+	}
+
+	return loading ? (
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
+	) : (
 		<Grid>      
 			<Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': false},
-						{'text':'Your Applications','href': '/offers', 'active': true},         
+						{'text':'Your Applications','href': '/yourapplications', 'active': true},         
 						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 				</Col >
 				<Col>	
@@ -208,23 +281,19 @@ export default function Offers() {
 						<Tab label="Applications" style={{marginRight:200}}/>
 						<Tab label="Interviews" />
 						<Tab label="Offers"  style={{marginLeft:200}}/>
-      				</Tabs>
+	  				</Tabs>
 					  <TabPanel value={value} index={0}>
 						<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 							Your Applications
 						</Typography>
-						<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
-							{renderApplications()}
-						</div>
+						{renderApplications()}
 					</TabPanel>
 
 					<TabPanel value={value} index={1} >
 						<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 							Your Interviews
 						</Typography>
-						<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
-							{renderInterviews()}
-						</div>
+						{renderInterviews()}
 					</TabPanel>
 
 
@@ -232,9 +301,7 @@ export default function Offers() {
 						<Typography variant="h4"  style={{color: 'black', textAlign: "center",marginTop:20, marginBottom:20 }}>
 							Your Offers
 						</Typography>
-						<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
-							{renderOffers()}
-						</div>
+						{renderOffers()}
 					</TabPanel>
 				</Col>
 			</Row>

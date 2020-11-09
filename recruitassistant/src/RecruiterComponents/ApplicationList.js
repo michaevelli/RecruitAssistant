@@ -3,6 +3,7 @@ import  'bootstrap/dist/css/bootstrap.css';
 import {IconButton, Button, Grid, Card, CardContent, CardActions, TextField} from "@material-ui/core";
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import {Form, Col, Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
@@ -23,6 +24,7 @@ export default function ApplicationList({match}) {
 	const recruiterID = sessionStorage.getItem("uid")
 	const history = useHistory();
 	const [loading, setLoading] = useState(true);
+	const [loadingApps, setLoadingApps] = useState(true);
 	const [applications, setApplications] = useState([])
 	const [inviteList, setInviteList] = useState({})
 	const [job, setJob] = useState([])
@@ -62,6 +64,7 @@ export default function ApplicationList({match}) {
 	};
 
 	const getApplications = async () => {
+		console.log(jobID)
 		const url = `${applicationUrl}`
 		await axios.get(url, {
 			params: {
@@ -70,8 +73,9 @@ export default function ApplicationList({match}) {
 		})
 			.then(res => {
 				initialise(res.data.applications)
-				console.log("applications: ", res.data.applications)
-				console.log("response: ", res)
+				setLoadingApps(false)
+				// console.log("applications: ", res.data.applications)
+				// console.log("response: ", res)
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
@@ -188,8 +192,7 @@ export default function ApplicationList({match}) {
 					first_name: applications[i][1]["first_name"],
 					last_name: applications[i][1]["last_name"],
 					date: inviteList[jobseeker]["date"],
-					time: inviteList[jobseeker]["time"],
-					status: 'pending'
+					time: inviteList[jobseeker]["time"]
 				})
 			}
 
@@ -281,10 +284,18 @@ export default function ApplicationList({match}) {
 		
 	}
 	const renderApplications = (status) => {
-		if( applications.length==0){
-			return (	
-				<p style={{marginLeft: 500,marginTop:200}}>No Applications.</p>	
+		if (loadingApps) {
+			return (
+				<div style={{
+					position: 'absolute', left: '50%', top: '50%',
+					transform: 'translate(-50%, -50%)'
+					}}>
+					<CircularProgress/>
+				</div>
 			)
+		}
+		if( applications.length==0){
+			return <p style={{marginLeft: 500,marginTop:200}}>No Applications.</p>
 		}
 		if (selection > 0) {
 			return applications.slice(0, selection).map((app, index) => (
@@ -406,7 +417,12 @@ export default function ApplicationList({match}) {
 	};
 
 	return loading ? (
-		<div></div>
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
 	) : (
 		job.map((detail) => (
 			<Grid>
@@ -414,13 +430,13 @@ export default function ApplicationList({match}) {
 				<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 					<Col sm="2">
 					<SideMenu random={[
-							{'text':'Job View','href': '#','active': false,
+							{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
+							{'text': detail[1].title,'href': '#','active': false,
 							'nested':[
 								{'text':'Applications','href': '#','active': true},
 								{'text':'Interviews','href': `/interviews/${jobID}`,'active': false},
 								{'text':'Offers','href': `/offers/${jobID}`,'active': false},
 							]},
-							{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
 							{'text':'FAQ','href':'/recruiterFAQ','active': false}
 						]}/>
 					</Col>

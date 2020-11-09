@@ -62,7 +62,7 @@ def post_application():
 					'qualities_met':json_data["qualities_met"],
 					'submitted_docs': json_data["submitted_docs"],
 					'jobseeker_id':json_data["jobseeker_id"],
-					'status': "active" # status can be active or dismissed
+					'status': "pending" # status can be active or dismissed
 				},
 			})
 		return jsonify({'message': f'Successfully created application {application_uid}'}),200
@@ -185,10 +185,6 @@ def get_recruiter_posts(recruiterid):
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
-
-
-
-
 # gets a sorted list of applications for a job
 @app.route('/applicationslist', methods=["GET"])
 def get_applications_for_job():
@@ -198,11 +194,10 @@ def get_applications_for_job():
 		applications=[]
 		# print(list(post.items().index("qualities_met")))
 		for key,val in post.items():
-			# print(key)
 			# sort on how many qualifications are met
 			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get('qualities_met'))
 			for appid in sortedApps:
-				if val.get(appid).get('status') == "active":
+				if val.get(appid).get('status') == "pending":
 			 		applications.append((appid, val.get(appid)))
 		
 		#print(applications)

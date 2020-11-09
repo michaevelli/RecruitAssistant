@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link,Slider, Grid,Card,CardContent,Button,CardActions ,TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
-import {Form,Container,Col,Row,Collapse} from 'react-bootstrap';
+import {Link,Slider, Grid,TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
+// Card,CardContent,Button,CardActions
+import CircularProgress from '@material-ui/core/CircularProgress';
+import {Form,Container,Col,Row,Collapse, Card, Button} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -19,12 +21,15 @@ export default function JobSeekerDashboard() {
 	const [searchString,setSearchString] = useState('');
 	const [location,setLocation] = useState('');
 	const [jobType,setJobType] = useState('');
+	const [jobStatus,setJobStatus] = useState('open');
 	const [experienceLevel,setExperienceLevel] = useState('');
 	//salary range units are in k/$1000
 	const [salaryRange,setSalaryRange] = useState([0,200]);
 	//open is used to toggle advanced filters div
 	const [open, setOpen]=useState(false)
 	const [jobs, setJobs]=useState([])
+	const [openJobs, setOpenJobs]=useState([])
+	const [closedJobs, setClosedJobs]=useState([])
 
 	//marks are labels on the salary range slider
 	const marks = [
@@ -49,12 +54,27 @@ export default function JobSeekerDashboard() {
 			})
 	}
 
+	const sortJobs = (allJobs) => {
+		setJobs(allJobs)
+		const tempOpen = []
+		const tempClosed = []
+		for (var i = 0; i < allJobs.length; i++) {
+			if (allJobs[i][1].status === "open") {
+				tempOpen.push(allJobs[i])
+			} else {
+				tempClosed.push(allJobs[i])
+			}
+		}
+		setOpenJobs(tempOpen)
+		setClosedJobs(tempClosed)
+	}
+
 	const getJobs = async () => {
 		const url = `${jobUrl}open`
 		console.log(url)
 		await axios.get(url)
 			.then(res => {
-				setJobs(res.data.jobs)
+				sortJobs(res.data.jobs)
 				console.log("response: ", res)
 			})
 			.catch((error) => {
@@ -79,7 +99,7 @@ export default function JobSeekerDashboard() {
 		console.log(ndata)
 		axios.post(url, ndata)
 			.then(function(response) {
-				setJobs(response.data.jobs)
+				sortJobs(response.data.jobs)
 				console.log(response)
 			})
 			.catch(function(error) {
@@ -100,7 +120,7 @@ export default function JobSeekerDashboard() {
 			console.log(ndata)
 			axios.post(url, ndata)
 				.then(function(response) {
-					setJobs(response.data.jobs)
+					sortJobs(response.data.jobs)
 					console.log(response)
 				})
 				.catch(function(error) {
@@ -121,33 +141,56 @@ export default function JobSeekerDashboard() {
 		setSalaryRange([0,200])
 	}
 
+	function truncateText(text) {
+		if (text.length > 180) {
+			return text.slice(0, 180) + "..."
+		}
+		return text
+	}
+
 	const renderJobs = () => {
-		return jobs.length===0? (<p style={{marginLeft:400,marginTop:100}}> No results</p>) : (jobs.map((job) => (
-			<Card style={{margin: 30, height: 180, width:250}}>
-				<CardContent>                          
-					<Typography variant="h5" component="h2">
-						{job[1].title}
-					</Typography>
-					<Typography color="textSecondary">
-						{job[1].company} | {job[1].location}
-					</Typography>
-				</CardContent>
-				<CardActions >
-					<Typography 
-					style={ job[1].status=='open'? 
-					{color: 'green'} : {color:'red'}}>
-						{job[1].status}
-					</Typography>
-					<Link href= {`/advertisement/${job[0]}`} style={{marginLeft: 30}}>
-							View Advertisement
-					</Link>
-				</CardActions>
-			</Card>
+		var selectedJobs = []
+		if (jobStatus === "open") {
+			selectedJobs = openJobs
+		} else if (jobStatus === "closed") {
+			selectedJobs = closedJobs
+		} else {
+			selectedJobs = jobs
+		}
+		return selectedJobs.length===0? (<p style={{marginLeft:400,marginTop:100}}> No results</p>) : (selectedJobs.map((job) => (
+			<div><div style={{display: 'flex', justifyContent: 'center'}}>
+				<Card style={ job[1].status=='open'? 
+					{width:"80%", height:"200px"} : 
+					{backgroundColor:'lightgrey', opacity:"0.5", width:"80%", height:"200px"}} >
+					<Card.Body>
+						<Row>
+							<Col>
+								<Card.Title><Link href={"/advertisement/"+job[0]}>{job[1].title}</Link></Card.Title>
+								<Card.Text style={{fontStyle: 'italic'}}>{job[1].company} | {job[1].location} | {job[1].job_type}</Card.Text>
+								<Card.Text>{truncateText(job[1].description)}</Card.Text>
+							</Col>
+							<Col xs={4}>
+								<div style={{textAlign:'right'}}>
+									{job[1].status == "open" ? 
+											<Card.Text>Closing date: {job[1].closing_date}</Card.Text> :
+											<Card.Text>This job is closed</Card.Text>
+									}
+								</div>
+							</Col>
+						</Row>
+					</Card.Body>
+				</Card>
+			</div><br/></div>
 		)))
 	}
 
 	return loading ? (
-		<div></div>
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
 	) : (
 		<Grid>      
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
@@ -155,7 +198,7 @@ export default function JobSeekerDashboard() {
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '#', 'active': true},
-						{'text':'Your Applications','href': '/offers', 'active': false},       
+						{'text':'Your Applications','href': '/yourapplications', 'active': false},       
 						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 				</Col >
 				<Col>
@@ -164,6 +207,15 @@ export default function JobSeekerDashboard() {
 					</Typography>
 					<Form onSubmit={handleSubmit}>
 						<Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>
+							<FormControl variant="outlined" style={{ margin: 8 , flexBasis:'10%'}}>
+								<InputLabel>Status</InputLabel>
+								<Select autoWidth={true} value={jobStatus} onChange={e=> setJobStatus(e.target.value)} label="Status">
+									<MenuItem value='open'>Open</MenuItem>
+									<MenuItem value='open and closed'>Open and Closed</MenuItem>
+									<MenuItem value='closed'>Closed</MenuItem>
+								</Select>
+							</FormControl>
+									
 							<TextField size="small"
 								onChange={ (event) => setSearchString(event.target.value)}
 								style={{ margin: 8 }}
@@ -239,9 +291,14 @@ export default function JobSeekerDashboard() {
 							</div>
 						</Collapse>
 					</Form>
-					<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
+					{/* <Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
+						All Jobs
+					</Typography> */}
+					<br/><br/>
+					<Container>{renderJobs()}</Container>
+					{/* <div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
 						{renderJobs()}
-					</div>
+					</div> */}
 				</Col>
 			</Row>
 		</Grid>

@@ -7,17 +7,13 @@ export const authUrl="http://localhost:5000/auth"
 
 
 export default async function checkAuth(token) {
-	// const history = useHistory();
-	// const [success, setSuccess] = useState(false);
 	var success = false;
 	var userID = "";
 	var userInfo = {};
 	const ndata = {
-		token: token
+		token: token,
+		refreshToken: window.localStorage.getItem("refreshToken")
 	}
-	// alert(ndata)
-	// const header = new Headers();
-	// header.append('Access-Control-Allow-Origin', '*');
 
 	await axios.post(authUrl, ndata)
 		.then(function(response) {
@@ -25,6 +21,8 @@ export default async function checkAuth(token) {
 			success = true
 			userID = response.data.uid
 			userInfo = response.data.user_info
+			var token = response.data.token
+			window.localStorage.setItem("token", token)
 			window.sessionStorage.setItem("uid", userID)
 		})
 		.catch(function(error) {

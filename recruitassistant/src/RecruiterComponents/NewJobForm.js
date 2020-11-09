@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import {IconButton,Grid,Button,TextField} from "@material-ui/core";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
@@ -15,6 +16,7 @@ export const jobUrl="http://localhost:5000/jobadverts"
 
 export default function NewJobForm() {
 	const history = useHistory();
+	const [loading, setLoading] = useState(true);
 	const today = new Date()	
 
 	//Used for form validation
@@ -49,6 +51,7 @@ export default function NewJobForm() {
 				if (!response.success || response.userInfo["type"] != "recruiter") {
 					history.push("/unauthorised");
 				}
+				setLoading(false)
 			})
 	}
 
@@ -133,13 +136,21 @@ export default function NewJobForm() {
 		}
 	}
 
-	return (
+	return loading ? (
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
+	) : (
 		<Grid>
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
 					<SideMenu random={[
-						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': true},
+						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
+						{'text':'Post a new job','href': '/createJobPost','active': true},
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 

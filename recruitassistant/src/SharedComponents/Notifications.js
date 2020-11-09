@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
-import { TextField, Button, Grid, Modal, Dialog, Fade, Backdrop,CardContent, CardActions } from "@material-ui/core";
-import Typography from '@material-ui/core/Typography';
+import { Button, Grid, List,CardContent, CardActions, Typography } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -36,8 +35,6 @@ export default function Notifications() {
   const [notif, setNotif] = useState([])
   const [notifLength, setLength] = useState(0)
   const [open, setOpen] = useState(false)
-  const classes = useStyles()
-  const [seen, setSeen] = useState([])
   const [anchorEl, setAnchorEl] = useState(null);
 
   const checkUrl = "http://localhost:5000/checknotif"
@@ -139,20 +136,72 @@ export default function Notifications() {
     setAnchorEl(null);
   }
 
+  const renderNotifText = (type, url) => {
+    if (type == "offer update") {
+      return (
+        <Typography color="textSecondary">
+          Your <Link href={url}>job offer</Link> has been updated!
+        </Typography>
+      )
+    } else if (type == "accepted offer") {
+      return (
+        <Typography color="textSecondary">
+          Your <Link href={url}>job offer</Link> has been accepted!
+        </Typography>
+      )
+    } else if (type == "counter offer") {
+      return (
+        <Typography color="textSecondary">
+          Your job offer has received a <Link href={url}>counter offer</Link>
+        </Typography>
+      )
+    } else if (type == "interview") {
+      return (
+        <Typography color="textSecondary">
+          You have a new <Link href={url}>interview</Link>!
+        </Typography>
+      )
+    } else if (type == "accepted interview") {
+      return (
+        <Typography color="textSecondary">
+          Your <Link href={url}>interview</Link> has been accepted!
+        </Typography>
+      )
+    } else if (type == "declined interview") {
+      return (
+        <Typography color="textSecondary">
+          Your <Link href={url}>interview</Link> has been declined
+        </Typography>
+      )
+    } else if (type == "declined offer") {
+      return (
+        <Typography color="textSecondary">
+          Your <Link href={url}>job offer</Link> has been declined
+        </Typography>
+      )
+    } else if (type == "rejected offer") {
+      return (
+        <Typography color="textSecondary">
+          Your <Link href={url}>job offer</Link> has been rejected
+        </Typography>
+      )
+    }
+  }
+
 
   const renderNotif = () => {
     if(notif.length == 0){
       return ( 
-        <>
+        <List style={{'textAlign': 'center'}}>
           <Typography color="textSecondary">
             Nothing to view!
           </Typography>
-        </>
+        </List>
       )
     }
     else{
       return notif.map(data => (
-        <Card style={{margin: 2}}>
+        <Card style={data[1].seen?{backgroundColor:'lightgrey', opacity:"0.7", margin: 2}:{margin: 2}}>
           <CardContent>
           <CardActions style={{ width: '100%', justifyContent: 'flex-end' }}>
             <IconButton aria-label="delete" onClick={() => {deleteNotif(data[0])}}>
@@ -163,7 +212,8 @@ export default function Notifications() {
             <Grid>
               <Row>
                 <Col>
-                  <Typography variant="h5" component="h2">
+                {renderNotifText(data[1].type, data[1].url)}
+                  {/* <Typography variant="h5" component="h2">
                     Hi {localStorage.getItem("name")}!
                   </Typography>
                   <br></br>
@@ -182,7 +232,7 @@ export default function Notifications() {
                   <Typography color="textSecondary">
                     Regards,
                     RecruitAssistant Team.
-                  </Typography>
+                  </Typography> */}
                   <br></br>
                   <Typography color="textSecondary">
                     {data[1].date_time}
@@ -210,10 +260,14 @@ export default function Notifications() {
         keepMounted
         open={open}
         onClose={handleClose}
+        getContentAnchorEl={null}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+        transformOrigin={{vertical: 'top', horizontal: 'center'}}
         PaperProps={{
           style: {
-            // maxHeight: ITEM_HEIGHT * 4.5,
-            width: '300px',
+            // maxHeight: '400px',
+            // marginTop: '30px',
+            width: '400px',
           },
         }}
       >

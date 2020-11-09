@@ -9,11 +9,13 @@ def check_token():
 	try:
 		user = auth.verify_id_token(data["token"])
 		user_uid = user["uid"]
-		print(data["token"])
-		# print(user_uid)
 		user_info = ref.child('user').order_by_key().equal_to(user_uid).get()[user_uid]
-		print("---user info ---" + str(user_info))
-		return jsonify({'message': 'Successfully verified', 'uid': user_uid, 'user_info': user_info}),200
+		# print("---user info ---" + str(user_info))
+		# refresh token
+		user = pb.auth().refresh(data['refreshToken'])
+		token = user['idToken']
+		# print(token)
+		return jsonify({'message': 'Successfully verified', 'uid': user_uid, 'user_info': user_info, 'token':token}),200
 	except Exception as e:
 		print(e)
 		return jsonify({'message': 'Token verification failed'}),400
@@ -68,15 +70,18 @@ def login():
 
 		# login with email password
 		response = fAuth.sign_in_with_email_and_password(email, password)
-		token = fAuth.refresh(response['refreshToken'])['idToken']
+		refresh = fAuth.refresh(response['refreshToken'])
+		token = refresh['idToken']
+		refreshToken = refresh['refreshToken']
 
 		# retrieve user data
 		data = db.child("user").order_by_child("email").equal_to(email).get()
 		user = list(data.val().items())[0][1]
 
-		return jsonify({"token": token, "type": user["type"], "name":user["first_name"]}), 200
+		return jsonify({"token": token, "refreshToken": refreshToken, "type": user["type"], "name":user["first_name"]}), 200
 
 	except Exception as e:
+		print(e)
 		error_message = json.loads(e.args[1])['error']['message']
 		error_code = json.loads(e.args[1])['error']['code']
 		
