@@ -4,7 +4,7 @@ import {IconButton, Button, Grid, Card, CardContent, CardActions, TextField} fro
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {Form, Col, Row} from 'react-bootstrap';
+import {Form, Col, Row,Modal} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -29,6 +29,17 @@ export default function ApplicationList({match}) {
 	const [inviteList, setInviteList] = useState({})
 	const [job, setJob] = useState([])
 	const [selection, setSelection] = useState()
+
+	//for the single interview invite modal
+	const [show, setShow] = useState(false);
+	//the application the modal is for
+	const [singleInviteApp, setSingleInviteApp]=useState(null);
+	const handleClose = () => setShow(false);
+	const handleShow = () => setShow(true);
+
+	//controls if interview time date fields on all cards are hidden
+	//is true when sending to an invite list
+	const [showFields, setShowFields]= useState(false)
 
 	useEffect(() => {
 		auth();
@@ -167,6 +178,8 @@ export default function ApplicationList({match}) {
 			.then(res => {
 				console.log("response: ", res)
 				alert("Interview Successfully Sent")
+				//Close dialog box
+				handleClose()
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
@@ -203,7 +216,8 @@ export default function ApplicationList({match}) {
 			await axios.post(interviewUrl, data)
 			.then(res => {
 				console.log("response: ", res)
-				alert("Interview Successfully Sent")
+				alert("Interviews Successfully Sent")
+				showFields(false)
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
@@ -264,25 +278,7 @@ export default function ApplicationList({match}) {
 		setApplications(list)
 	}
 
-	const singleInterviewInviteModal=()=>{
 
-		return
-		(<Modal.Dialog>
-			<Modal.Header closeButton>
-			<Modal.Title>Interview Invite</Modal.Title>
-			</Modal.Header>
-		
-			<Modal.Body>
-			<p>Modal body text goes here.</p>
-			</Modal.Body>
-		
-			<Modal.Footer>
-			<Button variant="secondary">Cancel</Button>
-			<Button variant="primary">Send</Button>
-			</Modal.Footer>
-		</Modal.Dialog>);
-		
-	}
 	const renderApplications = (status) => {
 		if (loadingApps) {
 			return (
@@ -327,13 +323,86 @@ export default function ApplicationList({match}) {
 										<Col>
 											<Row>
 												<ButtonToolbar>
-													<Button disabled = {status === "open"} 
+													<Button
+													id="open_invite_modal_app[0]"
+													disabled = {status === "open"} 
 													variant="contained" 
 													color="secondary"
 													style={{marginRight:10, margnLeft:10}}
-													onClick={() => {postInterview(app)}}> 
+													onClick={() =>{
+														setSingleInviteApp(app)
+														handleShow()
+													}}> 
 															Interview
 													</Button>
+
+													<Modal id={"interview_modal_" + app[0]} show={show} onHide={handleClose} animation={false}>
+													
+														<Modal.Header closeButton>
+															<Modal.Title>Interview Invite</Modal.Title>
+														</Modal.Header>
+													
+														<Modal.Body>
+														<Row style = {{marginTop: 15, width: 500}}>
+															<Form inline >
+																<Col style = {{marginLeft: 1, height: 25, width: 250}}>
+																	<Form.Row>
+																	<Form.Group controlId={"single_interview_date_" + app[0]}>
+																		<Form.Label>Interview Date: </Form.Label>
+																		<TextField 
+																			className={
+																				!datevalidator(app[1].jobseeker_id)
+																					? "form-control is-invalid"
+																					: "form-control"
+																			}
+																			required
+																			id={"single_interview_date_" + app[0]}
+																			type="date"
+																			min={today}
+																			value={inviteList[app[1].jobseeker_id]["date"]}
+																			onChange={ (event) => handleDate(event.target.value, app[1].jobseeker_id, app)}/>
+																			<Form.Control.Feedback type="invalid">
+																				Please enter a date in the future
+																			</Form.Control.Feedback>
+																	</Form.Group>
+																	</Form.Row>
+																</Col>
+																<Col style = {{marginLeft: 30, height: 25, width: 250}}>
+																	<Form.Row>
+																	<Form.Group controlId={"single_interview_date_" + app[0]}>
+																		<Form.Label>Interview Time: </Form.Label>
+																		<TextField
+																			className={
+																				!timevalidator(app[1].jobseeker_id)
+																					? "form-control is-invalid"
+																					: "form-control"
+																			}
+																			required
+																			id={"interview_time_" + app[0]}
+																			type="time"
+																			value={inviteList[app[1].jobseeker_id]["time"]}
+																			onChange={ (event) => handleTime(event.target.value, app[1].jobseeker_id, app)}/>
+																			<Form.Control.Feedback type="invalid">
+																				Please enter a time
+																			</Form.Control.Feedback>
+																	</Form.Group>
+																	</Form.Row>
+																</Col>
+															</Form>	
+														</Row>
+														</Modal.Body>
+
+														<Modal.Footer>
+														<Button variant="secondary" onClick={handleClose}>Cancel</Button>
+														<Button variant="primary" 
+														id={"interview_modal_" + app[0]} 
+														onClick={()=>{
+															postInterview(app)
+														}}>Send</Button>
+														</Modal.Footer>
+													
+												</Modal>
+
 													<Button variant="contained" 
 													color="secondary" 
 													style={{marginRight:10, margnLeft:10}}>
@@ -350,7 +419,7 @@ export default function ApplicationList({match}) {
 												</ButtonToolbar>
 											</Row>
 											<Row style = {{marginTop: 15, width: 500}}>
-												<Form inline hidden = {status == "open"}>
+												<Form inline hidden = {status == "open" || showFields===false}>
 													<Col style = {{marginLeft: 1, height: 25, width: 250}}>
 														<Form.Row>
 														<Form.Group controlId={"interview_date_" + app[0]}>
@@ -440,7 +509,7 @@ export default function ApplicationList({match}) {
 							{'text':'FAQ','href':'/recruiterFAQ','active': false}
 						]}/>
 					</Col>
-
+						
 					<Col sm="9">
 						<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 							{detail[1].title} @ {detail[1].company} <span style={{color: detail[1].status==="open"? 'green':'red'}}>
@@ -460,13 +529,27 @@ export default function ApplicationList({match}) {
 											placeholder={applications.length}
 											disabled = {detail[1].status === "open"}
 											//if user backspaces so box is empty, it should show all apps again
-											onChange = { (event) => setSelection(Math.min(event.target.value, applications.length))}/>
+											onChange = { (event) => setSelection(event.target.value===''? applications.length: Math.min(event.target.value, applications.length))}/>
 									</Form.Group>
 									  applicants
 								</Form>
 							</Col>
 							<Col>
-								<Button disabled = {detail[1].status === "open"} variant="contained" color="secondary" onClick={() => {postInterviews()}}> Send Interviews to Top {selection}</Button>
+								<Button disabled = {detail[1].status === "open"}
+								variant="contained" 
+								color="secondary" 
+								onClick={() => {
+									if(showFields){
+										postInterviews()
+									}else{
+										setShowFields(true)
+									}
+									
+									}}> Send Interviews to Top {selection}</Button>
+								<Button disabled = {detail[1].status === "open"}
+								style={{visibility: showFields? 'inline':'hidden'}}
+								variant="contained" 
+								onClick={()=>setShowFields(false)}>Cancel</Button>
 							</Col>
 						</Row>
 						<Row>
