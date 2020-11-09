@@ -37,3 +37,8 @@ Week 7
 
 Week 8
 	Work on viewing/edit applications from backend, for job seeker
+	Sprint retrospective
+
+Week 9
+	Modify search functionality slightly
+	Final Report

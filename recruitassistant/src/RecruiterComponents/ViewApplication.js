@@ -106,11 +106,13 @@ export default function ViewApplication() {
 			<Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
-					<SideMenu random={[
-                        usertype=="jobseeker"?
-                        ({'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true}):({'text':'Recruiter Dashboard','href': '/recruiterdashboard', 'active': true})
-                        ,
-						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
+                    {usertype=="jobseeker"?
+                   ( <SideMenu random={[{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
+                    {'text':'FAQ','href':'/jobSeekerFAQ','active': false}]}/>
+                    ) :(
+                    <SideMenu random={[{'text':'Recruiter Dashboard','href': '/recruiterdashboard', 'active': true},
+                    {'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>)
+                    }
 				</Col >
                 <Col>
                     <Typography component="div" style={{color: 'black', margin: 50}}>

@@ -18,6 +18,7 @@ export default function TitleBar() {
 	}
 
 	return(
+	
 		<nav className="navbar navbar-dark fixed-top flex-md-nowrap p-0 shadow"
 			style={{"backgroundColor": '#348360'}}>
 			<img
@@ -40,5 +41,6 @@ export default function TitleBar() {
 				</li>
 			</ul>
 		</nav>
+		
 	);
 }
