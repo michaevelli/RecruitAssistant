@@ -150,7 +150,7 @@ export default function NewJobForm() {
 
                     <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
                         <Form.Group controlId="title">
-							<Form.Label column sm={2}>Title</Form.Label>
+							<Form.Label column sm={2}>Title*</Form.Label>
 							<Col sm={10}>
 								<Form.Control 
 									required
@@ -159,7 +159,7 @@ export default function NewJobForm() {
 							</Col>
 						</Form.Group>
 						<Form.Group controlId="company">
-							<Form.Label column sm={2}>Company</Form.Label>
+							<Form.Label column sm={2}>Company*</Form.Label>
 							<Col sm={10}>
 								<Form.Control
 								required
@@ -169,7 +169,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="location">
-							<Form.Label column sm={2}>Location</Form.Label>
+							<Form.Label column sm={2}>Location*</Form.Label>
 							<Col sm={10}>
 								<Form.Control 
 								required
@@ -179,7 +179,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="description">
-							<Form.Label column sm={2}>Description</Form.Label>
+							<Form.Label column sm={2}>Description*</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="textarea" rows="3" 
 								required
@@ -214,7 +214,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="jobType">
-						<Form.Label column sm={2}>Job Type</Form.Label>
+						<Form.Label column sm={2}>Job Type*</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
 								required
@@ -230,7 +230,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="experienceLevel">
-						<Form.Label column sm={2}>Experience Level</Form.Label>
+						<Form.Label column sm={2}>Experience Level*</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
 								required
@@ -249,7 +249,7 @@ export default function NewJobForm() {
 
 						<Form.Group controlId="salary">
 							<Form.Label column sm={2}>
-							Salary K/p.a
+							Salary K/p.a*
 							</Form.Label>
 							
 							<Col sm={10}>
@@ -275,7 +275,7 @@ export default function NewJobForm() {
 						
 						<Form.Group controlId="closingDate">
 							<Form.Label column sm={2}>
-							Application Closing Date</Form.Label>
+							Application Closing Date*</Form.Label>
 							<Col sm={10}>
 							<TextField 
 								className={

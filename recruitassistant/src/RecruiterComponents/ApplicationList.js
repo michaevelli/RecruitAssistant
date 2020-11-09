@@ -261,6 +261,25 @@ export default function ApplicationList({match}) {
 		setApplications(list)
 	}
 
+	const singleInterviewInviteModal=()=>{
+
+		return
+		(<Modal.Dialog>
+			<Modal.Header closeButton>
+			<Modal.Title>Interview Invite</Modal.Title>
+			</Modal.Header>
+		
+			<Modal.Body>
+			<p>Modal body text goes here.</p>
+			</Modal.Body>
+		
+			<Modal.Footer>
+			<Button variant="secondary">Cancel</Button>
+			<Button variant="primary">Send</Button>
+			</Modal.Footer>
+		</Modal.Dialog>);
+		
+	}
 	const renderApplications = (status) => {
 		if( applications.length==0){
 			return (	
@@ -272,7 +291,7 @@ export default function ApplicationList({match}) {
 				<Grid>
 					<Row>
 						<Col>
-							<Card style={{margin: 30, height: 225, width:550}}>
+							<Card style={{margin: 30, height: 240, width:550}}>
 								<CardContent>                          
 									<Grid>
 										<Row>
@@ -285,7 +304,7 @@ export default function ApplicationList({match}) {
 												</Typography>
 											</Col>
 											<Col>
-												<Link to={`/viewapplication/${jobID}/${app[0]}`} style={{marginLeft: 90}} >
+												<Link to={`/viewapplication/${jobID}/${app[0]}`} target="_blank" style={{marginLeft: 90}} >
 													View Application
 												</Link>
 											</Col>
@@ -322,7 +341,9 @@ export default function ApplicationList({match}) {
 											<Row style = {{marginTop: 15, width: 500}}>
 												<Form inline hidden = {status == "open"}>
 													<Col style = {{marginLeft: 1, height: 25, width: 250}}>
+														<Form.Row>
 														<Form.Group controlId={"interview_date_" + app[0]}>
+															<Form.Label>Interview Date: </Form.Label>
 															<TextField 
 																className={
 																	!datevalidator(app[1].jobseeker_id)
@@ -339,12 +360,12 @@ export default function ApplicationList({match}) {
 																	Please enter a date in the future
 																</Form.Control.Feedback>
 														</Form.Group>
+														</Form.Row>
 													</Col>
-													<Col style = {{marginRight: 1, height: 25, width: 250}}>
+													<Col style = {{marginLeft: 30, height: 25, width: 250}}>
+														<Form.Row>
 														<Form.Group controlId={"interview_time_" + app[0]}>
-															<Form.Label>
-																Time
-															</Form.Label>
+															<Form.Label>Interview Time: </Form.Label>
 															<TextField
 																className={
 																	!timevalidator(app[1].jobseeker_id)
@@ -360,6 +381,7 @@ export default function ApplicationList({match}) {
 																	Please enter a time
 																</Form.Control.Feedback>
 														</Form.Group>
+														</Form.Row>
 													</Col>
 												</Form>	
 											</Row>
@@ -419,15 +441,16 @@ export default function ApplicationList({match}) {
 											min = {1}
 											style={{width:80,margin:10}}
 											max = {applications.length}
-											placeholder='X'
+											placeholder={applications.length}
 											disabled = {detail[1].status === "open"}
-											onChange = { (event) => setSelection(event.target.value)}/>
+											//if user backspaces so box is empty, it should show all apps again
+											onChange = { (event) => setSelection(Math.min(event.target.value, applications.length))}/>
 									</Form.Group>
 									  applicants
 								</Form>
 							</Col>
 							<Col>
-								<Button disabled = {detail[1].status === "open"} variant="contained" color="secondary" onClick={() => {postInterviews()}}> Send Interview Invitations</Button>
+								<Button disabled = {detail[1].status === "open"} variant="contained" color="secondary" onClick={() => {postInterviews()}}> Send Interviews to Top {selection}</Button>
 							</Col>
 						</Row>
 						<Row>

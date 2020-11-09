@@ -69,7 +69,7 @@ export default function InterviewPage({match}) {
             console.log(interview_data)
             setDate(interview_data["interview_date"]);
             setTime(interview_data["interview_time"]);
-            setStatus(interview_data["status"] || 'pending'); 
+            setStatus(interview_data["status"] || 'Pending'); 
             setLoading(false)
         }).catch((error) => {
             console.log("error: ", error.response)
@@ -111,7 +111,7 @@ export default function InterviewPage({match}) {
                 <span style={{fontWeight: "bold"}}>Time:</span> {time}
             </Box>
             <br/>
-            {status=="pending" &&
+            {status=="Pending" &&
             <Box style={{marginTop: 50}}>
                 <Button variant="contained"  color="secondary" style={{marginRight:30,backgroundColor: 'green'}} onClick={()=>handleResponse("Accepted")}>
                 Accept
