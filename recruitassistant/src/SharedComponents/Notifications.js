@@ -47,7 +47,7 @@ export default function Notifications() {
       getData()
       const interval = setInterval(() => {
         getData()
-      }, 5000);
+      }, 300000);
       return () => clearInterval(interval);
     }, []);
 
@@ -185,6 +185,13 @@ export default function Notifications() {
           Your <Link href={url}>job offer</Link> has been rejected
         </Typography>
       )
+    } else {
+      return (
+        <Typography color="textSecondary">
+          {type}
+        </Typography>
+      )
+      
     }
   }
 
