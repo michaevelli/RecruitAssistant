@@ -24,6 +24,7 @@ def del_post():
         remove_list(ref.child('interviews').order_by_child('job_id').equal_to(post_id).get(), "interviews")
 
         # delete associated notifications
+        # do check in remove_list if there are associated notifs, delete notifs
         # remove_list(ref.child('notif').order_by_child('object_id').equal_to(post_id).get(), "notif")
 
         # delete associated applications
