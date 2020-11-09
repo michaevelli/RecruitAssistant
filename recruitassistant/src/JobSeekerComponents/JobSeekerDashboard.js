@@ -13,6 +13,7 @@ export const jobUrl="http://localhost:5000/jobadverts/"
 export const searchUrl="http://localhost:5000/search/"
 
 export default function JobSeekerDashboard() {
+	
 	const history = useHistory();
 	const [loading, setLoading] = useState(true);
 	const [searchString,setSearchString] = useState('');
@@ -60,7 +61,31 @@ export default function JobSeekerDashboard() {
 				console.log("error: ", error.response)
 			})
 	};
-
+	const clearSearch = async () =>{
+		setSearchString('');
+		setLocation('');
+		setJobType('');
+		setExperienceLevel('');
+		//salary range units are in k/$1000
+		setSalaryRange([0,200]);
+		const url = `${jobUrl}search`
+		const ndata={
+			search: '',
+			location: '',
+			exp: '',
+			jobtype: '',
+			salaryrange: [0,200]		
+		};
+		console.log(ndata)
+		axios.post(url, ndata)
+			.then(function(response) {
+				setJobs(response.data.jobs)
+				console.log(response)
+			})
+			.catch(function(error) {
+				console.log(error.response)
+			})
+	}
 	const handleSubmit= async (event) =>{
 			event.preventDefault();
 			const url = `${jobUrl}search`
@@ -97,7 +122,7 @@ export default function JobSeekerDashboard() {
 	}
 
 	const renderJobs = () => {
-		return jobs.map((job) => (
+		return jobs.length===0? (<p style={{marginLeft:400,marginTop:100}}> No results</p>) : (jobs.map((job) => (
 			<Card style={{margin: 30, height: 180, width:250}}>
 				<CardContent>                          
 					<Typography variant="h5" component="h2">
@@ -118,7 +143,7 @@ export default function JobSeekerDashboard() {
 					</Link>
 				</CardActions>
 			</Card>
-		))
+		)))
 	}
 
 	return loading ? (
@@ -144,23 +169,28 @@ export default function JobSeekerDashboard() {
 								style={{ margin: 8 }}
 								placeholder="Job Title, Company,Skills"
 								margin="normal"
+								value={searchString}
 								InputLabelProps={{shrink: true,}}
 								variant="outlined"/>
 							<TextField size="small"
 								onChange={ (event) => setLocation(event.target.value)}
 								style={{ margin: 8 }}
 								placeholder="Location"
+								value={location}
 								margin="normal"
 								InputLabelProps={{shrink: true,}}
 								variant="outlined"/>
-							<Button type="submit" variant="contained" style={{margin:10}}>
+							<Button type="submit" variant="contained" color="primary" style={{margin:10}}>
 								Search
+							</Button>
+							<Button onClick={()=>clearSearch()} variant="contained" style={{margin:10}}>
+								Clear
 							</Button>
 						</Col>
 
 						<Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>
 							<Link href="#" onClick={handleToggleFilters} aria-controls="filter-collapse" aria-expanded={open}>
-								Advanced Filters
+								Advanced Criteria
 							</Link>
 						</Col>
 
@@ -209,9 +239,6 @@ export default function JobSeekerDashboard() {
 							</div>
 						</Collapse>
 					</Form>
-					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
-						All Jobs
-					</Typography>
 					<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
 						{renderJobs()}
 					</div>

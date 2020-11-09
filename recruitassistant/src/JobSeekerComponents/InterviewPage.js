@@ -1,9 +1,9 @@
-import React, { useState,useEffect } from "react";
+import React, { useState,useEffect,useLayoutEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import {Grid,Button} from "@material-ui/core";
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
-import {Col,Row} from 'react-bootstrap';
+import {Col,Row,Alert} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import axios from "axios";
@@ -20,12 +20,36 @@ export default function InterviewPage({match}) {
     const [time, setTime]= useState('')
     const [date, setDate]= useState('')
     const [loading, setLoading]=useState(true)
+
+    //for alert bar
+    const [desc, setDesc] = useState('')
+    const [variant, setVariant]=useState('')
+    const [open, setOpen] = useState(false);
   
     useEffect(() => {
         auth();
         getInterviewDetails();
     },[]);
 
+    useLayoutEffect(() => {
+		updateAlert()
+    },[status]);
+
+    //update color/text of alert bar
+    const updateAlert = ()=>{
+		if(status==='Accepted'){
+			setVariant('success')	
+			setDesc("Interview invite has been accepted.")
+        }
+        else if(status==='Declined'){
+            setVariant('secondary')	
+			setDesc("Interview invite has been declined.")
+        }else{
+            setVariant('info')	
+			setDesc("Please respond to interview invite.")
+        }
+		setOpen(true)
+    }
     
     const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -51,14 +75,13 @@ export default function InterviewPage({match}) {
             console.log("error: ", error.response)
         })	
     }
-    //response can be "accepted" or "declined"
+    //response can be "Accepted" or "Declined"
     const handleResponse = async (response) => {
         //update interview status
         await axios.patch(interviewURL, {'status': response, 'id':interviewID})
         .then(res => {
             console.log("response: ", res)
-            alert("Interview response has been sent", response)
-            history.push("/offers")
+            window.location.reload()
         })
         .catch((error) => {
             console.log("error: ", error.response)
@@ -69,11 +92,14 @@ export default function InterviewPage({match}) {
     //if status is pending give option to accept/decline
     //else simply show the date and time info
     const interviewInfo = () => {
-        return status=="pending"? 
-        (
-        <Typography component="div" style={{color: 'black', margin: 50}}>
-            <Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
-                Interview Invite
+        return (
+        <div>
+        <Alert style={{visibility: (open? 'visible':'hidden'), margin:10}}  variant={variant} >
+            {desc}
+        </Alert>
+        <Typography component="div" style={{color: 'black', margin: 30}}>      
+            <Box fontSize="h4.fontSize" >
+                Interview Details
             </Box>
             <br/>
            
@@ -85,6 +111,7 @@ export default function InterviewPage({match}) {
                 <span style={{fontWeight: "bold"}}>Time:</span> {time}
             </Box>
             <br/>
+            {status=="pending" &&
             <Box style={{marginTop: 50}}>
                 <Button variant="contained"  color="secondary" style={{marginRight:30,backgroundColor: 'green'}} onClick={()=>handleResponse("Accepted")}>
                 Accept
@@ -93,27 +120,9 @@ export default function InterviewPage({match}) {
                 Decline
                 </Button>
             </Box>
+            }
         </Typography>
-        ):(
-           
-            <Typography component="div" style={{color: 'black', margin: 50}}>
-                <Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
-                    Interview Details
-                </Box>
-                <br/>
-                <Box fontSize="h5.fontSize">
-                    <span style={{fontWeight: "bold"}}>Date:</span> {date}
-                </Box>
-                <br/>
-                <Box fontSize="h5.fontSize">
-                    <span style={{fontWeight: "bold"}}>Time:</span> {time}
-                </Box>
-                <br/>
-                <Box fontSize="h5.fontSize">
-                    <span style={{fontWeight: "bold"}}>Your response:</span> {status }
-                </Box>
-            </Typography>
-        )
+        </div> )
     }
 
     return (

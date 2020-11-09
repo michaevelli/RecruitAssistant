@@ -123,7 +123,7 @@ export default function EditJob({match}) {
 			experience_level:experienceLevel,
 			qualifications: qualifications,
 			required_docs: requiredDocs,
-			status: 'open',
+			status: today < Date.parse(closingDate)? 'open':'closed',
 			additional_questions: additionalQuestions,
 			responsibilities: responsibilities,
 			date_posted: datePosted,
@@ -142,16 +142,11 @@ export default function EditJob({match}) {
 			})	
 	};
 	
-	const datevalidator =()=>{
-		return closingDate !== "" && today < Date.parse(closingDate)
-	}
-
+	
 	const handleSubmit= async (event) =>{	
 		event.preventDefault();
 		const form = event.currentTarget;
-		const correct_date=datevalidator()
-		//Closing dates will always be after today, hence status is always 'open' for a new job
-		if (form.checkValidity() === false || correct_date==false) {	
+		if (form.checkValidity() === false) {	
 			event.stopPropagation();
 			setValidated(true);
 		}else{
@@ -175,8 +170,29 @@ export default function EditJob({match}) {
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						Edit Job
 					</Typography>
+					
 
 					<Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
+					
+					<Form.Group controlId="closingDate">
+							<Form.Label column sm={8}>
+							Application Closing Date </Form.Label>
+							<Col sm={10}>
+							<TextField
+								id="closingDate"
+								type="date"
+								min={today}
+								value={closingDate}
+								onChange={ (event) => 
+									setClosingDate(event.target.value)	
+								}
+								/>
+							<p style={{color: 'grey'}}>If you wish to close this job, select a date in the past.</p>
+							</Col>
+							
+						</Form.Group>
+						
+						
 						<Form.Group controlId="title">
 							<Form.Label column sm={2}>Title</Form.Label>
 							<Col sm={10}>
@@ -308,29 +324,7 @@ export default function EditJob({match}) {
 						</Form.Group>
 
 						
-						<Form.Group controlId="closingDate">
-							<Form.Label column sm={2}>
-							Application Closing Date</Form.Label>
-							<Col sm={10}>
-							<TextField 
-								className={
-									!datevalidator()
-										? "form-control is-invalid"
-										: "form-control"
-								}
-								id="closingDate"
-								type="date"
-								min={today}
-								value={closingDate}
-								onChange={ (event) => 
-									setClosingDate(event.target.value)	
-								}
-								/>
-								<Form.Control.Feedback type="invalid">
-									Please enter a date in the future
-								</Form.Control.Feedback>
-							</Col>
-						</Form.Group>
+						
 							
 						<Form.Group controlId="qualifications">
 							<Form.Label column sm={2}>
