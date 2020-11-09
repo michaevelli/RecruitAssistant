@@ -48,6 +48,7 @@ def post_offer_letter():
 					'counterable':json_data['counterable']
 				}
 			})
+		ref.child('jobApplications').child(json_data['jobadvert_id']).child(json_data['jobapplication_id']).child('status').set('offer')
 		return jsonify({'message': f'Successfully created offer {offer_uid}'}),200
 	except Exception as e:		
 		return jsonify({"message": str(e)}), 400
@@ -63,7 +64,7 @@ def get_offers_for_job():
 		for key,val in post.items():
 			offers.append((key, val))
 		
-		print(offers)
+		# print(offers)
 		return jsonify({'offers': offers}),200
  
 	except Exception as e:		

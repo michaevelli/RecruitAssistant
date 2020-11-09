@@ -3,6 +3,7 @@ import  'bootstrap/dist/css/bootstrap.css';
 import {IconButton, Button, Grid, Card, CardContent, CardActions, TextField} from "@material-ui/core";
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import {Form, Col, Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
@@ -23,6 +24,7 @@ export default function ApplicationList({match}) {
 	const recruiterID = sessionStorage.getItem("uid")
 	const history = useHistory();
 	const [loading, setLoading] = useState(true);
+	const [loadingApps, setLoadingApps] = useState(true);
 	const [applications, setApplications] = useState([])
 	const [inviteList, setInviteList] = useState({})
 	const [job, setJob] = useState([])
@@ -62,6 +64,7 @@ export default function ApplicationList({match}) {
 	};
 
 	const getApplications = async () => {
+		console.log(jobID)
 		const url = `${applicationUrl}`
 		await axios.get(url, {
 			params: {
@@ -70,8 +73,9 @@ export default function ApplicationList({match}) {
 		})
 			.then(res => {
 				initialise(res.data.applications)
-				console.log("applications: ", res.data.applications)
-				console.log("response: ", res)
+				setLoadingApps(false)
+				// console.log("applications: ", res.data.applications)
+				// console.log("response: ", res)
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
@@ -262,6 +266,19 @@ export default function ApplicationList({match}) {
 	}
 
 	const renderApplications = (status) => {
+		if (loadingApps) {
+			return (
+				<div style={{
+					position: 'absolute', left: '50%', top: '50%',
+					transform: 'translate(-50%, -50%)'
+					}}>
+					<CircularProgress/>
+				</div>
+			)
+		}
+		if( applications.length==0){
+			return <p style={{marginLeft: 500,marginTop:200}}>No Applications.</p>
+		}
 		if (selection > 0) {
 			return applications.slice(0, selection).map((app, index) => (
 				<Grid>
@@ -379,7 +396,12 @@ export default function ApplicationList({match}) {
 	};
 
 	return loading ? (
-		<div></div>
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
 	) : (
 		job.map((detail) => (
 			<Grid>
@@ -387,34 +409,38 @@ export default function ApplicationList({match}) {
 				<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 					<Col sm="2">
 					<SideMenu random={[
-							{'text':'Job View','href': '#','active': false,
+							{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
+							{'text': detail[1].title,'href': '#','active': false,
 							'nested':[
 								{'text':'Applications','href': '#','active': true},
 								{'text':'Interviews','href': `/interviews/${jobID}`,'active': false},
 								{'text':'Offers','href': `/offers/${jobID}`,'active': false},
 							]},
-							{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
 							{'text':'FAQ','href':'/recruiterFAQ','active': false}
 						]}/>
 					</Col>
 
 					<Col sm="9">
 						<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
-							{detail[1].title} @ {detail[1].company}
+							{detail[1].title} @ {detail[1].company} <span style={{color: detail[1].status==="open"? 'green':'red'}}>
+							 ({detail[1].status}) </span>
 						</Typography>
 						<Row>
 							<Col sm = "8">
 								<Form inline>
-									<Form.Group controlId="selection" style ={{marginLeft:100}}>
+									<Form.Group controlId="selection" style ={{ marginLeft:100}}>
 										<Form.Label>Select top </Form.Label>
 										<Form.Control
 											required
 											type = "number"
 											min = {1}
+											style={{width:80,margin:10}}
 											max = {applications.length}
+											placeholder='X'
 											disabled = {detail[1].status === "open"}
 											onChange = { (event) => setSelection(event.target.value)}/>
 									</Form.Group>
+									  applicants
 								</Form>
 							</Col>
 							<Col>

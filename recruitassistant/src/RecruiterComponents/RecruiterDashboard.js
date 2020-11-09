@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import {Link, Button, Grid,Card,CardContent,CardActions } from "@material-ui/core";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import {Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
@@ -78,7 +79,12 @@ export default function RecruiterDashboard() {
 	}
 
 	return loading ? (
-		<div></div>
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
 	) : (
 		<Grid>
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
@@ -86,6 +92,7 @@ export default function RecruiterDashboard() {
 				<Col sm="2">
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '#','active': true},
+						{'text':'Post a new job','href': '/createJobPost','active': false},
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 

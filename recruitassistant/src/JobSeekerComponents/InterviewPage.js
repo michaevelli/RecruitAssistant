@@ -1,9 +1,10 @@
-import React, { useState,useEffect } from "react";
+import React, { useState,useEffect,useLayoutEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import {Grid,Button} from "@material-ui/core";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
-import {Col,Row} from 'react-bootstrap';
+import {Col,Row,Alert} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import axios from "axios";
@@ -13,21 +14,45 @@ import checkAuth from "../Authentication/Authenticate";
 export const interviewURL ="http://localhost:5000/interviews"
 
 export default function InterviewPage({match}) {
-    const history = useHistory()
-    const interviewID = match.params.interviewID;
+	const history = useHistory()
+	const interviewID = match.params.interviewID;
    
-    const [status, setStatus]= useState('')
-    const [time, setTime]= useState('')
-    const [date, setDate]= useState('')
-    const [loading, setLoading]=useState(true)
-  
-    useEffect(() => {
-        auth();
-        getInterviewDetails();
-    },[]);
+	const [status, setStatus]= useState('')
+	const [time, setTime]= useState('')
+	const [date, setDate]= useState('')
+	const [loading, setLoading]=useState(true)
 
-    
-    const auth = async () => {
+	//for alert bar
+	const [desc, setDesc] = useState('')
+	const [variant, setVariant]=useState('')
+	const [open, setOpen] = useState(false);
+  
+	useEffect(() => {
+		auth();
+		getInterviewDetails();
+	},[]);
+
+	useLayoutEffect(() => {
+		updateAlert()
+	},[status]);
+
+	//update color/text of alert bar
+	const updateAlert = ()=>{
+		if(status==='Accepted'){
+			setVariant('success')	
+			setDesc("Interview invite has been accepted.")
+		}
+		else if(status==='Declined'){
+			setVariant('secondary')	
+			setDesc("Interview invite has been declined.")
+		}else{
+			setVariant('info')	
+			setDesc("Please respond to interview invite.")
+		}
+		setOpen(true)
+	}
+	
+	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
@@ -36,90 +61,80 @@ export default function InterviewPage({match}) {
 					history.push("/unauthorised");
 				}
 			})
-    }
+	}
 
-    const getInterviewDetails = async () => {
-        await axios.get(`${interviewURL}/${interviewID}`)
-        .then(res => {   
-            const interview_data = res.data.interview
-            console.log(interview_data)
-            setDate(interview_data["interview_date"]);
-            setTime(interview_data["interview_time"]);
-            setStatus(interview_data["status"] || 'pending'); 
-            setLoading(false)
-        }).catch((error) => {
-            console.log("error: ", error.response)
-        })	
-    }
-    //response can be "accepted" or "declined"
-    const handleResponse = async (response) => {
-        //update interview status
-        await axios.patch(interviewURL, {'status': response, 'id':interviewID})
-        .then(res => {
-            console.log("response: ", res)
-            alert("Interview response has been sent", response)
-            history.push("/offers")
-        })
-        .catch((error) => {
-            console.log("error: ", error.response)
-            alert("An error occured, please try again")
-        })	
-        
-    }
-    //if status is pending give option to accept/decline
-    //else simply show the date and time info
-    const interviewInfo = () => {
-        return status=="pending"? 
-        (
-        <Typography component="div" style={{color: 'black', margin: 50}}>
-            <Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
-                Interview Invite
-            </Box>
-            <br/>
-           
-            <Box fontSize="h5.fontSize">
-                <span style={{fontWeight: "bold"}}>Date:</span> {date}
-            </Box>
-            <br/>
-            <Box fontSize="h5.fontSize">
-                <span style={{fontWeight: "bold"}}>Time:</span> {time}
-            </Box>
-            <br/>
-            <Box style={{marginTop: 50}}>
-                <Button variant="contained"  color="secondary" style={{marginRight:30,backgroundColor: 'green'}} onClick={()=>handleResponse("Accepted")}>
-                Accept
-                </Button>
-                <Button variant="contained" color="secondary" onClick={()=>handleResponse("Declined")}>
-                Decline
-                </Button>
-            </Box>
-        </Typography>
-        ):(
-           
-            <Typography component="div" style={{color: 'black', margin: 50}}>
-                <Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
-                    Interview Details
-                </Box>
-                <br/>
-                <Box fontSize="h5.fontSize">
-                    <span style={{fontWeight: "bold"}}>Date:</span> {date}
-                </Box>
-                <br/>
-                <Box fontSize="h5.fontSize">
-                    <span style={{fontWeight: "bold"}}>Time:</span> {time}
-                </Box>
-                <br/>
-                <Box fontSize="h5.fontSize">
-                    <span style={{fontWeight: "bold"}}>Your response:</span> {status }
-                </Box>
-            </Typography>
-        )
-    }
+	const getInterviewDetails = async () => {
+		await axios.get(`${interviewURL}/${interviewID}`)
+		.then(res => {   
+			const interview_data = res.data.interview
+			console.log(interview_data)
+			setDate(interview_data["interview_date"]);
+			setTime(interview_data["interview_time"]);
+			setStatus(interview_data["status"] || 'pending'); 
+			setLoading(false)
+		}).catch((error) => {
+			console.log("error: ", error.response)
+		})	
+	}
+	//response can be "Accepted" or "Declined"
+	const handleResponse = async (response) => {
+		//update interview status
+		await axios.patch(interviewURL, {'status': response, 'id':interviewID})
+		.then(res => {
+			console.log("response: ", res)
+			window.location.reload()
+		})
+		.catch((error) => {
+			console.log("error: ", error.response)
+			alert("An error occured, please try again")
+		})	
+		
+	}
+	//if status is pending give option to accept/decline
+	//else simply show the date and time info
+	const interviewInfo = () => {
+		return (
+		<div>
+		<Alert style={{visibility: (open? 'visible':'hidden'), margin:10}}  variant={variant} >
+			{desc}
+		</Alert>
+		<Typography component="div" style={{color: 'black', margin: 30}}>      
+			<Box fontSize="h4.fontSize" >
+				Interview Details
+			</Box>
+			<br/>
+		   
+			<Box fontSize="h5.fontSize">
+				<span style={{fontWeight: "bold"}}>Date:</span> {date}
+			</Box>
+			<br/>
+			<Box fontSize="h5.fontSize">
+				<span style={{fontWeight: "bold"}}>Time:</span> {time}
+			</Box>
+			<br/>
+			{status=="pending" &&
+			<Box style={{marginTop: 50}}>
+				<Button variant="contained"  color="secondary" style={{marginRight:30,backgroundColor: 'green'}} onClick={()=>handleResponse("Accepted")}>
+				Accept
+				</Button>
+				<Button variant="contained" color="secondary" onClick={()=>handleResponse("Declined")}>
+				Decline
+				</Button>
+			</Box>
+			}
+		</Typography>
+		</div> )
+	}
 
-    return (
-        loading? (<p> Loading...</p>):
-        (
-        <Grid>      
+	return loading ? (
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
+	) : (
+		<Grid>      
 			<Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
@@ -129,12 +144,11 @@ export default function InterviewPage({match}) {
 						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 				</Col >
 				<Col>	
-                {interviewInfo()}
-                </Col>
-            </Row>
-        </Grid>  
-        ) 
-    )
+				{interviewInfo()}
+				</Col>
+			</Row>
+		</Grid>
+	)
 }
   
   

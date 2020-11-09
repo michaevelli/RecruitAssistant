@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import {Grid} from "@material-ui/core";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import {Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
@@ -33,7 +34,12 @@ export default function RecruiterDashboard() {
 
 
 	return loading ? (
-		<div></div>
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
 	) : (
 		<Grid>
 			<Row noGutters fluid><TitleBar/></Row>
@@ -41,6 +47,7 @@ export default function RecruiterDashboard() {
 				<Col sm="2">
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
+						{'text':'Post a new job','href': '/createJobPost','active': false},
 						{'text':'FAQ','href':'#','active': true}]}/>
 				</Col>
 
@@ -52,8 +59,7 @@ export default function RecruiterDashboard() {
 						
                         <h style={{fontWeight: 'bold'}}> How do I see the interviews or offers I have sent?</h>
                         <p> On the Recruiter Dashboard click "view applications"
-                            on a job. You will be taken to a new page where you will find menu links
-                            to view interviews or offers related to this job.
+                            on a job. You will now see menu links for 'offers' and 'interviews' related to this job
                         </p>
 
                         <h style={{fontWeight: 'bold'}}>  Why can't I send interview invites? </h>
@@ -62,10 +68,20 @@ export default function RecruiterDashboard() {
                         </p>
                         <h style={{fontWeight: 'bold'}}>  Can I extend the closing date of a job advert? </h>
                         
-                        <p> Yes, click 'Edit Job' on a job from the recruiter dashboard.
+                        <p> Yes, click 'Edit Job' on a job from the recruiter dashboard, and update the closing date field.
                         </p>
+						<h style={{fontWeight: 'bold'}}>  How can I close an open job? </h>
+                        
+                        <p> Click 'Edit Job' on the job from the recruiter dashboard, and update the closing date field.
+                        </p>
+
+						<h style={{fontWeight: 'bold'}}>  What are counter offers? </h>
+						<p> When generating an offer letter for a candidate you may choose to make the offer counterable. This means
+							the candidate can reply with proposed changes to the offer (e.g. salary, days of work)
+							and you may then edit the original offer if you wish.
+						</p>
                         <br />
-                        <p style={{fontWeight: 'bold',fontStyle: 'italic'}}> More Questions? Contact us at fakesupportemail@gmail.com </p>
+                        <p style={{fontWeight: 'bold',fontStyle: 'italic'}}> More Questions? Contact us at fakesupportemail@recruitassistant.com </p>
 					</div>
 				</Col>
 			</Row>

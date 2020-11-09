@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import {Link,Slider, Grid,TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
-// Card,CardContent,Button,CardActions 
+// Card,CardContent,Button,CardActions
+import CircularProgress from '@material-ui/core/CircularProgress';
 import {Form,Container,Col,Row,Collapse, Card, Button} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
@@ -14,6 +15,7 @@ export const jobUrl="http://localhost:5000/jobadverts/"
 export const searchUrl="http://localhost:5000/search/"
 
 export default function JobSeekerDashboard() {
+	
 	const history = useHistory();
 	const [loading, setLoading] = useState(true);
 	const [searchString,setSearchString] = useState('');
@@ -61,7 +63,31 @@ export default function JobSeekerDashboard() {
 				console.log("error: ", error.response)
 			})
 	};
-
+	const clearSearch = async () =>{
+		setSearchString('');
+		setLocation('');
+		setJobType('');
+		setExperienceLevel('');
+		//salary range units are in k/$1000
+		setSalaryRange([0,200]);
+		const url = `${jobUrl}search`
+		const ndata={
+			search: '',
+			location: '',
+			exp: '',
+			jobtype: '',
+			salaryrange: [0,200]		
+		};
+		console.log(ndata)
+		axios.post(url, ndata)
+			.then(function(response) {
+				setJobs(response.data.jobs)
+				console.log(response)
+			})
+			.catch(function(error) {
+				console.log(error.response)
+			})
+	}
 	const handleSubmit= async (event) =>{
 			event.preventDefault();
 			const url = `${jobUrl}search`
@@ -104,34 +130,40 @@ export default function JobSeekerDashboard() {
 	}
 
 	const renderJobs = () => {
-		return jobs.map((job) => (
-			<div>
-				<Card style={ job[1].status=='open'? {} : {backgroundColor:'lightgrey', opacity:"0.5"}} >
-					<Card.Body style={{cursor:"pointer"}} onClick={() => {history.push("/advertisement/"+job[0])}}>
+		return jobs.length===0? (<p style={{marginLeft:400,marginTop:100}}> No results</p>) : (jobs.map((job) => (
+			<div><div style={{display: 'flex', justifyContent: 'center'}}>
+				<Card style={ job[1].status=='open'? 
+					{width:"80%", height:"200px"} : 
+					{backgroundColor:'lightgrey', opacity:"0.5", width:"80%", height:"200px"}} >
+					<Card.Body>
 						<Row>
 							<Col>
-								<Card.Title link>{job[1].title}</Card.Title>
+								<Card.Title><Link href={"/advertisement/"+job[0]}>{job[1].title}</Link></Card.Title>
 								<Card.Text style={{fontStyle: 'italic'}}>{job[1].company} | {job[1].location} | {job[1].job_type}</Card.Text>
-								{job[1].status == "open" ? 
-									<Card.Text>Closing date: {job[1].closing_date}</Card.Text> :
-									<Card.Text>This job is closed</Card.Text>
-								}
+								<Card.Text>{truncateText(job[1].description)}</Card.Text>
 							</Col>
-							<Col xs={8}>
-								<div style={{flex: 1, alignItems: 'center'}}>
-									<Card.Text>{truncateText(job[1].description)}</Card.Text>
+							<Col xs={4}>
+								<div style={{textAlign:'right'}}>
+									{job[1].status == "open" ? 
+											<Card.Text>Closing date: {job[1].closing_date}</Card.Text> :
+											<Card.Text>This job is closed</Card.Text>
+									}
 								</div>
 							</Col>
 						</Row>
 					</Card.Body>
 				</Card>
-				<br/>
-			</div>
-		))
+			</div><br/></div>
+		)))
 	}
 
 	return loading ? (
-		<div></div>
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
 	) : (
 		<Grid>      
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
@@ -139,7 +171,7 @@ export default function JobSeekerDashboard() {
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '#', 'active': true},
-						{'text':'Your Applications','href': '/offers', 'active': false},       
+						{'text':'Your Applications','href': '/yourapplications', 'active': false},       
 						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 				</Col >
 				<Col>
@@ -153,23 +185,28 @@ export default function JobSeekerDashboard() {
 								style={{ margin: 8 }}
 								placeholder="Job Title, Company,Skills"
 								margin="normal"
+								value={searchString}
 								InputLabelProps={{shrink: true,}}
 								variant="outlined"/>
 							<TextField size="small"
 								onChange={ (event) => setLocation(event.target.value)}
 								style={{ margin: 8 }}
 								placeholder="Location"
+								value={location}
 								margin="normal"
 								InputLabelProps={{shrink: true,}}
 								variant="outlined"/>
-							<Button type="submit" variant="contained" style={{margin:10}}>
+							<Button type="submit" variant="contained" color="primary" style={{margin:10}}>
 								Search
+							</Button>
+							<Button onClick={()=>clearSearch()} variant="contained" style={{margin:10}}>
+								Clear
 							</Button>
 						</Col>
 
 						<Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>
 							<Link href="#" onClick={handleToggleFilters} aria-controls="filter-collapse" aria-expanded={open}>
-								Advanced Filters
+								Advanced Criteria
 							</Link>
 						</Col>
 

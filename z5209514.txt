@@ -15,3 +15,10 @@ Presented Sprint 1 and Sprint 2 work to the tutor. Started Sprint 3 and worked o
 
 Week 6
 Continued Sprint 3 and completed invitation sending as well as helped Cattleya to create a page to view applications to jobs in depth. 
+
+Week 7
+Started Sprint 4 work. I was tasked with creating a notification system which could be used by both recruiters and job seekers. At the end of the week this functionality was mostly complete.
+
+Week 8
+Continued Sprint 4 work and merged my notification system with existing functionalities. I ultimately decided to change some of my implementation for notifications after I was alerted by Calvin of a potentially easier way to monitor "seen" notifications. 
+We presented our project in Demo B, and completed our retrospective B shortly after.
