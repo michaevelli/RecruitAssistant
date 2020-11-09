@@ -192,8 +192,7 @@ export default function ApplicationList({match}) {
 					first_name: applications[i][1]["first_name"],
 					last_name: applications[i][1]["last_name"],
 					date: inviteList[jobseeker]["date"],
-					time: inviteList[jobseeker]["time"],
-					status: 'pending'
+					time: inviteList[jobseeker]["time"]
 				})
 			}
 

@@ -21,12 +21,15 @@ export default function JobSeekerDashboard() {
 	const [searchString,setSearchString] = useState('');
 	const [location,setLocation] = useState('');
 	const [jobType,setJobType] = useState('');
+	const [jobStatus,setJobStatus] = useState('open');
 	const [experienceLevel,setExperienceLevel] = useState('');
 	//salary range units are in k/$1000
 	const [salaryRange,setSalaryRange] = useState([0,200]);
 	//open is used to toggle advanced filters div
 	const [open, setOpen]=useState(false)
 	const [jobs, setJobs]=useState([])
+	const [openJobs, setOpenJobs]=useState([])
+	const [closedJobs, setClosedJobs]=useState([])
 
 	//marks are labels on the salary range slider
 	const marks = [
@@ -51,12 +54,27 @@ export default function JobSeekerDashboard() {
 			})
 	}
 
+	const sortJobs = (allJobs) => {
+		setJobs(allJobs)
+		const tempOpen = []
+		const tempClosed = []
+		for (var i = 0; i < allJobs.length; i++) {
+			if (allJobs[i][1].status === "open") {
+				tempOpen.push(allJobs[i])
+			} else {
+				tempClosed.push(allJobs[i])
+			}
+		}
+		setOpenJobs(tempOpen)
+		setClosedJobs(tempClosed)
+	}
+
 	const getJobs = async () => {
 		const url = `${jobUrl}open`
 		console.log(url)
 		await axios.get(url)
 			.then(res => {
-				setJobs(res.data.jobs)
+				sortJobs(res.data.jobs)
 				console.log("response: ", res)
 			})
 			.catch((error) => {
@@ -81,7 +99,7 @@ export default function JobSeekerDashboard() {
 		console.log(ndata)
 		axios.post(url, ndata)
 			.then(function(response) {
-				setJobs(response.data.jobs)
+				sortJobs(response.data.jobs)
 				console.log(response)
 			})
 			.catch(function(error) {
@@ -102,7 +120,7 @@ export default function JobSeekerDashboard() {
 			console.log(ndata)
 			axios.post(url, ndata)
 				.then(function(response) {
-					setJobs(response.data.jobs)
+					sortJobs(response.data.jobs)
 					console.log(response)
 				})
 				.catch(function(error) {
@@ -110,6 +128,7 @@ export default function JobSeekerDashboard() {
 				})
 			
 	}
+
 	const handleSliderChange = (event, newValue) => {
 		setSalaryRange(newValue);
 	}
@@ -130,7 +149,15 @@ export default function JobSeekerDashboard() {
 	}
 
 	const renderJobs = () => {
-		return jobs.length===0? (<p style={{marginLeft:400,marginTop:100}}> No results</p>) : (jobs.map((job) => (
+		var selectedJobs = []
+		if (jobStatus === "open") {
+			selectedJobs = openJobs
+		} else if (jobStatus === "closed") {
+			selectedJobs = closedJobs
+		} else {
+			selectedJobs = jobs
+		}
+		return selectedJobs.length===0? (<p style={{marginLeft:400,marginTop:100}}> No results</p>) : (selectedJobs.map((job) => (
 			<div><div style={{display: 'flex', justifyContent: 'center'}}>
 				<Card style={ job[1].status=='open'? 
 					{width:"80%", height:"200px"} : 
@@ -180,6 +207,15 @@ export default function JobSeekerDashboard() {
 					</Typography>
 					<Form onSubmit={handleSubmit}>
 						<Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>
+							<FormControl variant="outlined" style={{ margin: 8 , flexBasis:'10%'}}>
+								<InputLabel>Status</InputLabel>
+								<Select autoWidth={true} value={jobStatus} onChange={e=> setJobStatus(e.target.value)} label="Status">
+									<MenuItem value='open'>Open</MenuItem>
+									<MenuItem value='open and closed'>Open and Closed</MenuItem>
+									<MenuItem value='closed'>Closed</MenuItem>
+								</Select>
+							</FormControl>
+									
 							<TextField size="small"
 								onChange={ (event) => setSearchString(event.target.value)}
 								style={{ margin: 8 }}

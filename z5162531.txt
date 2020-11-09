@@ -35,5 +35,9 @@ Created FAQ pages.
 Worked on small changes to existing code to allow counter-offers to be made such as adding a toggle option for a recruiter to make an offer counterable.
 Created page showing interview invite details and options to accept/decline.
 
+
 --week 8---
+Worked on feature to share a job advertisement to social media.
+However, I could not fully implement it because the Facebook,Twitter,LinkedIn APIs do not allow
+the sharing of links to localhost URLS. For now I will use fake URLS.
 

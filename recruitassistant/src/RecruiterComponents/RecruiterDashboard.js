@@ -1,8 +1,8 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Button, Grid,Card,CardContent,CardActions } from "@material-ui/core";
+import {Link, Button, Grid } from "@material-ui/core";
+import {Col,Row,Card, Container} from 'react-bootstrap';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -50,32 +50,70 @@ export default function RecruiterDashboard() {
 			})
 	};
 
-	const renderJobs = () => {
-		return jobs.map((job) => (
-			<Card style={{margin: 30, height: 180, width:280}}>
-				{/* <Card.Body> */}
-				<CardContent>                          
-					<Typography variant="h5" component="h2">{job[1].title}</Typography>
-					<Typography color="textSecondary">{job[1].company} | {job[1].location}</Typography>
-				</CardContent>
-				<CardActions >
-					<Typography 
-					style={ (job[1].status=='open')? 
-					{color: 'green', marginRight:10} : {color:'red',marginRight:10}}>
-						{job[1].status}
-					</Typography>
+	function truncateText(text) {
+		if (text.length > 180) {
+			return text.slice(0, 180) + "..."
+		}
+		return text
+	}
 
-					<Link href={"/editjob/"+job[0]} style={{marginLeft: 10}} >
-						Edit Job
-					</Link>
+	const renderJobs = () => {
+		return jobs.length===0? (<p style={{marginLeft:400,marginTop:100}}> No results</p>) : (jobs.map((job) => (
+			<div><div style={{display: 'flex', justifyContent: 'center'}}>
+				<Card style={ job[1].status=='open'? 
+					{width:"80%", height:"200px"} : 
+					{backgroundColor:'lightgrey', opacity:"0.5", width:"80%", height:"200px"}} >
+					<Card.Body>
+						<Row>
+							<Col>
+								<Card.Title><Link href={"/advertisement/"+job[0]}>{job[1].title}</Link></Card.Title>
+								<Card.Text style={{fontStyle: 'italic'}}>{job[1].company} | {job[1].location} | {job[1].job_type}</Card.Text>
+								<Card.Text>{truncateText(job[1].description)}</Card.Text>
+							</Col>
+							<Col xs={4}>
+								<div style={{textAlign:'right'}}>
+									{job[1].status == "open" ? 
+											<Card.Text>Closing date: {job[1].closing_date}</Card.Text> :
+											<Card.Text>This job is closed</Card.Text>
+									}
+									<Button href={"/editjob/"+job[0]}>
+										Edit Job
+									</Button><br/>
+									<Button href={`/applications/${job[0]}`}>
+										View Applications
+									</Button>
+								</div>
+							</Col>
+						</Row>
+					</Card.Body>
+				</Card>
+			</div><br/></div>
+		)))
+		// return jobs.map((job) => (
+		// 	<Card style={{margin: 30, height: 180, width:280}}>
+		// 		{/* <Card.Body> */}
+		// 		<CardContent>                          
+		// 			<Typography variant="h5" component="h2">{job[1].title}</Typography>
+		// 			<Typography color="textSecondary">{job[1].company} | {job[1].location}</Typography>
+		// 		</CardContent>
+		// 		<CardActions >
+		// 			<Typography 
+		// 			style={ (job[1].status=='open')? 
+		// 			{color: 'green', marginRight:10} : {color:'red',marginRight:10}}>
+		// 				{job[1].status}
+		// 			</Typography>
+
+		// 			<Link href={"/editjob/"+job[0]} style={{marginLeft: 10}} >
+		// 				Edit Job
+		// 			</Link>
 					
-					<Link href={`/applications/${job[0]}`} style={{marginLeft: 10}} >
-						View Applications
-					</Link>
-				</CardActions>
-				{/* </Card.Body> */}
-			</Card>
-		))
+		// 			<Link href={`/applications/${job[0]}`} style={{marginLeft: 10}} >
+		// 				View Applications
+		// 			</Link>
+		// 		</CardActions>
+		// 		{/* </Card.Body> */}
+		// 	</Card>
+		// ))
 	}
 
 	return loading ? (
@@ -100,14 +138,12 @@ export default function RecruiterDashboard() {
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						Your Jobs
 					</Typography>
-					<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
-						{renderJobs()}
-					</div>
+					<Container>{renderJobs()}</Container>
 				</Col>
 					
 				<Col>
 					<Button variant="contained" color="secondary" href="/createJobPost" style={{position: 'fixed', right: 0, top: 40, margin: 30}}>
-						+ Job
+						Create a Job
 					</Button>      
 					{/* <SendInterview></SendInterview> */}
 				</Col>
