@@ -34,7 +34,7 @@ export default function EditJob({match}) {
 	const [salary,setSalary] = useState(100);
 	const [closingDate,setClosingDate] = useState('');
 	//will be comma seperated strings - split on the commas to get an array
-	const [requiredDocs,setRequiredDocs] = useState('');
+	const [requiredDocs,setRequiredDocs] = useState([]);
 	const [qualifications,setQualifications] = useState([]);
 	//NOTE: if zero additional questions/responsibilities are added, the field will not exist
 	//in the database record - must check when displaying job adverts that the field exists!!!
@@ -71,12 +71,27 @@ export default function EditJob({match}) {
 				setExperienceLevel(job_data["experience_level"]);
 				setSalary(job_data["salary_pa"]);
 				setClosingDate(job_data["closing_date"]);
-				setRequiredDocs(job_data["required_docs"]);
-				setQualifications(job_data["req_qualifications"]);
+				setRequiredDocs(job_data["required_docs"] || []);
+				setQualifications(job_data["req_qualifications"] || []);
 				setAdditionalQuestions(job_data["additional_questions"] || []);
 				setResponsibilities(job_data["responsibilities"] || []);
 				setDatePosted(job_data["date_posted"]);
 			})
+	}
+
+	const handleAddDoc = () => {
+		setRequiredDocs([...requiredDocs, ''])
+	}
+	const handleRemoveDoc = (index) => {
+		const ds  = [...requiredDocs]
+		//remove document
+		ds.splice(index, 1)
+		setRequiredDocs(ds)
+	}
+	const handleChangeDoc = (index, event) => {
+		const ds = [...requiredDocs]
+		ds[index]=event.target.value
+		setRequiredDocs(ds)
 	}
 
 	const handleAddQuestion = () => {
@@ -349,7 +364,7 @@ export default function EditJob({match}) {
 								<AddIcon />
 							</IconButton>
 							<Col sm={10}>
-							{responsibilities.map((q, index) => (
+							{qualifications.map((q, index) => (
 								<ul key={index}>
 									<li><TextField 
 									name="Quality"
@@ -371,10 +386,25 @@ export default function EditJob({match}) {
 							<Form.Label column sm={2}>
 							Required Documents
 							</Form.Label>
+							<IconButton onClick={() => handleAddDoc()}>
+								<AddIcon />
+							</IconButton>
 							<Col sm={10}>
-								<Form.Control placeholder="e.g. cover letter, resume, passport"
-								defaultValue={requiredDocs}
-								onChange={ (event) => setRequiredDocs(event.target.value)}/>
+							{requiredDocs.map((doc, index) => (
+								<ul key={index}>
+									<li><TextField 
+									name="Document"
+									variant="outlined"
+									size="small"
+									placeholder="Document"
+									value={doc}
+									onChange={event => handleChangeDoc(index, event)}
+									/>
+									<IconButton onClick={() => handleRemoveDoc(index)}>
+										<RemoveIcon />
+									</IconButton></li>
+								</ul>
+							))}
 							</Col>					
 						</Form.Group>
 

@@ -123,11 +123,7 @@ export default function Advertisement() {
 						</Box>
 						<Box fontSize="h6.fontSize" lineHeight={2}>
 							Qualifications:
-							{detail[1].req_qualifications.map((i) => (
-								<ul>
-									<li> {i} </li>
-								</ul>
-							))}
+							{renderListItems(detail[1].req_qualifications)}
 						</Box>
 						<Box fontSize="h6.fontSize" lineHeight={2}>
 							Experience level: {detail[1].experience_level}
