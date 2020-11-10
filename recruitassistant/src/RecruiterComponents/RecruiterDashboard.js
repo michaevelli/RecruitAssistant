@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Button, Grid } from "@material-ui/core";
+import { Button,Link, Grid } from "@material-ui/core";
 import {Col,Row,Card, Container} from 'react-bootstrap';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
@@ -60,9 +60,7 @@ export default function RecruiterDashboard() {
 	const renderJobs = () => {
 		return jobs.length===0? (<p style={{marginLeft:400,marginTop:100}}> No results</p>) : (jobs.map((job) => (
 			<div><div style={{display: 'flex', justifyContent: 'center'}}>
-				<Card style={ job[1].status=='open'? 
-					{width:"80%", height:"200px"} : 
-					{backgroundColor:'lightgrey', opacity:"0.5", width:"80%", height:"200px"}} >
+				<Card style={{width:"80%", height:"200px"}} >
 					<Card.Body>
 						<Row>
 							<Col>
@@ -76,12 +74,13 @@ export default function RecruiterDashboard() {
 											<Card.Text>Closing date: {job[1].closing_date}</Card.Text> :
 											<Card.Text>This job is closed</Card.Text>
 									}
-									<Button href={"/editjob/"+job[0]}>
+									<br/>
+									<Link  href={"/editjob/"+job[0]}>
 										Edit Job
-									</Button><br/>
-									<Button href={`/applications/${job[0]}`}>
+									</Link><br/><br/>
+									<Link href={`/applications/${job[0]}`}>
 										View Applications
-									</Button>
+									</Link>
 								</div>
 							</Col>
 						</Row>

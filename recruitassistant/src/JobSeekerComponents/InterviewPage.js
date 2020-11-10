@@ -69,20 +69,7 @@ export default function InterviewPage({match}) {
 			})
 	}
 
-    //response can be "Accepted" or "Declined"
-    const handleResponse = async (response) => {
-        //update interview status
-        await axios.patch(interviewURL, {'status': response, 'id':interviewID})
-        .then(res => {
-            console.log("response: ", res)
-            window.location.reload()
-        })
-        .catch((error) => {
-            console.log("error: ", error.response)
-            alert("An error occured, please try again")
-        })	
-        
-    }
+     
     //if status is pending give option to accept/decline
     //else simply show the date and time info
     const interviewInfo = () => {
@@ -91,7 +78,8 @@ export default function InterviewPage({match}) {
         <Alert style={{visibility: (open? 'visible':'hidden'), margin:10}}  variant={variant} >
             {desc}
         </Alert>
-        <Typography component="div" style={{color: 'black', margin: 30}}>      
+        <Typography component="div" style={{color: 'black', margin: 30}}>
+    
             <Box fontSize="h4.fontSize" >
                 Interview Details
             </Box>
@@ -134,7 +122,7 @@ export default function InterviewPage({match}) {
 		})	
 	}
 
-
+   
 	//response can be "Accepted" or "Declined"
 	const handleResponse = async (response) => {
 		//update interview status
@@ -175,42 +163,6 @@ export default function InterviewPage({match}) {
 				</div>
 			</div>
 		)
-	}
-
-	//if status is pending give option to accept/decline
-	//else simply show the date and time info
-	const interviewInfo = () => {
-		return (
-		<div>
-		<Alert style={{visibility: (open? 'visible':'hidden'), margin:10}}  variant={variant} >
-			{desc}
-		</Alert>
-		<Typography component="div" style={{color: 'black', margin: 30}}>      
-			<Box fontSize="h4.fontSize" >
-				Interview Details
-			</Box>
-			<br/>
-		   
-			<Box fontSize="h5.fontSize">
-				<span style={{fontWeight: "bold"}}>Date:</span> {date}
-			</Box>
-			<br/>
-			<Box fontSize="h5.fontSize">
-				<span style={{fontWeight: "bold"}}>Time:</span> {time}
-			</Box>
-			<br/>
-			{status=="Pending" &&
-			<Box style={{marginTop: 50}}>
-				<Button variant="contained"  color="secondary" style={{marginRight:30,backgroundColor: 'green'}} onClick={()=>handleResponse("Accepted")}>
-				Accept
-				</Button>
-				<Button variant="contained" color="secondary" onClick={()=>setShow(show==='none'? 'block': 'none')}>
-				Decline
-				</Button>
-			</Box>
-			}
-		</Typography>
-		</div> )
 	}
 
 	return loading ? (

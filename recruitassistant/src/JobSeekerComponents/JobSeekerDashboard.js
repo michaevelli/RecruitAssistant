@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link,Slider, Grid,TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
+import {Link,Slider, Button,Grid,TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
 // Card,CardContent,Button,CardActions
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {Form,Container,Col,Row,Collapse, Card, Button} from 'react-bootstrap';
+import {Form,Container,Col,Row,Collapse, Card} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -209,7 +209,7 @@ export default function JobSeekerDashboard() {
 						<Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>
 							<FormControl variant="outlined" style={{ margin: 8 , flexBasis:'10%'}}>
 								<InputLabel>Status</InputLabel>
-								<Select autoWidth={true} value={jobStatus} onChange={e=> setJobStatus(e.target.value)} label="Status">
+								<Select size="small" autoWidth={true} value={jobStatus} onChange={e=> setJobStatus(e.target.value)} label="Status">
 									<MenuItem value='open'>Open</MenuItem>
 									<MenuItem value='open and closed'>Open and Closed</MenuItem>
 									<MenuItem value='closed'>Closed</MenuItem>
@@ -219,7 +219,7 @@ export default function JobSeekerDashboard() {
 							<TextField size="small"
 								onChange={ (event) => setSearchString(event.target.value)}
 								style={{ margin: 8 }}
-								placeholder="Job Title, Company,Skills"
+								placeholder="Job Title, Company, Skills"
 								margin="normal"
 								value={searchString}
 								InputLabelProps={{shrink: true,}}
@@ -232,10 +232,10 @@ export default function JobSeekerDashboard() {
 								margin="normal"
 								InputLabelProps={{shrink: true,}}
 								variant="outlined"/>
-							<Button type="submit" variant="contained" color="primary" style={{margin:10}}>
+							<Button  type="submit" variant="contained" color="primary" style={{margin:10, maxHeight: '40px'}}>
 								Search
 							</Button>
-							<Button onClick={()=>clearSearch()} variant="contained" style={{margin:10}}>
+							<Button size="small"  onClick={()=>clearSearch()} variant="contained" style={{margin:10, maxHeight: '40px'}}>
 								Clear
 							</Button>
 						</Col>

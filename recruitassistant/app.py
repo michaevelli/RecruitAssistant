@@ -197,10 +197,10 @@ def get_applications_for_job():
 			# sort on how many qualifications are met
 			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get('qualities_met'))
 			for appid in sortedApps:
-				if val.get(appid).get('status') == "pending":
+				#if val.get(appid).get('status') == "pending":
 			 		applications.append((appid, val.get(appid)))
 		
-		#print(applications)
+
 		return jsonify({'applications': applications}),200
  
 	except Exception as e:		

@@ -47,7 +47,7 @@ export default function Notifications() {
       getData()
       const interval = setInterval(() => {
         getData()
-      }, 5000);
+      }, 5000000);
       return () => clearInterval(interval);
     }, []);
 

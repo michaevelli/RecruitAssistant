@@ -30,11 +30,26 @@ export default function ApplicationList({match}) {
 	const [job, setJob] = useState([])
 	const [selection, setSelection] = useState()
 	
-	//for the single interview invite modal
-	const [show, setShow] = useState(false);
-	//modal
-	const handleClose = () => setShow(false);
-	const handleShow = () => setShow(true);
+	//there is one modal per application on the page
+	//showing is a dictionary with value being whether or not a
+	//particular model is open currently
+	//form: {appID: true/false}
+	const [showing, setShowing] = useState({});
+	//for controlling modals
+	const handleClose = (appid) => {
+		console.log("handle close for ",appid)
+		var l= {...showing}
+		l[appid]=false
+		setShowing({...l})
+		console.log(l)
+	}
+	const handleShow = (appid) =>{
+		console.log("handle show for ",appid)
+		var l= {...showing}
+		l[appid]=true
+		setShowing({...l})
+		console.log(l)
+	}
 
 	//controls if we render the send to top page or not...
 	const [sendTop,setSendTop]=useState(false)
@@ -50,7 +65,7 @@ export default function ApplicationList({match}) {
 			.then(function(response) {
 				console.log("auth success: ", response)
 				setLoading(false)
-				if (!response.success || response.userInfo["type"] != "recruiter") {
+				if (!response.success || response.userInfo["type"] !== "recruiter") {
 					history.push("/unauthorised");
 				}
 			})
@@ -176,7 +191,7 @@ export default function ApplicationList({match}) {
 				console.log("response: ", res)
 				alert("Interview Successfully Sent")
 				//Close dialog box
-				handleClose()
+				handleClose(app[0])
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
@@ -205,7 +220,6 @@ export default function ApplicationList({match}) {
 					time: inviteList[jobseeker]["time"]
 				})
 			}
-
 			const data={
 				invite_list
 			}
@@ -253,9 +267,14 @@ export default function ApplicationList({match}) {
 	const initialise = (applicationList) => {
 		setApplications(applicationList)
 		var considering = {...inviteList}
+		var initialise_showing={}
 		for (let i = 0; i < applicationList.length; i++) {
 			considering[applicationList[i][1]["jobseeker_id"]] = {app_id: applicationList[i][0], date: "", time: ""}
+			initialise_showing[applicationList[i][0]]=false
 		}
+
+		console.log(initialise_showing)
+		setShowing(initialise_showing)
 		setInviteList(considering)
 		setSelection(applicationList.length)
 	}
@@ -275,10 +294,10 @@ export default function ApplicationList({match}) {
 		list[index] = temp
 		setApplications(list)
 	}
-
+	
 	
 
-	
+	//normal page with modals for interview inviting
 	const renderApplications = (status) => {
 		if (loadingApps) {
 			return (
@@ -290,7 +309,7 @@ export default function ApplicationList({match}) {
 				</div>
 			)
 		}
-		if( applications.length==0){
+		if( applications.length===0){
 			return <p style={{marginLeft: 500,marginTop:180}}>No Applications.</p>
 		}
 		if (selection > 0) {
@@ -298,7 +317,7 @@ export default function ApplicationList({match}) {
 				<Grid>
 					<Row>
 						<Col>
-							<Card style={{margin: 30, height: 200, width:550}}>
+							<Card style={{margin: 30, height: 230, width:550}}>
 								<CardContent>                          
 									<Grid>
 										<Row>
@@ -329,80 +348,13 @@ export default function ApplicationList({match}) {
 													variant="contained" 
 													color="secondary"
 													style={{marginRight:10, margnLeft:10}}
-													data-target={"#interview_modal_" + app[0]}
-													onClick={() =>{
-														
-														handleShow()
-													}}> 
-															Interview
+													onClick={()=>
+														handleShow(app[0])
+													}> 
+														Interview
 													</Button>
 
-													<Modal id={"interview_modal_" + app[0]} show={show} onHide={handleClose} animation={false}>
-													
-														<Modal.Header closeButton>
-															<Modal.Title>Interview Invite</Modal.Title>
-														</Modal.Header>
-													
-														<Modal.Body>
-														<Row style = {{marginTop: 15, width: 500}}>
-															<Form inline>
-																<Col style = {{marginLeft: 1, height: 25, width: 250}}>
-																	<Form.Row>
-																	<Form.Group>
-																		<Form.Label>Interview Date: </Form.Label>
-																		<TextField 
-																			className={
-																				!datevalidator(app[1].jobseeker_id)
-																					? "form-control is-invalid"
-																					: "form-control"
-																			}
-																			required
-																			id={"single_interview_date_" + app[0]}
-																			type="date"
-																			min={today}
-																			value={inviteList[app[1].jobseeker_id]["date"]}
-																			onChange={ (event) => handleDate(event.target.value, app[1].jobseeker_id, app)}/>
-																			<Form.Control.Feedback type="invalid">
-																				Please enter a date in the future
-																			</Form.Control.Feedback>
-																	</Form.Group>
-																	</Form.Row>
-																</Col>
-																<Col style = {{marginLeft: 30, height: 25, width: 250}}>
-																	<Form.Row>
-																	<Form.Group controlId={"single_interview_time_" + app[0]}>
-																		<Form.Label>Interview Time: </Form.Label>
-																		<TextField
-																			className={
-																				!timevalidator(app[1].jobseeker_id)
-																					? "form-control is-invalid"
-																					: "form-control"
-																			}
-																			required
-																			id={"single_interview_time_" + app[0]}
-																			type="time"
-																			value={inviteList[app[1].jobseeker_id]["time"]}
-																			onChange={ (event) => handleTime(event.target.value, app[1].jobseeker_id, app)}/>
-																			<Form.Control.Feedback type="invalid">
-																				Please enter a time
-																			</Form.Control.Feedback>
-																	</Form.Group>
-																	</Form.Row>
-																</Col>
-															</Form>	
-														</Row>
-														</Modal.Body>
-
-														
-														<Button variant="secondary" onClick={handleClose}>Cancel</Button>
-														<Button variant="primary" 
-														id={"interview_modal_" + app[0]} 
-														onClick={()=>{
-															postInterview(app)
-														}}>Send</Button>
-														
-													
-												</Modal>
+											
 
 												<Button variant="contained" 
 												color="secondary" 
@@ -416,8 +368,12 @@ export default function ApplicationList({match}) {
 														Offer
 													</Link>
 												</Button>
+												
 												<Button variant="contained" color="secondary" onClick={() => {dismiss(app, index)}}>Dismiss</Button>
 											</ButtonToolbar>
+											<p style={{marginTop:10}}>  { app[1].status!=='pending' &&
+											`You have already sent an ${app[1].status} to this candidate.`
+											}</p>
 											</Row>
 										</Col>
 									</Grid>
@@ -432,6 +388,74 @@ export default function ApplicationList({match}) {
 								<KeyboardArrowDownIcon/>
 							</IconButton>
 						</Col>
+
+			
+
+							<Modal show={showing[app[0]]} onHide={()=>handleClose(app[0])}>						
+								<Modal.Header>
+									<Modal.Title>Interview Invite</Modal.Title>
+								</Modal.Header>
+							
+								<Modal.Body>
+								<Row style = {{marginTop: 15, width: 500}}>
+									<Form inline>
+										<Col style = {{marginLeft: 1, height: 25, width: 250}}>
+											<Form.Row>
+											<Form.Group>
+												<Form.Label>Interview Date: </Form.Label>
+												<TextField 
+													className={
+														!datevalidator(app[1].jobseeker_id)
+															? "form-control is-invalid"
+															: "form-control"
+													}
+													required
+													id={"single_interview_date_" + app[0]}
+													type="date"
+													min={today}
+													value={inviteList[app[1].jobseeker_id]["date"]}
+													onChange={ (event) => handleDate(event.target.value, app[1].jobseeker_id, app)}/>
+													<Form.Control.Feedback type="invalid">
+														Please enter a date in the future
+													</Form.Control.Feedback>
+											</Form.Group>
+											</Form.Row>
+										</Col>
+										<Col style = {{marginLeft: 30, height: 25, width: 250}}>
+											<Form.Row>
+											<Form.Group controlId={"single_interview_time_" + app[0]}>
+												<Form.Label>Interview Time: </Form.Label>
+												<TextField
+													className={
+														!timevalidator(app[1].jobseeker_id)
+															? "form-control is-invalid"
+															: "form-control"
+													}
+													required
+													id={"single_interview_time_" + app[0]}
+													type="time"
+													value={inviteList[app[1].jobseeker_id]["time"]}
+													onChange={ (event) => handleTime(event.target.value, app[1].jobseeker_id, app)}/>
+													<Form.Control.Feedback type="invalid">
+														Please enter a time
+													</Form.Control.Feedback>
+											</Form.Group>
+											</Form.Row>
+										</Col>
+									</Form>	
+								</Row>
+								</Modal.Body>
+							
+								<Modal.Footer style={{marginTop:20}}>
+									<Button variant="contained" color="default" onClick={()=>handleClose(app[0])}>Cancel</Button>
+									<Button variant="contained" 
+									style={{marginLeft:10}}
+									color="secondary"
+									id={"interview_modal_" + app[0]} 
+									onClick={()=>postInterview(app)}>Send</Button>
+								</Modal.Footer>
+							
+						</Modal>
 					</Row>
 				</Grid>
 			))
@@ -440,8 +464,8 @@ export default function ApplicationList({match}) {
 	};
 
 	//displays cards with only the interview time/date fields
-	const renderSendTop = () => {
-		if( applications.length==0){
+	const renderSendTop = () => {	
+		if( applications.length===0){
 			return <p style={{marginLeft: 500,marginTop:200}}>No Applications.</p>
 		}
 		return applications.slice(0, selection).map((app, index) => (

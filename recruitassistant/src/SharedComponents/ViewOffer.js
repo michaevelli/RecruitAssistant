@@ -220,7 +220,6 @@ export default function ViewOffer({match}) {
 	const recruiterMenu = () => {
 		return (		
 			<SideMenu random={[
-				{'text':'Go back','href': ()=>history.goBack(),'active': false},
 				{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
 				{'text':'FAQ','href':'/recruiterFAQ','active': false}
 			]}/>
