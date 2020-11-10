@@ -33,6 +33,7 @@ export default function JobApply() {
 	const [matching_list, setMatchingList] = useState([]);
 	const [job, setJob] = useState([]);
 	const [additionalDocs, setAdditionalDocs] = useState([]);
+	const [needDocs, setNeedDocs] = useState('');
 
 	useEffect(() => {
 		auth();
@@ -62,7 +63,7 @@ export default function JobApply() {
 		.then(res => {
 			setJob(res.data.job)
 			//initialise qualifications list
-			const req_quals= res.data.job[0][1].req_qualifications.split(",")
+			const req_quals= res.data.job[0][1].req_qualifications
 			setQualificationList(req_quals)
 			//initialise matching qualifications list to all false
 			var initial_list=[]
@@ -70,7 +71,13 @@ export default function JobApply() {
 				initial_list.push(false)
 			}
 			setMatchingList(initial_list)
-		
+			//initialise need for docs to be uploaded
+			const req_docs= res.data.job[0][1].required_docs
+			if (req_docs === "") {
+				setNeedDocs("none")
+			} else {
+				setNeedDocs("block")
+			}
 		})
 		.catch((error) => {
 			console.log("error: ", error.response)
@@ -177,7 +184,7 @@ export default function JobApply() {
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
-						{'text':'Your Applications','href': '#', 'active': false},         
+						{'text':'Your Applications','href': '/yourapplications', 'active': false},         
 						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 				</Col >
 
@@ -244,7 +251,7 @@ export default function JobApply() {
 								Please indicate the skills/experience you have for the following:
 							</Form.Label>
 							<Col sm={10}>
-							{detail[1].req_qualifications.split(",").map((qualification, index) => (
+							{detail[1].req_qualifications.map((qualification, index) => (
 								<Form.Check
 									type = "checkbox"
 									id = {qualification}
@@ -253,29 +260,31 @@ export default function JobApply() {
 							))}
 							</Col>					
 						</Form.Group>
-
-						<Form.Group controlId="required_docs">
-							<Form.Label column sm={10}>Please upload the following documents as a pdf.</Form.Label>
-							<Col sm={10}>
-								<ul>
-									{detail[1].required_docs.split(",").map((document,index) => (
-										<li>
-											<Form.File
-												required
-												id = {index}
-												name = {document}
-												label = {document}
-												accept = "application/pdf"
-												onChange = {(e)=>handleChangeDoc(index,document,e)}/> 
-										</li>
-									))}
-								</ul>
-								<Form.Control.Feedback type="invalid">
-									Please upload all files as pdf
-								</Form.Control.Feedback>
-							</Col>
-						</Form.Group>
-						<Button disabled = {applied} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
+						<div style={{display: needDocs}}>
+							<Form.Group controlId="required_docs">
+								<Form.Label column sm={10}>Please upload the following documents as a pdf.</Form.Label>
+								<Col sm={10}>
+									<ul>
+										{detail[1].required_docs.split(",").map((document,index) => (
+											<li>
+												<Form.File
+													required = {needDocs === "block"}
+													id = {index}
+													name = {document}
+													label = {document}
+													accept = "application/pdf"
+													onChange = {(e)=>handleChangeDoc(index,document,e)}/> 
+											</li>
+										))}
+									</ul>
+									<Form.Control.Feedback type="invalid">
+										Please upload all files as pdf
+									</Form.Control.Feedback>
+								</Col>
+							</Form.Group>
+						</div>
+						
+						<Button disabled = {applied || detail[1].status === "closed"} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
 							Submit Application
 						</Button>
 					</Form>

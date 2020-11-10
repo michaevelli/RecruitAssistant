@@ -98,7 +98,7 @@ export default function InterviewPage({match}) {
                 <Button variant="contained"  color="secondary" style={{marginRight:30,backgroundColor: 'green'}} onClick={()=>handleResponse("Accepted")}>
                 Accept
                 </Button>
-                <Button variant="contained" color="secondary" onClick={()=>handleResponse("Declined")}>
+                <Button variant="contained" color="secondary" onClick={()=>setShow(show==='none'? 'block': 'none')}>
                 Decline
                 </Button>
             </Box>

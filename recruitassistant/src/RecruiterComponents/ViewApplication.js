@@ -76,7 +76,7 @@ export default function ViewApplication() {
 		setJob(data.jobinfo)
 		setApp(data.applications)
 		if (data.jobinfo.req_qualifications){
-			setQualifications( data.jobinfo.req_qualifications.split(","))
+			setQualifications( data.jobinfo.req_qualifications)
 		}else{
 			setQualifications([])
 		}

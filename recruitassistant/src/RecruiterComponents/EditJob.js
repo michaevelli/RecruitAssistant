@@ -35,7 +35,7 @@ export default function EditJob({match}) {
 	const [closingDate,setClosingDate] = useState('');
 	//will be comma seperated strings - split on the commas to get an array
 	const [requiredDocs,setRequiredDocs] = useState('');
-	const [qualifications,setQualifications] = useState('');
+	const [qualifications,setQualifications] = useState([]);
 	//NOTE: if zero additional questions/responsibilities are added, the field will not exist
 	//in the database record - must check when displaying job adverts that the field exists!!!
 	const [additionalQuestions, setAdditionalQuestions] = useState([]);
@@ -92,6 +92,21 @@ export default function EditJob({match}) {
 		const qs = [...additionalQuestions]
 		qs[index]=event.target.value
 		setAdditionalQuestions(qs)
+	}
+
+	const handleAddQuality = () => {
+		setQualifications([...qualifications, ''])
+	}
+	const handleRemoveQuality = (index) => {
+		const qs  = [...qualifications]
+		//remove qualification
+		qs.splice(index, 1)
+		setQualifications(qs)
+	}
+	const handleChangeQuality = (index, event) => {
+		const qs  = [...qualifications]
+		qs[index]=event.target.value
+		setQualifications(qs)
 	}
 
 	const handleAddResponsibility = () => {
@@ -330,10 +345,25 @@ export default function EditJob({match}) {
 							<Form.Label column sm={2}>
 							Desired Qualifications
 							</Form.Label>
+							<IconButton onClick={() => handleAddQuality()}>
+								<AddIcon />
+							</IconButton>
 							<Col sm={10}>
-								<Form.Control placeholder="e.g. excel, python"
-								defaultValue={qualifications}
-								onChange={ (event) => setQualifications(event.target.value)}/>
+							{responsibilities.map((q, index) => (
+								<ul key={index}>
+									<li><TextField 
+									name="Quality"
+									variant="outlined"
+									size="small"
+									placeholder="Quality"
+									value={q}
+									onChange={event => handleChangeQuality(index, event)}
+									/>
+									<IconButton onClick={() => handleRemoveQuality(index)}>
+										<RemoveIcon />
+									</IconButton></li>
+								</ul>
+							))}
 							</Col>					
 						</Form.Group>
 
