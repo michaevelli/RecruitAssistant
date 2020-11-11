@@ -316,8 +316,8 @@ export default function ApplicationList({match}) {
 			return applications.slice(0, selection).map((app, index) => (
 				<Grid>
 					<Row>
-						<Col>
-							<Card style={{margin: 30, height: 230, width:550}}>
+						<Col xs={8}>
+							<Card style={{margin: 60}}>
 								<CardContent>                          
 									<Grid>
 										<Row>
@@ -397,12 +397,11 @@ export default function ApplicationList({match}) {
 								</Modal.Header>
 							
 								<Modal.Body>
-								<Row style = {{marginTop: 15, width: 500}}>
-									<Form inline>
-										<Col style = {{marginLeft: 1, height: 25, width: 250}}>
-											<Form.Row>
-											<Form.Group>
-												<Form.Label>Interview Date: </Form.Label>
+								<Row >
+									<Form inline style={{margin:5}}>
+											
+											<Form.Group style={{marginLeft:8,marginBottom:10}}>
+												<Form.Label style={{marginRight:10}}>Interview Date: </Form.Label>
 												<TextField 
 													className={
 														!datevalidator(app[1].jobseeker_id)
@@ -419,12 +418,12 @@ export default function ApplicationList({match}) {
 														Please enter a date in the future
 													</Form.Control.Feedback>
 											</Form.Group>
-											</Form.Row>
-										</Col>
-										<Col style = {{marginLeft: 30, height: 25, width: 250}}>
-											<Form.Row>
-											<Form.Group controlId={"single_interview_time_" + app[0]}>
-												<Form.Label>Interview Time: </Form.Label>
+											
+										
+									
+											
+											<Form.Group style={{marginLeft:8}} controlId={"single_interview_time_" + app[0]}>
+												<Form.Label style={{marginRight:10}}>Interview Time: </Form.Label>
 												<TextField
 													className={
 														!timevalidator(app[1].jobseeker_id)
@@ -440,8 +439,8 @@ export default function ApplicationList({match}) {
 														Please enter a time
 													</Form.Control.Feedback>
 											</Form.Group>
-											</Form.Row>
-										</Col>
+											
+										
 									</Form>	
 								</Row>
 								</Modal.Body>
@@ -471,8 +470,8 @@ export default function ApplicationList({match}) {
 		return applications.slice(0, selection).map((app, index) => (
         <Grid>
             <Row>
-                <Col>
-                    <Card style={{margin: 30, height: 240, width:550}}>
+                <Col xs={8}>
+                    <Card style={{margin: 50 }}>
                         <CardContent>                          
                             <Grid>
                                 <Row>
@@ -487,15 +486,15 @@ export default function ApplicationList({match}) {
                                 </Row>
                             </Grid>
                         </CardContent>
-                        <CardActions>
+                        <CardActions style={{marginBottom:20}}>
                             <Grid>
                                 <Col>
-                                    <Row style = {{marginTop: 15, width: 500}}>
+                                    <Row>
                                         <Form inline>
-                                            <Col style = {{marginLeft: 1, height: 25, width: 250}}>
+                                            <Col >
                                                 <Form.Row>
-                                                <Form.Group controlId={"interview_date_" + app[0]}>
-                                                    <Form.Label>Interview Date: </Form.Label>
+                                                <Form.Group style={{marginRight:90}} controlId={"interview_date_" + app[0]}>
+                                                    <Form.Label style={{marginRight:10}}>Interview Date: </Form.Label>
                                                     <TextField 
                                                         className={
                                                             !datevalidator(app[1].jobseeker_id)
@@ -514,10 +513,10 @@ export default function ApplicationList({match}) {
                                                 </Form.Group>
                                                 </Form.Row>
                                             </Col>
-                                            <Col style = {{marginLeft: 30, height: 25, width: 250}}>
+                                            <Col >
                                                 <Form.Row>
                                                 <Form.Group controlId={"interview_time_" + app[0]}>
-                                                    <Form.Label>Interview Time: </Form.Label>
+													<Form.Label style={{marginRight:10}}>Interview Time: </Form.Label>
                                                     <TextField
                                                         className={
                                                             !timevalidator(app[1].jobseeker_id)

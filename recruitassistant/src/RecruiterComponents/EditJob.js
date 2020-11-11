@@ -268,10 +268,11 @@ export default function EditJob({match}) {
 						<Form.Group controlId="responsibilities">
 							<Form.Label column sm={2}>
 							Key Responsibilities
-							</Form.Label>
 							<IconButton onClick={() => handleAddResponsibility()}>
 								<AddIcon />
 							</IconButton>
+							</Form.Label>
+							
 							<Col sm={10}>
 							{responsibilities.map((r, index) => (
 								<ul key={index}>
@@ -359,10 +360,11 @@ export default function EditJob({match}) {
 						<Form.Group controlId="qualifications">
 							<Form.Label column sm={2}>
 							Desired Qualifications
-							</Form.Label>
 							<IconButton onClick={() => handleAddQuality()}>
 								<AddIcon />
 							</IconButton>
+							</Form.Label>
+							
 							<Col sm={10}>
 							{qualifications.map((q, index) => (
 								<ul key={index}>
@@ -385,10 +387,11 @@ export default function EditJob({match}) {
 						<Form.Group controlId="requiredDocs">
 							<Form.Label column sm={2}>
 							Required Documents
-							</Form.Label>
 							<IconButton onClick={() => handleAddDoc()}>
 								<AddIcon />
 							</IconButton>
+							</Form.Label>
+							
 							<Col sm={10}>
 							{requiredDocs.map((doc, index) => (
 								<ul key={index}>
@@ -411,10 +414,11 @@ export default function EditJob({match}) {
 						<Form.Group controlId="additionalQuestions">
 							<Form.Label column sm={2}>
 							Additional Questions
-							</Form.Label>
 							<IconButton onClick={() => handleAddQuestion()}>
 								<AddIcon />
 							</IconButton>
+							</Form.Label>
+							
 							<Col sm={10}>
 							{additionalQuestions.map((question, index) => (
 								<div key={index}>
