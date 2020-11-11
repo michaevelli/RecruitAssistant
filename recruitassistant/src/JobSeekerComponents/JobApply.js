@@ -29,7 +29,6 @@ export default function JobApply() {
 	const [rights, setRights] = useState('');
 	const [required_docs, setRequiredDocs] = useState([]);
 	const [qualification_list, setQualificationList] = useState([]);
-	const [quals, setQuals] = useState('');
 	//which required qualifications the user
 	const [matching_list, setMatchingList] = useState([]);
 	const [job, setJob] = useState([]);
