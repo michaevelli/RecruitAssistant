@@ -33,7 +33,7 @@ export default function JobApply() {
 	const [matching_list, setMatchingList] = useState([]);
 	const [job, setJob] = useState([]);
 	const [additionalDocs, setAdditionalDocs] = useState([]);
-	const [needDocs, setNeedDocs] = useState('');
+	const [needDocs, setNeedDocs] = useState(false);
 
 	useEffect(() => {
 		auth();
@@ -66,10 +66,10 @@ export default function JobApply() {
 			const req_docs= res.data.job[0][1].required_docs
 			if (typeof req_docs === "undefined") {
 				setRequiredDocs([])
-				setNeedDocs("none")
+				setNeedDocs(false)
 			} else {
 				setRequiredDocs(req_docs)
-				setNeedDocs("block")
+				setNeedDocs(true)
 			}
 			//initialise qualifications list
 			const req_quals= res.data.job[0][1].req_qualifications
@@ -186,7 +186,7 @@ export default function JobApply() {
 	return job.map((detail) => (
 		<Grid>
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
-			<Row noGutters style={{height:'100%',paddingTop: 60}}>
+			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
@@ -266,8 +266,8 @@ export default function JobApply() {
 							))}
 							</Col>					
 						</Form.Group>
-						<div style={{display: needDocs}}>
-							<Form.Group controlId="required_docs">
+						<div style={{visibility: needDocs? 'visible': 'hidden'}}>
+							<Form.Group controlId="required_docs" >
 							<Form.Label column sm={10}>Please upload the following documents as a pdf.</Form.Label>
 								<Col sm={10}>
 									<ul>
