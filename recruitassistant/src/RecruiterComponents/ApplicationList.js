@@ -316,7 +316,7 @@ export default function ApplicationList({match}) {
 			return applications.slice(0, selection).map((app, index) => (
 				<Grid>
 					<Row>
-						<Col xs={8}>
+						<Col xs={9}>
 							<Card style={{margin: 60}}>
 								<CardContent>                          
 									<Grid>
@@ -330,7 +330,7 @@ export default function ApplicationList({match}) {
 												</Typography>
 											</Col>
 											<Col>
-												<Link to={`/viewapplication/${jobID}/${app[0]}`} target="_blank" style={{marginLeft: 90}} >
+												<Link to={`/viewapplication/${jobID}/${app[0]}`} target="_blank" style={{marginLeft:'20%'}} >
 													View Application
 												</Link>
 											</Col>
@@ -470,7 +470,7 @@ export default function ApplicationList({match}) {
 		return applications.slice(0, selection).map((app, index) => (
         <Grid>
             <Row>
-                <Col xs={8}>
+                <Col xs={9}>
                     <Card style={{margin: 50 }}>
                         <CardContent>                          
                             <Grid>
@@ -486,14 +486,14 @@ export default function ApplicationList({match}) {
                                 </Row>
                             </Grid>
                         </CardContent>
-                        <CardActions style={{marginBottom:20}}>
+                        <CardActions style={{marginBottom:20,marginRight:20}}>
                             <Grid>
                                 <Col>
                                     <Row>
                                         <Form inline>
                                             <Col >
                                                 <Form.Row>
-                                                <Form.Group style={{marginRight:90}} controlId={"interview_date_" + app[0]}>
+                                                <Form.Group style={{marginRight:100}} controlId={"interview_date_" + app[0]}>
                                                     <Form.Label style={{marginRight:10}}>Interview Date: </Form.Label>
                                                     <TextField 
                                                         className={
@@ -515,7 +515,7 @@ export default function ApplicationList({match}) {
                                             </Col>
                                             <Col >
                                                 <Form.Row>
-                                                <Form.Group controlId={"interview_time_" + app[0]}>
+                                                <Form.Group style={{marginRight:90}} controlId={"interview_time_" + app[0]}>
 													<Form.Label style={{marginRight:10}}>Interview Time: </Form.Label>
                                                     <TextField
                                                         className={
@@ -577,7 +577,7 @@ export default function ApplicationList({match}) {
 							 ({detail[1].status}) </span>
 						</Typography>
 						<Row>
-							<Col sm = "8">
+							<Col sm = "9">
 								<Form inline>
 									<Form.Group controlId="selection" style ={{ marginLeft:100}}>
 										<Form.Label>Select top </Form.Label>
