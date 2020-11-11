@@ -32,10 +32,13 @@ def search():
 				continue
 			
 			if search != "":
-				searchtext = val["company"].lower() + " " + val["description"].lower() + " " + val["title"].lower() + " " + val["req_qualifications"].lower()
+				# searchtext = val["company"].lower() + " " + val["description"].lower() + " " + val["title"].lower() + " " + val["req_qualifications"].lower()
+				searchtext = val["company"].lower() + " " + val["description"].lower() + " " + val["title"].lower()
 				try:
 					for i in range(len(val["responsibilities"])):
 						searchtext = searchtext + " " + val["responsibilities"][i].lower()
+					for i in range(len(val["req_qualifications"])):
+						searchtext = searchtext + " " + val["req_qualifications"][i].lower()
 				except:
 					pass
 				searchtext = re.sub(re.compile("\W"), " ", searchtext)
