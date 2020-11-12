@@ -4,6 +4,7 @@ from .init_app import app, ref
 from backend import notifications
 from firebase_admin import auth
 from datetime import date, datetime
+import uuid
 
 #TODO comment what is this function doing
 @app.route('/interviewlist', methods=['POST'])

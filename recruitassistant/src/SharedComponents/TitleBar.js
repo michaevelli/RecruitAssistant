@@ -11,11 +11,11 @@ export default function TitleBar() {
 	// console.log("props:", props);
 	const history = useHistory();
 
-	async function logout () { 
-		window.sessionStorage.clear()
-		window.localStorage.clear()
-		history.push("/")
-	}
+	// async function logout () { 
+	// 	window.sessionStorage.clear()
+	// 	window.localStorage.clear()
+	// 	history.push("/")
+	// }
 
 	return(
 		<nav className="navbar navbar-dark fixed-top flex-md-nowrap p-0 shadow"
@@ -32,16 +32,21 @@ export default function TitleBar() {
 			</div>
 			<ul className="navbar-nav px-3">
 				<li className="nav-item text-nowrap">
-					<Typography variant="overline" style={{color:"white",marginRight:30}}>
-						Welcome {window.localStorage.getItem("name")}
-					</Typography>
-					<Notifications></Notifications>
-					<Button 
-						onClick={() => {logout()}}
-						variant="contained"
-						style={{"margin":5}}>
-						Log Out
-					</Button>
+					{window.localStorage.getItem("name")!=null && (
+						<Typography variant="overline" style={{color:"white",marginRight:30}}>
+							Welcome {window.localStorage.getItem("name")}
+						</Typography>
+					)}
+					{window.localStorage.getItem("name")!=null && <Notifications/>}
+					{window.localStorage.getItem("name")==null && (
+						<Button 
+							onClick={() => {history.push("/login")}}
+							variant="contained"
+							style={{"margin":5}}>
+							Login
+						</Button>
+					)}
+					&nbsp;&nbsp;
 				</li>
 			</ul>
 		</nav>

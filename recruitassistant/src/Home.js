@@ -48,6 +48,11 @@ export default function Home() {
 							<p class="lead">
 								RecruitAssistant matches the best companies with the best candidates.		
 							</p>
+							<br/>
+							<Button variant="contained" color="secondary" href="/jobseekerdashboard"
+							style={{ width:180, height:50}}>
+								Browse jobs
+							</Button>
 						</div>
 						<div class="col-md-5">
 							<img class="img-fluid mx-auto" src={connections}

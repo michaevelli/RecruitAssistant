@@ -176,7 +176,7 @@ export default function InterviewPage({match}) {
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': false},
-						{'text':'Your Applications','href': '/offers', 'active': false},         
+						{'text':'Your Applications','href': '/yourapplications', 'active': false},         
 						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 				</Col >
 				<Col>	

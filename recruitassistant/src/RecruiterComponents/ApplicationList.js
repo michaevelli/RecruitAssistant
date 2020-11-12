@@ -1,10 +1,11 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton, Button, Grid, Card, CardContent, CardActions, TextField} from "@material-ui/core";
+import {IconButton, Button, ButtonGroup, Grid, CardContent, CardActions, TextField} from "@material-ui/core";
+//Card
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {Form, Col, Row} from 'react-bootstrap';
+import {Form, Col, Row, Card} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -102,17 +103,17 @@ export default function ApplicationList({match}) {
 
 	const checkFormValidity = () => {
 		if(selection > applications.length){
-			return false
+			return "You have selected more applications than there are available. Please enter a valid number."
 		}
 		if (selection > 0) {
 			for (let i = 0; i < selection; i++) {
 				if (datevalidator(applications[i][1]["jobseeker_id"]) === false || timevalidator(applications[i][1]["jobseeker_id"]) === false) {
-					return false
+					return "Invalid date or time entered. Please check these fields are valid and try again."
 				}
 			}
-			return true
+			return "true"
 		} else {
-			return false
+			return "You have selected an invalid number of applications. Please enter a valid number."
 		}
 	}
 
@@ -167,6 +168,7 @@ export default function ApplicationList({match}) {
 			.then(res => {
 				console.log("response: ", res)
 				alert("Interview Successfully Sent")
+				window.location.reload()
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
@@ -178,7 +180,8 @@ export default function ApplicationList({match}) {
 	};
 
 	const postInterviews = async () => {
-		if (checkFormValidity() === true) {
+		let res = checkFormValidity()
+		if (res === "true") {
 			var invite_list = []
 			var emp_id = sessionStorage.getItem("uid")
 			console.log("applications: ", applications.slice(0, selection))
@@ -210,7 +213,7 @@ export default function ApplicationList({match}) {
 				alert("An error occured, please try again")
 			})
 		} else {
-			alert("Please fill in all fields correctly with up to " + applications.length + " applicants chosen")
+			alert(res)
 		}
 	};
 
@@ -264,6 +267,20 @@ export default function ApplicationList({match}) {
 		setApplications(list)
 	}
 
+	// const renderAppStatus = (status) => {
+	// 	if (status === "pending") {
+	// 		return <Card.Text>This application is pending review</Card.Text>
+	// 	} else if (status == "dismissed") {
+	// 		return <Card.Text>This application has been dismissed</Card.Text>
+	// 	} else if (status == "offer") {
+	// 		return <Card.Text>You have made an offer to this applicant</Card.Text>
+	// 	} else if (status == "interview") {
+	// 		return <Card.Text>You sent an interview invite to this applicant</Card.Text>
+	// 	} else {
+	// 		return <Card.Text>{status}</Card.Text>
+	// 	}
+	// }
+
 	const renderApplications = (status) => {
 		if (loadingApps) {
 			return (
@@ -276,37 +293,143 @@ export default function ApplicationList({match}) {
 			)
 		}
 		if( applications.length==0){
-			return <p style={{marginLeft: 500,marginTop:200}}>No Applications.</p>
+			return (
+				<div style={{display:'flex',justifyContent:'center',marginTop:100}}>
+					There are no pending applications. Check back soon!
+				</div>)
 		}
 		if (selection > 0) {
 			return applications.slice(0, selection).map((app, index) => (
-				<Grid>
+			// 	<div><div style={{display: 'flex', justifyContent: 'center'}}>
+			// 	<Card style={{width:"80%", height:"200px"}}>
+			// 		<Card.Body>
+			// 			<Row>
+			// 				<Col xs={8}>
+			// 					<Card.Title><Link to={"/viewapplication/"+jobID+'/'+app[0]}>{app[1].first_name} {app[1].last_name}</Link></Card.Title>
+			// 					<Card.Text style={{fontStyle: 'italic'}}>Meets {app[1].qualities_met} of the qualifications</Card.Text>
+			// 					{renderAppStatus(app[1].status)}
+			// 				</Col>
+			// 				<Col>
+			// 					<ButtonGroup
+			// 						orientation="vertical"
+			// 						color="primary"
+			// 						aria-label="vertical contained primary button group"
+			// 						variant="text"
+			// 					>
+			// 						<Button variant="contained" disabled = {status === "open"} onClick={() => {postInterview(app)}}>Send Interview</Button>
+			// 						<Button variant="contained">
+			// 							<Link style={{color: '#FFF'}} to={{pathname: `/createoffer`,
+			// 								state: {
+			// 									jobAppID: app[0],
+			// 									jobID: jobID}}}>
+			// 								Send Offer
+			// 							</Link>
+			// 						</Button>
+			// 						<Button variant="contained" onClick={() => {dismiss(app, index)}}>Dismiss</Button>
+			// 					</ButtonGroup>
+								
+			// 				</Col>
+			// 			</Row>
+			// 			<Row style = {{marginTop: 15, width: 500}}>
+			// 				<Form inline hidden = {status == "open"}>
+			// 					<Col style = {{marginLeft: 1, height: 25, width: 250}}>
+			// 						<Form.Group controlId={"interview_date_" + app[0]}>
+			// 							<TextField 
+			// 								className={
+			// 									!datevalidator(app[1].jobseeker_id)
+			// 										? "form-control is-invalid"
+			// 										: "form-control"
+			// 								}
+			// 								required
+			// 								id={"interview_date_" + app[0]}
+			// 								type="date"
+			// 								min={today}
+			// 								value={inviteList[app[1].jobseeker_id]["date"]}
+			// 								onChange={ (event) => handleDate(event.target.value, app[1].jobseeker_id, app)}/>
+			// 								<Form.Control.Feedback type="invalid">
+			// 									Please enter a date in the future
+			// 								</Form.Control.Feedback>
+			// 						</Form.Group>
+			// 					</Col>
+			// 					<Col style = {{marginRight: 1, height: 25, width: 250}}>
+			// 						<Form.Group controlId={"interview_time_" + app[0]}>
+			// 							<Form.Label>
+			// 								Time
+			// 							</Form.Label>
+			// 							<TextField
+			// 								className={
+			// 									!timevalidator(app[1].jobseeker_id)
+			// 										? "form-control is-invalid"
+			// 										: "form-control"
+			// 								}
+			// 								required
+			// 								id={"interview_time_" + app[0]}
+			// 								type="time"
+			// 								value={inviteList[app[1].jobseeker_id]["time"]}
+			// 								onChange={ (event) => handleTime(event.target.value, app[1].jobseeker_id, app)}/>
+			// 								<Form.Control.Feedback type="invalid">
+			// 									Please enter a time
+			// 								</Form.Control.Feedback>
+			// 						</Form.Group>
+			// 					</Col>
+			// 				</Form>	
+			// 			</Row>
+			// 		</Card.Body>
+			// 	</Card>
+			// 	<Col style={{display: 'flex', justifyContent: 'center'}}>
+			// 		<IconButton disabled = {index === 0 || status === "open"} color="secondary" onClick = {(event) => moveAppUp(index, event)}>
+			// 			<KeyboardArrowUpIcon/>
+			// 		</IconButton>
+			// 		<IconButton disabled = {index === selection - 1 || index === applications.length - 1 || status === "open"} color="secondary" onClick = {(event) => moveAppDown(index, event)}>
+			// 			<KeyboardArrowDownIcon/>
+			// 		</IconButton>
+			// 	</Col>
+			// </div><br/></div>
+				// <Grid>
 					<Row>
 						<Col>
-							<Card style={{margin: 30, height: 225, width:550}}>
-								<CardContent>                          
+							<Card style={{margin: 30, height: 225, width:"100%"}}>
+								<Card.Body>                          
 									<Grid>
 										<Row>
-											<Col>
-												<Typography variant="h5" component="h2">
-													{app[1].first_name} {app[1].last_name}
-												</Typography>
-												<Typography color="textSecondary">
-													Meets {app[1].qualities_met} of the qualifications
-												</Typography>
+											<Col xs={8}>
+												<Card.Title><Link to={"/viewapplication/"+jobID+'/'+app[0]}>{app[1].first_name} {app[1].last_name}</Link></Card.Title>
+												<Card.Text style={{fontStyle: 'italic'}}>Meets {app[1].qualities_met} of the qualifications</Card.Text>
 											</Col>
-											<Col>
-												<Link to={`/viewapplication/${jobID}/${app[0]}`} style={{marginLeft: 90}} >
-													View Application
-												</Link>
+											<Col xs={4}>
+												<div style={{display:'flex', justifyContent:'center', flexWrap: 'wrap'}}>
+													<Button disabled = {status === "open"} 
+													variant="outline" 
+													style={{width:'80%', marginBottom:5, borderRadius:15}}
+													onClick={() => {postInterview(app)}}> 
+															Interview
+													</Button><br/>
+													<Button variant="contained" 
+													color="secondary" 
+													style={{width:'80%', marginBottom:5, borderRadius:15}}>
+														<Link style={{color: '#FFF'}} to={{
+															pathname: `/createoffer`,
+															state: {
+																jobAppID: app[0],
+																jobID: jobID}}}>
+															Offer
+														</Link>
+													</Button><br/>
+													<Button style={{width:'80%', marginBottom:5, borderRadius:15}} 
+													variant="contained" 
+													color="secondary" 
+													onClick={() => {dismiss(app, index)}}>
+														Dismiss
+													</Button>
+												</div>
 											</Col>
 										</Row>
 									</Grid>
-								</CardContent>
-								<CardActions>
+								</Card.Body>
+								<Card.Body>
 									<Grid>
 										<Col>
-											<Row>
+											{/* <Row>
 												<ButtonToolbar>
 													<Button disabled = {status === "open"} 
 													variant="contained" 
@@ -329,7 +452,7 @@ export default function ApplicationList({match}) {
 													</Button>
 													<Button variant="contained" color="secondary" onClick={() => {dismiss(app, index)}}>Dismiss</Button>
 												</ButtonToolbar>
-											</Row>
+											</Row> */}
 											<Row style = {{marginTop: 15, width: 500}}>
 												<Form inline hidden = {status == "open"}>
 													<Col style = {{marginLeft: 1, height: 25, width: 250}}>
@@ -376,7 +499,7 @@ export default function ApplicationList({match}) {
 											</Row>
 										</Col>
 									</Grid>
-								</CardActions>
+								</Card.Body>
 							</Card>
 						</Col>
 						<Col style = {{marginTop: 100}}>
@@ -388,7 +511,7 @@ export default function ApplicationList({match}) {
 							</IconButton>
 						</Col>
 					</Row>
-				</Grid>
+				// {/* </Grid> */}
 			))
 		}
 		
@@ -419,10 +542,13 @@ export default function ApplicationList({match}) {
 						]}/>
 					</Col>
 
-					<Col sm="9">
+					<Col sm="10">
 						<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
-							{detail[1].title} @ {detail[1].company} <span style={{color: detail[1].status==="open"? 'green':'red'}}>
-							 ({detail[1].status}) </span>
+							{detail[1].title}
+						</Typography>
+						<Typography variant="h6"  style={{color: 'black', textAlign: "center",margin:20 }}>
+							{detail[1].company} | 
+							{detail[1].status==="open"? (' Closing date: '+detail[1].closing_date) : ' This job has closed'}
 						</Typography>
 						<Row>
 							<Col sm = "8">
@@ -442,14 +568,18 @@ export default function ApplicationList({match}) {
 									  applicants
 								</Form>
 							</Col>
-							<Col>
-								<Button disabled = {detail[1].status === "open"} variant="contained" color="secondary" onClick={() => {postInterviews()}}> Send Interview Invitations</Button>
+							<Col style={{display: 'flex', justifyContent: 'center'}}>
+								<Button disabled = {detail[1].status === "open"} 
+								variant="contained" color="secondary"
+								style={{borderRadius: 30}}
+								onClick={() => {postInterviews()}}> Send Interview Invitations</Button>
 							</Col>
 						</Row>
-						<Row>
-							<div className="card-deck"  style={{ display: 'grid', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
+						<Row style={{display: 'flex', justifyContent: 'center'}}>
+							{renderApplications(detail[1].status)}
+							{/* <div className="card-deck"  style={{ display: 'grid', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
 								{renderApplications(detail[1].status)}
-							</div>
+							</div> */}
 						</Row>
 					</Col>
 				</Row>

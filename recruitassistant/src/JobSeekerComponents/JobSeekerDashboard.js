@@ -17,7 +17,9 @@ export const searchUrl="http://localhost:5000/search/"
 export default function JobSeekerDashboard() {
 	
 	const history = useHistory();
+	const [publicUser, setPublicUser] = useState(true);
 	const [loading, setLoading] = useState(true);
+	const [loadingJobs, setLoadingJobs] = useState(true);
 	const [searchString,setSearchString] = useState('');
 	const [location,setLocation] = useState('');
 	const [jobType,setJobType] = useState('');
@@ -48,8 +50,8 @@ export default function JobSeekerDashboard() {
 			.then(function(response) {
 				console.log("auth success: ", response)
 				setLoading(false)				
-				if (!response.success || response.userInfo["type"] != "jobseeker") {
-					history.push("/unauthorised");
+				if (response.success && response.userInfo["type"] === "jobseeker") {
+					setPublicUser(false)
 				}
 			})
 	}
@@ -75,6 +77,7 @@ export default function JobSeekerDashboard() {
 		await axios.get(url)
 			.then(res => {
 				sortJobs(res.data.jobs)
+				setLoadingJobs(false)
 				console.log("response: ", res)
 			})
 			.catch((error) => {
@@ -82,6 +85,7 @@ export default function JobSeekerDashboard() {
 			})
 	};
 	const clearSearch = async () =>{
+		setLoadingJobs(true)
 		setSearchString('');
 		setLocation('');
 		setJobType('');
@@ -100,6 +104,7 @@ export default function JobSeekerDashboard() {
 		axios.post(url, ndata)
 			.then(function(response) {
 				sortJobs(response.data.jobs)
+				setLoadingJobs(false)
 				console.log(response)
 			})
 			.catch(function(error) {
@@ -108,6 +113,7 @@ export default function JobSeekerDashboard() {
 	}
 	const handleSubmit= async (event) =>{
 			event.preventDefault();
+			setLoadingJobs(true)
 			const url = `${jobUrl}search`
 			//TODO
 			const ndata={
@@ -121,6 +127,7 @@ export default function JobSeekerDashboard() {
 			axios.post(url, ndata)
 				.then(function(response) {
 					sortJobs(response.data.jobs)
+					setLoadingJobs(false)
 					console.log(response)
 				})
 				.catch(function(error) {
@@ -157,7 +164,9 @@ export default function JobSeekerDashboard() {
 		} else {
 			selectedJobs = jobs
 		}
-		return selectedJobs.length===0? (<p style={{marginLeft:400,marginTop:100}}> No results</p>) : (selectedJobs.map((job) => (
+		return selectedJobs.length===0? (
+			<div style={{display:'flex',justifyContent:'center',marginTop:100}}>No results. Try another search?</div>
+			) : (selectedJobs.map((job) => (
 			<div><div style={{display: 'flex', justifyContent: 'center'}}>
 				<Card style={ job[1].status=='open'? 
 					{width:"80%", height:"200px"} : 
@@ -196,26 +205,24 @@ export default function JobSeekerDashboard() {
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
-					<SideMenu random={[
-						{'text':'Job Seeker Dashboard','href': '#', 'active': true},
-						{'text':'Your Applications','href': '/yourapplications', 'active': false},       
-						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
+					{!publicUser ? (
+						<SideMenu random={[
+							{'text':'Job Seeker Dashboard','href': '#', 'active': true},
+							{'text':'Your Applications','href': '/yourapplications', 'active': false},       
+							{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
+					) : (
+						<SideMenu random={[
+							{'text':'Home','href': '/', 'active': false},
+							{'text':'Browse Jobs','href': '#', 'active': true}]}/>
+					)}
+					
 				</Col >
 				<Col>
 					<Typography variant="h4" style={{color: 'black', textAlign: "center",margin:20 }}>
 						Job Search
 					</Typography>
 					<Form onSubmit={handleSubmit}>
-						<Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>
-							<FormControl variant="outlined" style={{ margin: 8 , flexBasis:'10%'}}>
-								<InputLabel>Status</InputLabel>
-								<Select autoWidth={true} value={jobStatus} onChange={e=> setJobStatus(e.target.value)} label="Status">
-									<MenuItem value='open'>Open</MenuItem>
-									<MenuItem value='open and closed'>Open and Closed</MenuItem>
-									<MenuItem value='closed'>Closed</MenuItem>
-								</Select>
-							</FormControl>
-									
+						<Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>									
 							<TextField size="small"
 								onChange={ (event) => setSearchString(event.target.value)}
 								style={{ margin: 8 }}
@@ -272,8 +279,17 @@ export default function JobSeekerDashboard() {
 											<MenuItem value='Executive'>Executive</MenuItem>
 										</Select>
 									</FormControl>
-						
-				
+
+									<FormControl variant="outlined" style={{ margin: 8 , flexBasis:'10%'}}>
+										<InputLabel>Status</InputLabel>
+										<Select autoWidth={true} value={jobStatus} onChange={e=> setJobStatus(e.target.value)} label="Status">
+											<MenuItem value='open'>Open</MenuItem>
+											<MenuItem value='closed'>Closed</MenuItem>
+											<MenuItem value='open and closed'>All jobs</MenuItem>
+										</Select>
+									</FormControl>
+								</Col>
+								<Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>
 									<FormControl variant="outlined" style={{ margin: 8, flexBasis:'50%' }}>
 										<Typography id="range-slider" gutterBottom>
 											Salary Range (p.a)
@@ -295,7 +311,17 @@ export default function JobSeekerDashboard() {
 						All Jobs
 					</Typography> */}
 					<br/><br/>
-					<Container>{renderJobs()}</Container>
+					<Container>
+						{loadingJobs && 
+							<div style={{
+								position: 'absolute', left: '50%', top: '70%',
+								transform: 'translate(-50%, -50%)'
+								}}>
+								<CircularProgress/>
+							</div>
+						}
+						{!loadingJobs && renderJobs()}
+					</Container>
 					{/* <div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
 						{renderJobs()}
 					</div> */}

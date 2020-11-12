@@ -67,7 +67,7 @@ export default function OfferLetterForm(props) {
 				setCompany(job_data["company"]);
 				setLocation(job_data["location"]);
 				setJobType(job_data["job_type"]);
-				setSalary(job_data["salary_pa"]*1000);
+				setSalary(job_data["salary_pa"]);
 				
 			}).catch((error) => {
 				console.log("error: ", error.response)

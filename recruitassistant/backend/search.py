@@ -28,7 +28,7 @@ def search():
 			if exp.lower() != "" and not exp.lower() == val["experience_level"].lower():
 				continue
 			# filter: salary specified must fall within the range asked for
-			if (int(val["salary_pa"]) < salaryrange[0]) or (int(val["salary_pa"]) > salaryrange[1] and (salaryrange[1] != 200)):
+			if (int(val["salary_pa"]) < salaryrange[0]*1000) or (int(val["salary_pa"]) > salaryrange[1]*1000 and (salaryrange[1] != 200)):
 				continue
 			
 			if search != "":
