@@ -25,6 +25,7 @@ import EditOffer from './RecruiterComponents/EditOffer';
 import RecruiterFAQ from './RecruiterComponents/RecruiterFAQ';
 import JobSeekerFAQ from './JobSeekerComponents/JobSeekerFAQ';
 import InterviewPage from './JobSeekerComponents/InterviewPage';
+import JobStatistics from './RecruiterComponents/JobStatistics';
 import NotFound from './SharedComponents/NotFound';
 import UserList from './AdminComponents/UserList';
 
@@ -60,6 +61,7 @@ function App() {
           <Route path="/jobseekerFAQ" component={JobSeekerFAQ}/>
           <Route path="/interview/:interviewID" component={InterviewPage}/>
           <Route path="/admin/userlist" component={UserList}/>
+          <Route path="/jobstatistics/:jobID" component={JobStatistics}/>
           <Route path='*' exact={true} component={NotFound} />
         </Switch>
       </BrowserRouter>
