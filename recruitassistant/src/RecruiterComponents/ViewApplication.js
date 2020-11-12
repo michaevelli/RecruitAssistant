@@ -76,12 +76,15 @@ export default function ViewApplication() {
 		setJob(data.jobinfo)
 		setApp(data.applications)
 		if (data.jobinfo.req_qualifications){
-			setQualifications( data.jobinfo.req_qualifications.split(","))
+			setQualifications( data.jobinfo.req_qualifications)
 		}else{
 			setQualifications([])
 		}
-	   
-		setDocumentsList(data.applications.submitted_docs || [])
+		if (data.applications.submitted_docs){
+			setDocumentsList(data.applications.submitted_docs)
+		}else{
+			setDocumentsList([])
+		}
 		setLoading(false)
 	}
 	//example of how to download a pdf in browser
@@ -131,6 +134,17 @@ export default function ViewApplication() {
 							Phone Number: {application.phone_number}
 						</Box>
 						<br></br>
+						<Box fontSize="h6.fontSize" component = "div" display = "inline">
+							<CheckIcon hidden = {application.rights === "No"}/>
+							<ClearIcon hidden = {application.rights === "Yes"}/>
+							{application.rights === "Yes" &&
+							<span> Has </span>}
+							{application.rights === "No" &&
+							<span> Doesn't have </span>}
+							rights to work in {job.location}
+						</Box>
+						<br></br>
+						<br></br>
 						<Box fontSize="h6.fontSize" lineHeight={2}>
 							Qualifications:
 							{qualifications.map((quality) => (
@@ -141,7 +155,7 @@ export default function ViewApplication() {
 								</ul>
 							))}
 						</Box>
-						<Box fontSize="h6.fontSize" lineHeight={2}>
+						<Box fontSize="h6.fontSize" lineHeight={2} component="div" visibility={documentsList.length === 0?"hidden":"visible"}>
 							Documentation:
 							{documentsList.map((document) => (
 								<ul>

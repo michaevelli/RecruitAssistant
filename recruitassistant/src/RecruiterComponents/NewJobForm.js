@@ -32,8 +32,8 @@ export default function NewJobForm() {
 	const [salary,setSalary] = useState(100);
 	const [closingDate,setClosingDate] = useState('');
 	//will be comma seperated strings - split on the commas to get an array
-	const [requiredDocs,setRequiredDocs] = useState('');
-	const [qualifications,setQualifications] = useState('');
+	const [requiredDocs,setRequiredDocs] = useState([]);
+	const [qualifications,setQualifications] = useState([]);
 	//NOTE: if zero additional questions/responsibilities are added, the field will not exist
 	//in the database record - must check when displaying job adverts that the field exists!!!
 	const [additionalQuestions, setAdditionalQuestions] = useState([]);
@@ -55,6 +55,21 @@ export default function NewJobForm() {
 			})
 	}
 
+	const handleAddDoc = () => {
+		setRequiredDocs([...requiredDocs, ''])
+	}
+	const handleRemoveDoc = (index) => {
+		const ds  = [...requiredDocs]
+		//remove doc
+		ds.splice(index, 1)
+		setRequiredDocs(ds)
+	}
+	const handleChangeDoc = (index, event) => {
+		const ds  = [...requiredDocs]
+		ds[index]=event.target.value
+		setRequiredDocs(ds)
+	}
+	
 	const handleAddQuestion = () => {
 		setAdditionalQuestions([...additionalQuestions, ''])
 	}
@@ -68,6 +83,21 @@ export default function NewJobForm() {
 		const qs = [...additionalQuestions]
 		qs[index]=event.target.value
 		setAdditionalQuestions(qs)
+	}
+
+	const handleAddQuality = () => {
+		setQualifications([...qualifications, ''])
+	}
+	const handleRemoveQuality = (index) => {
+		const qs  = [...qualifications]
+		//remove qualification
+		qs.splice(index, 1)
+		setQualifications(qs)
+	}
+	const handleChangeQuality = (index, event) => {
+		const qs  = [...qualifications]
+		qs[index]=event.target.value
+		setQualifications(qs)
 	}
 
 	const handleAddResponsibility = () => {
@@ -160,7 +190,7 @@ export default function NewJobForm() {
 
                     <Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
                         <Form.Group controlId="title">
-							<Form.Label column sm={2}>Title</Form.Label>
+							<Form.Label column sm={2}>Title*</Form.Label>
 							<Col sm={10}>
 								<Form.Control 
 									required
@@ -169,7 +199,7 @@ export default function NewJobForm() {
 							</Col>
 						</Form.Group>
 						<Form.Group controlId="company">
-							<Form.Label column sm={2}>Company</Form.Label>
+							<Form.Label column sm={2}>Company*</Form.Label>
 							<Col sm={10}>
 								<Form.Control
 								required
@@ -179,7 +209,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="location">
-							<Form.Label column sm={2}>Location</Form.Label>
+							<Form.Label column sm={2}>Location*</Form.Label>
 							<Col sm={10}>
 								<Form.Control 
 								required
@@ -189,7 +219,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="description">
-							<Form.Label column sm={2}>Description</Form.Label>
+							<Form.Label column sm={2}>Description*</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="textarea" rows="3" 
 								required
@@ -200,10 +230,11 @@ export default function NewJobForm() {
 						<Form.Group controlId="responsibilities">
 							<Form.Label column sm={2}>
 							Key Responsibilities
-							</Form.Label>
 							<IconButton onClick={() => handleAddResponsibility()}>
 								<AddIcon />
 							</IconButton>
+							</Form.Label>
+							
 							<Col sm={10}>
 							{responsibilities.map((r, index) => (
 								<ul key={index}>
@@ -224,7 +255,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="jobType">
-						<Form.Label column sm={2}>Job Type</Form.Label>
+						<Form.Label column sm={2}>Job Type*</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
 								required
@@ -240,7 +271,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="experienceLevel">
-						<Form.Label column sm={2}>Experience Level</Form.Label>
+						<Form.Label column sm={2}>Experience Level*</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
 								required
@@ -259,7 +290,7 @@ export default function NewJobForm() {
 
 						<Form.Group controlId="salary">
 							<Form.Label column sm={2}>
-							Salary K/p.a
+							Salary K/p.a*
 							</Form.Label>
 							
 							<Col sm={10}>
@@ -285,7 +316,7 @@ export default function NewJobForm() {
 						
 						<Form.Group controlId="closingDate">
 							<Form.Label column sm={2}>
-							Application Closing Date</Form.Label>
+							Application Closing Date*</Form.Label>
 							<Col sm={10}>
 							<TextField 
 								className={
@@ -309,30 +340,65 @@ export default function NewJobForm() {
 						<Form.Group controlId="qualifications">
 							<Form.Label column sm={2}>
 							Desired Qualifications
+							<IconButton onClick={() => handleAddQuality()}>
+								<AddIcon />
+							</IconButton>
 							</Form.Label>
+							
 							<Col sm={10}>
-								<Form.Control placeholder="e.g. excel, python"
-								onChange={ (event) => setQualifications(event.target.value)}/>
+							{qualifications.map((q, index) => (
+								<ul key={index}>
+									<li><TextField 
+									name="Quality"
+									variant="outlined"
+									size="small"
+									placeholder="Quality"
+									value={q}
+									onChange={event => handleChangeQuality(index, event)}
+									/>
+									<IconButton onClick={() => handleRemoveQuality(index)}>
+										<RemoveIcon />
+									</IconButton></li>
+								</ul>
+							))}
 							</Col>					
 						</Form.Group>
 
 						<Form.Group controlId="requiredDocs">
 							<Form.Label column sm={2}>
 							Required Documents
+							<IconButton onClick={() => handleAddDoc()}>
+								<AddIcon />
+							</IconButton>
 							</Form.Label>
+							
 							<Col sm={10}>
-								<Form.Control placeholder="e.g. cover letter, resume, passport"
-								onChange={ (event) => setRequiredDocs(event.target.value)}/>
+							{requiredDocs.map((d, index) => (
+								<ul key={index}>
+									<li><TextField 
+									name="Document"
+									variant="outlined"
+									size="small"
+									placeholder="Document"
+									value={d}
+									onChange={event => handleChangeDoc(index, event)}
+									/>
+									<IconButton onClick={() => handleRemoveDoc(index)}>
+										<RemoveIcon />
+									</IconButton></li>
+								</ul>
+							))}
 							</Col>					
 						</Form.Group>
 
 						<Form.Group controlId="additionalQuestions">
 							<Form.Label column sm={2}>
 							Additional Questions
-							</Form.Label>
 							<IconButton onClick={() => handleAddQuestion()}>
 								<AddIcon />
 							</IconButton>
+							</Form.Label>
+							
 							<Col sm={10}>
 							{additionalQuestions.map((question, index) => (
 								<div key={index}>

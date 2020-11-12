@@ -74,9 +74,7 @@ export default function RecruiterDashboard() {
 			</div>
 		) : (jobs.map((job) => (
 			<div><div style={{display: 'flex', justifyContent: 'center'}}>
-				<Card style={ job[1].status=='open'? 
-					{width:"80%", height:"200px"} : 
-					{backgroundColor:'lightgrey', opacity:"0.5", width:"80%", height:"200px"}} >
+				<Card style={{width:"80%", height:"200px"}} >
 					<Card.Body>
 						<Row>
 							<Col>
@@ -88,9 +86,9 @@ export default function RecruiterDashboard() {
 								<div style={{textAlign:'right'}}>
 									{job[1].status == "open" ? 
 											<Card.Text>Closing date: {job[1].closing_date}</Card.Text> :
-											<Card.Text>This job is closed</Card.Text>
+											<Card.Text style={{color:'red'}}>This job is closed</Card.Text>
 									}
-									<Button href={"/editjob/"+job[0]}>
+									<Button  href={"/editjob/"+job[0]}>
 										Edit Job
 									</Button><br/>
 									<Button href={`/applications/${job[0]}`}>

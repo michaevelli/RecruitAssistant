@@ -69,6 +69,44 @@ export default function InterviewPage({match}) {
 			})
 	}
 
+     
+    //if status is pending give option to accept/decline
+    //else simply show the date and time info
+    const interviewInfo = () => {
+        return (
+        <div>
+        <Alert style={{visibility: (open? 'visible':'hidden'), margin:10}}  variant={variant} >
+            {desc}
+        </Alert>
+        <Typography component="div" style={{color: 'black', margin: 30}}>
+    
+            <Box fontSize="h4.fontSize" >
+                Interview Details
+            </Box>
+            <br/>
+           
+            <Box fontSize="h5.fontSize">
+                <span style={{fontWeight: "bold"}}>Date:</span> {date}
+            </Box>
+            <br/>
+            <Box fontSize="h5.fontSize">
+                <span style={{fontWeight: "bold"}}>Time:</span> {time}
+            </Box>
+            <br/>
+            {status=="Pending" &&
+            <Box style={{marginTop: 50}}>
+                <Button variant="contained"  color="secondary" style={{marginRight:30,backgroundColor: 'green'}} onClick={()=>handleResponse("Accepted")}>
+                Accept
+                </Button>
+                <Button variant="contained" color="secondary" onClick={()=>setShow(show==='none'? 'block': 'none')}>
+                Decline
+                </Button>
+            </Box>
+            }
+        </Typography>
+        </div> )
+    }
+
 	const getInterviewDetails = async () => {
 		await axios.get(`${interviewURL}/${interviewID}`)
 		.then(res => {   
@@ -84,6 +122,7 @@ export default function InterviewPage({match}) {
 		})	
 	}
 
+   
 	//response can be "Accepted" or "Declined"
 	const handleResponse = async (response) => {
 		//update interview status
@@ -124,42 +163,6 @@ export default function InterviewPage({match}) {
 				</div>
 			</div>
 		)
-	}
-
-	//if status is pending give option to accept/decline
-	//else simply show the date and time info
-	const interviewInfo = () => {
-		return (
-		<div>
-		<Alert style={{visibility: (open? 'visible':'hidden'), margin:10}}  variant={variant} >
-			{desc}
-		</Alert>
-		<Typography component="div" style={{color: 'black', margin: 30}}>      
-			<Box fontSize="h4.fontSize" >
-				Interview Details
-			</Box>
-			<br/>
-		   
-			<Box fontSize="h5.fontSize">
-				<span style={{fontWeight: "bold"}}>Date:</span> {date}
-			</Box>
-			<br/>
-			<Box fontSize="h5.fontSize">
-				<span style={{fontWeight: "bold"}}>Time:</span> {time}
-			</Box>
-			<br/>
-			{status=="Pending" &&
-			<Box style={{marginTop: 50}}>
-				<Button variant="contained"  color="secondary" style={{marginRight:30,backgroundColor: 'green'}} onClick={()=>handleResponse("Accepted")}>
-				Accept
-				</Button>
-				<Button variant="contained" color="secondary" onClick={()=>setShow(show==='none'? 'block': 'none')}>
-				Decline
-				</Button>
-			</Box>
-			}
-		</Typography>
-		</div> )
 	}
 
 	return loading ? (

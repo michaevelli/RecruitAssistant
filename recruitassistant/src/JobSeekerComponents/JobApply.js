@@ -27,12 +27,13 @@ export default function JobApply() {
 	const [last_name, setLastName] = useState('');
 	const [phone_number, setPhoneNumber] = useState('');
 	const [rights, setRights] = useState('');
-
+	const [required_docs, setRequiredDocs] = useState([]);
 	const [qualification_list, setQualificationList] = useState([]);
 	//which required qualifications the user
 	const [matching_list, setMatchingList] = useState([]);
 	const [job, setJob] = useState([]);
 	const [additionalDocs, setAdditionalDocs] = useState([]);
+	const [needDocs, setNeedDocs] = useState(false);
 
 	useEffect(() => {
 		auth();
@@ -61,16 +62,28 @@ export default function JobApply() {
 		})
 		.then(res => {
 			setJob(res.data.job)
+			//initialise need for docs to be uploaded
+			const req_docs= res.data.job[0][1].required_docs
+			if (typeof req_docs === "undefined") {
+				setRequiredDocs([])
+				setNeedDocs(false)
+			} else {
+				setRequiredDocs(req_docs)
+				setNeedDocs(true)
+			}
 			//initialise qualifications list
-			const req_quals= res.data.job[0][1].req_qualifications.split(",")
-			setQualificationList(req_quals)
+			const req_quals= res.data.job[0][1].req_qualifications
+			if (typeof req_quals === "undefined") {
+				setQualificationList([])
+			} else {
+				setQualificationList(req_quals)
+			}
 			//initialise matching qualifications list to all false
 			var initial_list=[]
 			for (var i=0; i<req_quals.length; i++){
 				initial_list.push(false)
 			}
 			setMatchingList(initial_list)
-		
 		})
 		.catch((error) => {
 			console.log("error: ", error.response)
@@ -173,7 +186,7 @@ export default function JobApply() {
 	return job.map((detail) => (
 		<Grid>
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
-			<Row noGutters style={{height:'100%',paddingTop: 60}}>
+			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
@@ -244,7 +257,7 @@ export default function JobApply() {
 								Please indicate the skills/experience you have for the following:
 							</Form.Label>
 							<Col sm={10}>
-							{detail[1].req_qualifications.split(",").map((qualification, index) => (
+							{qualification_list.map((qualification, index) => (
 								<Form.Check
 									type = "checkbox"
 									id = {qualification}
@@ -253,29 +266,31 @@ export default function JobApply() {
 							))}
 							</Col>					
 						</Form.Group>
-
-						<Form.Group controlId="required_docs">
+						<div style={{visibility: needDocs? 'visible': 'hidden'}}>
+							<Form.Group controlId="required_docs" >
 							<Form.Label column sm={10}>Please upload the following documents as a pdf.</Form.Label>
-							<Col sm={10}>
-								<ul>
-									{detail[1].required_docs.split(",").map((document,index) => (
-										<li>
-											<Form.File
-												required
-												id = {index}
-												name = {document}
-												label = {document}
-												accept = "application/pdf"
-												onChange = {(e)=>handleChangeDoc(index,document,e)}/> 
-										</li>
-									))}
-								</ul>
-								<Form.Control.Feedback type="invalid">
-									Please upload all files as pdf
-								</Form.Control.Feedback>
-							</Col>
-						</Form.Group>
-						<Button disabled = {applied} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
+								<Col sm={10}>
+									<ul>
+										{required_docs.map((document,index) => (
+											<li>
+												<Form.File
+													required = {needDocs === "block"}
+													id = {index}
+													name = {document}
+													label = {document}
+													accept = "application/pdf"
+													onChange = {(e)=>handleChangeDoc(index,document,e)}/> 
+											</li>
+										))}
+									</ul>
+									<Form.Control.Feedback type="invalid">
+										Please upload all files as pdf
+									</Form.Control.Feedback>
+								</Col>
+							</Form.Group>
+						</div>
+						
+						<Button disabled = {applied || detail[1].status === "closed"} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
 							Submit Application
 						</Button>
 					</Form>

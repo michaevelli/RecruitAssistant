@@ -128,9 +128,9 @@ def send_interview():
 					},
 				})
 
+			print(invite_list)
 			# update application status
-			ref.child('jobApplications').child(u['job_id']).child(u['app_id']).child('status').set('interview')
-			
+			ref.child('jobApplications').child(u['job_id']).child(u['app_id']).child('status').set('interview')		
 		return jsonify({'message': f'Successfully created interview {interview_id}'}),200
 	except Exception as e:
 		print(e)
