@@ -179,8 +179,7 @@ export default function NewJobForm() {
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
 					<SideMenu random={[
-						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-						{'text':'Post a new job','href': '/createJobPost','active': true},
+						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': true},
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 

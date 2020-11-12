@@ -10,7 +10,7 @@ export default function NotFound() {
 		<div>
 			<br/><br/><br/><br/><br/><br/><br/><br/><br/>
 			<Container style={{'textAlign': 'center'}}>
-				<div>Page not found.</div>
+				<div>404: Page not found.</div>
 				<Button onClick={() => {history.push("/")}}>Home</Button>
 			</Container>
 		</div>

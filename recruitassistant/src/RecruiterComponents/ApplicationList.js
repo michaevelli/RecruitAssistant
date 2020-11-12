@@ -1,10 +1,11 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton, Button, Grid, Card, CardContent, CardActions, TextField} from "@material-ui/core";
+import {IconButton, Button, ButtonGroup, Grid, CardContent, CardActions, TextField} from "@material-ui/core";
+//Card
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {Form, Col, Row,Modal} from 'react-bootstrap';
+import {Form, Col, Row, Card, Modal} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -125,17 +126,17 @@ export default function ApplicationList({match}) {
 
 	const checkFormValidity = () => {
 		if(selection > applications.length){
-			return false
+			return "You have selected more applications than there are available. Please enter a valid number."
 		}
 		if (selection > 0) {
 			for (let i = 0; i < selection; i++) {
 				if (datevalidator(applications[i][1]["jobseeker_id"]) === false || timevalidator(applications[i][1]["jobseeker_id"]) === false) {
-					return false
+					return "Invalid date or time entered. Please check these fields are valid and try again."
 				}
 			}
-			return true
+			return "true"
 		} else {
-			return false
+			return "You have selected an invalid number of applications. Please enter a valid number."
 		}
 	}
 
@@ -190,8 +191,9 @@ export default function ApplicationList({match}) {
 			.then(res => {
 				console.log("response: ", res)
 				alert("Interview Successfully Sent")
+				window.location.reload()
 				//Close dialog box
-				handleClose(app[0])
+				// handleClose(app[0])
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
@@ -203,7 +205,8 @@ export default function ApplicationList({match}) {
 	};
 
 	const postInterviews = async () => {
-		if (checkFormValidity() === true) {
+		let res = checkFormValidity()
+		if (res === "true") {
 			var invite_list = []
 			var emp_id = sessionStorage.getItem("uid")
 			console.log("applications: ", applications.slice(0, selection))
@@ -236,7 +239,7 @@ export default function ApplicationList({match}) {
 				alert("An error occured, please try again")
 			})
 		} else {
-			alert("Please fill in all fields correctly with up to " + applications.length + " applicants chosen")
+			alert(res)
 		}
 	};
 
@@ -297,7 +300,20 @@ export default function ApplicationList({match}) {
 	
 	
 
-	//normal page with modals for interview inviting
+	// const renderAppStatus = (status) => {
+	// 	if (status === "pending") {
+	// 		return <Card.Text>This application is pending review</Card.Text>
+	// 	} else if (status == "dismissed") {
+	// 		return <Card.Text>This application has been dismissed</Card.Text>
+	// 	} else if (status == "offer") {
+	// 		return <Card.Text>You have made an offer to this applicant</Card.Text>
+	// 	} else if (status == "interview") {
+	// 		return <Card.Text>You sent an interview invite to this applicant</Card.Text>
+	// 	} else {
+	// 		return <Card.Text>{status}</Card.Text>
+	// 	}
+	// }
+
 	const renderApplications = (status) => {
 		if (loadingApps) {
 			return (
@@ -309,97 +325,123 @@ export default function ApplicationList({match}) {
 				</div>
 			)
 		}
-		if( applications.length===0){
-			return <p style={{marginLeft: 500,marginTop:180}}>No Applications.</p>
+		if( applications.length==0){
+			return (
+				<div style={{display:'flex',justifyContent:'center',marginTop:100}}>
+					There are no pending applications. Check back soon!
+				</div>)
 		}
 		if (selection > 0) {
 			return applications.slice(0, selection).map((app, index) => (
-				<Grid>
-					<Row>
-						<Col xs={9}>
-							<Card style={{margin: 60}}>
-								<CardContent>                          
+					<Row style={{display:'flex', alignItems:'center'}}>
+						<Col xs={8}>
+							<Card style={{margin: 30, width:"100%"}}>
+								<Card.Body>
 									<Grid>
 										<Row>
-											<Col>
-												<Typography variant="h5" component="h2">
-													{app[1].first_name} {app[1].last_name}
-												</Typography>
-												<Typography color="textSecondary">
-													Meets {app[1].qualities_met} of the qualifications
-												</Typography>
+											<Col xs={8}>
+												<Card.Title><Link to={"/viewapplication/"+jobID+'/'+app[0]}>{app[1].first_name} {app[1].last_name}</Link></Card.Title>
+												<Card.Text style={{fontStyle: 'italic'}}>Meets {app[1].qualities_met} of the qualifications</Card.Text>
 											</Col>
-											<Col>
-												<Link to={`/viewapplication/${jobID}/${app[0]}`} target="_blank" style={{marginLeft:'20%'}} >
-													View Application
-												</Link>
-											</Col>
-										</Row>
-									</Grid>
-								</CardContent>
-								<CardActions>
-									<Grid>
-										<Col>
-											<Row>
-												<ButtonToolbar>
-													<Button
-													id={"open_interview_modal_" + app[0]}
-													disabled = {status === "open"} 
+											{!sendTop && (<Col xs={4}>
+												<div style={{display:'flex', justifyContent:'center', flexWrap: 'wrap'}}>
+													<Button disabled = {status === "open"} 
 													variant="contained" 
-													color="secondary"
-													style={{marginRight:10, margnLeft:10}}
-													onClick={()=>
-														handleShow(app[0])
-													}> 
-														Interview
+													color="secondary" 
+													style={{width:'80%', marginBottom:5, borderRadius:15}}
+													onClick={() => {handleShow(app[0])}}> 
+															Interview
+													</Button><br/>
+													<Button variant="contained" 
+													color="secondary" 
+													style={{width:'80%', marginBottom:5, borderRadius:15}}>
+														<Link style={{color: '#FFF'}} to={{
+															pathname: `/createoffer`,
+															state: {
+																jobAppID: app[0],
+																jobID: jobID}}}>
+															Offer
+														</Link>
+													</Button><br/>
+													<Button style={{width:'80%', marginBottom:5, borderRadius:15}} 
+													variant="contained" 
+													color="secondary" 
+													onClick={() => {dismiss(app, index)}}>
+														Dismiss
 													</Button>
-
-											
-
-												<Button variant="contained" 
-												color="secondary" 
-												style={{marginRight:10, margnLeft:10}}>
-
-													<Link style={{color: '#FFF'}} to={{
-														pathname: `/createoffer`,
-														state: {
-															jobAppID: app[0],
-															jobID: jobID}}}>
-														Offer
-													</Link>
-												</Button>
-												
-												<Button variant="contained" color="secondary" onClick={() => {dismiss(app, index)}}>Dismiss</Button>
-											</ButtonToolbar>
-											<p style={{marginTop:10}}>  { app[1].status!=='pending' &&
-											`You have already sent an ${app[1].status} to this candidate.`
-											}</p>
-											</Row>
-										</Col>
+												</div>
+											</Col>)}
+										</Row>
+										{sendTop && (<Row>
+											<Form inline>
+												<Col >
+													<Form.Row>
+													<Form.Group style={{marginRight:100}} controlId={"interview_date_" + app[0]}>
+														<Form.Label style={{marginRight:10}}>Interview Date: </Form.Label>
+														<TextField 
+															className={
+																!datevalidator(app[1].jobseeker_id)
+																	? "form-control is-invalid"
+																	: "form-control"
+															}
+															required
+															id={"interview_date_" + app[0]}
+															type="date"
+															min={today}
+															value={inviteList[app[1].jobseeker_id]["date"]}
+															onChange={ (event) => handleDate(event.target.value, app[1].jobseeker_id, app)}/>
+															<Form.Control.Feedback type="invalid">
+																Please enter a date in the future
+															</Form.Control.Feedback>
+													</Form.Group>
+													</Form.Row>
+												</Col>
+												<Col >
+													<Form.Row>
+													<Form.Group style={{marginRight:90}} controlId={"interview_time_" + app[0]}>
+														<Form.Label style={{marginRight:10}}>Interview Time: </Form.Label>
+														<TextField
+															className={
+																!timevalidator(app[1].jobseeker_id)
+																	? "form-control is-invalid"
+																	: "form-control"
+															}
+															required
+															id={"interview_time_" + app[0]}
+															type="time"
+															value={inviteList[app[1].jobseeker_id]["time"]}
+															onChange={ (event) => handleTime(event.target.value, app[1].jobseeker_id, app)}/>
+															<Form.Control.Feedback type="invalid">
+																Please enter a time
+															</Form.Control.Feedback>
+													</Form.Group>
+													</Form.Row>
+												</Col>
+											</Form>	
+										</Row>)}
 									</Grid>
-								</CardActions>
+								</Card.Body>
 							</Card>
 						</Col>
-						<Col style = {{marginTop: 100}}>
-							<IconButton disabled = {index === 0 || status === "open"} color="secondary" onClick = {(event) => moveAppUp(index, event)}>
-								<KeyboardArrowUpIcon/>
-							</IconButton>
-							<IconButton disabled = {index === selection - 1 || index === applications.length - 1 || status === "open"} color="secondary" onClick = {(event) => moveAppDown(index, event)}>
-								<KeyboardArrowDownIcon/>
-							</IconButton>
+						<Col xs={4} style = {{display:'flex', justifyContent:'center'}}>
+							{!sendTop && (
+								<div>
+									<IconButton disabled = {index === 0 || status === "open"} color="secondary" onClick = {(event) => moveAppUp(index, event)}>
+										<KeyboardArrowUpIcon/>
+									</IconButton>
+									<IconButton disabled = {index === selection - 1 || index === applications.length - 1 || status === "open"} color="secondary" onClick = {(event) => moveAppDown(index, event)}>
+										<KeyboardArrowDownIcon/>
+									</IconButton>
+								</div>
+							)}
 						</Col>
-
-			
-
-							<Modal show={showing[app[0]]} onHide={()=>handleClose(app[0])}>						
-								<Modal.Header>
-									<Modal.Title>Interview Invite</Modal.Title>
-								</Modal.Header>
-							
-								<Modal.Body>
+						<Modal show={showing[app[0]]} onHide={()=>handleClose(app[0])}>						
+							<Modal.Header>
+								<Modal.Title>Interview Invite</Modal.Title>
+							</Modal.Header>
+							<Modal.Body>
 								<Row >
 									<Form inline style={{margin:5}}>
-											
 											<Form.Group style={{marginLeft:8,marginBottom:10}}>
 												<Form.Label style={{marginRight:10}}>Interview Date: </Form.Label>
 												<TextField 
@@ -418,10 +460,6 @@ export default function ApplicationList({match}) {
 														Please enter a date in the future
 													</Form.Control.Feedback>
 											</Form.Group>
-											
-										
-									
-											
 											<Form.Group style={{marginLeft:8}} controlId={"single_interview_time_" + app[0]}>
 												<Form.Label style={{marginRight:10}}>Interview Time: </Form.Label>
 												<TextField
@@ -439,112 +477,23 @@ export default function ApplicationList({match}) {
 														Please enter a time
 													</Form.Control.Feedback>
 											</Form.Group>
-											
-										
 									</Form>	
 								</Row>
-								</Modal.Body>
-							
-								<Modal.Footer style={{marginTop:20}}>
-									<Button variant="contained" color="default" onClick={()=>handleClose(app[0])}>Cancel</Button>
-									<Button variant="contained" 
-									style={{marginLeft:10}}
-									color="secondary"
-									id={"interview_modal_" + app[0]} 
-									onClick={()=>postInterview(app)}>Send</Button>
-								</Modal.Footer>
-							
+							</Modal.Body>
+							<Modal.Footer style={{marginTop:20}}>
+								<Button variant="contained" color="default" onClick={()=>handleClose(app[0])}>Cancel</Button>
+								<Button variant="contained" 
+								style={{marginLeft:10}}
+								color="secondary"
+								id={"interview_modal_" + app[0]} 
+								onClick={()=>postInterview(app)}>Send</Button>
+							</Modal.Footer>
 						</Modal>
 					</Row>
-				</Grid>
 			))
 		}
 		
 	};
-
-	//displays cards with only the interview time/date fields
-	const renderSendTop = () => {	
-		if( applications.length===0){
-			return <p style={{marginLeft: 500,marginTop:200}}>No Applications.</p>
-		}
-		return applications.slice(0, selection).map((app, index) => (
-        <Grid>
-            <Row>
-                <Col xs={9}>
-                    <Card style={{margin: 50 }}>
-                        <CardContent>                          
-                            <Grid>
-                                <Row>
-                                    <Col>
-                                        <Typography variant="h5" component="h2">
-                                            {app[1].first_name} {app[1].last_name}
-                                        </Typography>
-                                        <Typography color="textSecondary">
-                                            Meets {app[1].qualities_met} of the qualifications
-                                        </Typography>
-                                    </Col>
-                                </Row>
-                            </Grid>
-                        </CardContent>
-                        <CardActions style={{marginBottom:20,marginRight:20}}>
-                            <Grid>
-                                <Col>
-                                    <Row>
-                                        <Form inline>
-                                            <Col >
-                                                <Form.Row>
-                                                <Form.Group style={{marginRight:100}} controlId={"interview_date_" + app[0]}>
-                                                    <Form.Label style={{marginRight:10}}>Interview Date: </Form.Label>
-                                                    <TextField 
-                                                        className={
-                                                            !datevalidator(app[1].jobseeker_id)
-                                                                ? "form-control is-invalid"
-                                                                : "form-control"
-                                                        }
-                                                        required
-                                                        id={"interview_date_" + app[0]}
-                                                        type="date"
-                                                        min={today}
-                                                        value={inviteList[app[1].jobseeker_id]["date"]}
-                                                        onChange={ (event) => handleDate(event.target.value, app[1].jobseeker_id, app)}/>
-                                                        <Form.Control.Feedback type="invalid">
-                                                            Please enter a date in the future
-                                                        </Form.Control.Feedback>
-                                                </Form.Group>
-                                                </Form.Row>
-                                            </Col>
-                                            <Col >
-                                                <Form.Row>
-                                                <Form.Group style={{marginRight:90}} controlId={"interview_time_" + app[0]}>
-													<Form.Label style={{marginRight:10}}>Interview Time: </Form.Label>
-                                                    <TextField
-                                                        className={
-                                                            !timevalidator(app[1].jobseeker_id)
-                                                                ? "form-control is-invalid"
-                                                                : "form-control"
-                                                        }
-                                                        required
-                                                        id={"interview_time_" + app[0]}
-                                                        type="time"
-                                                        value={inviteList[app[1].jobseeker_id]["time"]}
-                                                        onChange={ (event) => handleTime(event.target.value, app[1].jobseeker_id, app)}/>
-                                                        <Form.Control.Feedback type="invalid">
-                                                            Please enter a time
-                                                        </Form.Control.Feedback>
-                                                </Form.Group>
-                                                </Form.Row>
-                                            </Col>
-                                        </Form>	
-                                    </Row>
-                                </Col>
-                            </Grid>
-                        </CardActions>
-                    </Card>
-                </Col>
-            </Row>
-        </Grid>
-		))	
-	}
 
 	return loading ? (
 		<div style={{
@@ -561,7 +510,7 @@ export default function ApplicationList({match}) {
 					<Col sm="2">
 					<SideMenu random={[
 							{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-							{'text': 'Job View','href': '#','active': false,
+							{'text': detail[1].title,'href': '#','active': false,
 							'nested':[
 								{'text':'Applications','href': '#','active': true},
 								{'text':'Interviews','href': `/interviews/${jobID}`,'active': false},
@@ -570,14 +519,18 @@ export default function ApplicationList({match}) {
 							{'text':'FAQ','href':'/recruiterFAQ','active': false}
 						]}/>
 					</Col>
-						
-					<Col sm="9">
+
+					<Col sm="10">
+					{/* <Col sm="9"> */}
 						<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
-							{detail[1].title} @ {detail[1].company} <span style={{color: detail[1].status==="open"? 'green':'red'}}>
-							 ({detail[1].status}) </span>
+							{detail[1].title}
+						</Typography>
+						<Typography variant="h6"  style={{color: 'black', textAlign: "center",margin:20 }}>
+							{detail[1].company} | 
+							{detail[1].status==="open"? (' Closing date: '+detail[1].closing_date) : ' This job has closed'}
 						</Typography>
 						<Row>
-							<Col sm = "9">
+							<Col xs={8}>
 								<Form inline>
 									<Form.Group controlId="selection" style ={{ marginLeft:100}}>
 										<Form.Label>Select top </Form.Label>
@@ -595,27 +548,28 @@ export default function ApplicationList({match}) {
 									  applicants
 								</Form>
 							</Col>
-							<Col>
+							<Col xs={4}>
 								<Button disabled = {detail[1].status === "open"}
 								variant="contained" 
-								color="secondary" 
+								color="secondary"
+								style={{borderRadius: 30}}
 								onClick={() =>{
 									if (sendTop){
 										postInterviews()
 									}else{
 										setSendTop(true)
 									}
-								}}> Send Interviews to Top {selection}</Button>
+								}}> {sendTop ? ('Submit') : ('Send Interviews to Top '+ selection)}</Button>
 								<Button disabled = {detail[1].status === "open"}
-								style={{margin:10,visibility: sendTop? 'visible':'hidden'}}
+								style={{borderRadius:30,margin:10,visibility: sendTop? 'visible':'hidden'}}
 								variant="contained" 
 								onClick={()=>setSendTop(false)}>Cancel</Button>
 							</Col>
 						</Row>
-						<Row>
-							<div className="card-deck"  style={{ display: 'grid', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
-								{sendTop? renderSendTop():renderApplications(detail[1].status)}
-							</div>
+						<Row style={{display: 'flex', justifyContent: 'center'}}>
+							<Col xs={10}>
+								{renderApplications(detail[1].status)}
+							</Col>
 						</Row>
 					</Col>
 				</Row>

@@ -47,7 +47,6 @@ export default function RecruiterDashboard() {
 				<Col sm="2">
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-						{'text':'Post a new job','href': '/createJobPost','active': false},
 						{'text':'FAQ','href':'#','active': true}]}/>
 				</Col>
 
