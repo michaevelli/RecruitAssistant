@@ -239,7 +239,8 @@ export default function NewJobForm() {
 							<Col sm={10}>
 							{responsibilities.map((r, index) => (
 								<ul key={index}>
-									<li><TextField 
+									<li><TextField
+									required
 									name="Responsibility"
 									variant="outlined"
 									size="small"
@@ -350,6 +351,7 @@ export default function NewJobForm() {
 							{qualifications.map((q, index) => (
 								<ul key={index}>
 									<li><TextField 
+									required
 									name="Quality"
 									variant="outlined"
 									size="small"
@@ -377,6 +379,7 @@ export default function NewJobForm() {
 							{requiredDocs.map((d, index) => (
 								<ul key={index}>
 									<li><TextField 
+									required
 									name="Document"
 									variant="outlined"
 									size="small"
@@ -401,9 +404,10 @@ export default function NewJobForm() {
 							</Form.Label>
 							
 							<Col sm={10}>
-							{additionalQuestions.map((question, index) => (
+							<ol> {additionalQuestions.map((question, index) => (
 								<div key={index}>
-									<TextField 
+									<li><TextField 
+									required
 									name="Question"
 									variant="outlined"
 									size="small"
@@ -413,9 +417,10 @@ export default function NewJobForm() {
 									/>
 									<IconButton onClick={() => handleRemoveQuestion(index)}>
 										<RemoveIcon />
-									</IconButton>
+									</IconButton></li>
 								</div>
 							))}
+							</ol>
 							</Col>					
 						</Form.Group>
 
