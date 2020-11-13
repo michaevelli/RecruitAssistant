@@ -82,4 +82,4 @@ def login():
 		error_message = json.loads(e.args[1])['error']['message']
 		error_code = json.loads(e.args[1])['error']['code']
 		
-		return jsonify({"message": error_message}), error_code
+		return jsonify({"message": "Invalid Email or Password"}), 401
