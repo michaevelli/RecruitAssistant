@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link,Slider, Grid,Card,CardContent,Button,CardActions ,TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
-import {Form,Container,Col,Row,Collapse} from 'react-bootstrap';
+import {Link,Slider, Grid,Button ,TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import {Form,Card,Col,Row,Collapse,Container} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -11,26 +12,26 @@ import axios from "axios";
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-
+export const jobUrl="http://localhost:5000/jobadverts/"
+export const searchUrl="http://localhost:5000/search/"
+export const deleteJobUrl = "http://localhost:5000/admin-delete-post"
 
 export default function AdminDashboard() {
 	const history = useHistory();
 	const [loading, setLoading] = useState(true);
+	const [loadingJobs, setLoadingJobs] = useState(true);
 	const [searchString,setSearchString] = useState('');
 	const [location,setLocation] = useState('');
 	const [jobType,setJobType] = useState('');
+	const [jobStatus,setJobStatus] = useState('open');
 	const [experienceLevel,setExperienceLevel] = useState('');
 	//salary range units are in k/$1000
 	const [salaryRange,setSalaryRange] = useState([0,200]);
 	//open is used to toggle advanced filters div
 	const [open, setOpen]=useState(false)
 	const [jobs, setJobs]=useState([])
-
-	const deleteJobUrl = "http://localhost:5000/admin-delete-post"
-	const deleteUserUrl = "http://localhost:5000/admin-delete-user"
-	const jobUrl="http://localhost:5000/jobadverts/"
-
-
+	const [openJobs, setOpenJobs]=useState([])
+	const [closedJobs, setClosedJobs]=useState([])
 
 	//marks are labels on the salary range slider
 	const marks = [
@@ -38,7 +39,6 @@ export default function AdminDashboard() {
 		{value: 60,label: '60k',},{value: 80,label: '80k',},{value: 100,label: '100k',},
 		{value: 120,label: '120k',},{value: 140,label: '140k',},{value: 160,label: '160k',},
 		{value: 180,label: '180k',},{value: 200,label: '200k+',}];
-
 	
 	useEffect(() => {
 		auth();
@@ -50,10 +50,25 @@ export default function AdminDashboard() {
 			.then(function(response) {
 				console.log("auth success: ", response)
 				setLoading(false)				
-				if (!response.success || response.userInfo["type"] != "admin") {
-					history.push("/unauthorised");
+				if (!response.success || response.userInfo["type"] !== "admin") {
+					history.push('./unauthorised')
 				}
 			})
+	}
+
+	const sortJobs = (allJobs) => {
+		setJobs(allJobs)
+		const tempOpen = []
+		const tempClosed = []
+		for (var i = 0; i < allJobs.length; i++) {
+			if (allJobs[i][1].status === "open") {
+				tempOpen.push(allJobs[i])
+			} else {
+				tempClosed.push(allJobs[i])
+			}
+		}
+		setOpenJobs(tempOpen)
+		setClosedJobs(tempClosed)
 	}
 
 	const getJobs = async () => {
@@ -61,16 +76,43 @@ export default function AdminDashboard() {
 		console.log(url)
 		await axios.get(url)
 			.then(res => {
-				setJobs(res.data.jobs)
+				sortJobs(res.data.jobs)
+				setLoadingJobs(false)
 				console.log("response: ", res)
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
 			})
 	};
-
+	const clearSearch = async () =>{
+		setLoadingJobs(true)
+		setSearchString('');
+		setLocation('');
+		setJobType('');
+		setExperienceLevel('');
+		setSalaryRange([0,200]);
+		const url = `${jobUrl}search`
+		const ndata={
+			search: '',
+			location: '',
+			exp: '',
+			jobtype: '',
+			salaryrange: [0,200]		
+		};
+		console.log(ndata)
+		axios.post(url, ndata)
+			.then(function(response) {
+				sortJobs(response.data.jobs)
+				setLoadingJobs(false)
+				console.log(response)
+			})
+			.catch(function(error) {
+				console.log(error.response)
+			})
+	}
 	const handleSubmit= async (event) =>{
 			event.preventDefault();
+			setLoadingJobs(true)
 			const url = `${jobUrl}search`
 			//TODO
 			const ndata={
@@ -83,13 +125,13 @@ export default function AdminDashboard() {
 			console.log(ndata)
 			axios.post(url, ndata)
 				.then(function(response) {
-					setJobs(response.data.jobs)
+					sortJobs(response.data.jobs)
+					setLoadingJobs(false)
 					console.log(response)
 				})
 				.catch(function(error) {
 					console.log(error.response)
 				})
-			
 	}
 
 	const handleSliderChange = (event, newValue) => {
@@ -102,37 +144,6 @@ export default function AdminDashboard() {
 		setJobType('')
 		setExperienceLevel('')
 		setSalaryRange([0,200])
-	}
-
-	const renderJobs = () => {
-		return jobs.map((job) => (
-			<Card style={{margin: 30, height: 220, width:250}}>
-
-				<CardContent>     
-					<CardActions style={{ width: '100%', justifyContent: 'flex-end' }}>
-					<IconButton aria-label="delete" onClick={() => {deleteJob(job[0])}}>
-						<DeleteIcon />
-					</IconButton> 
-					</CardActions>
-					<Typography variant="h5" component="h2">
-						{job[1].title}
-					</Typography>
-					<Typography color="textSecondary">
-						{job[1].company} | {job[1].location}
-					</Typography>
-				</CardContent>
-				<CardActions >
-					<Typography 
-					style={ job[1].status=='open'? 
-					{color: 'green'} : {color:'red'}}>
-						{job[1].status}
-					</Typography>
-					<Link href= {`/advertisement/${job[0]}`} style={{marginLeft: 30}}>
-							View Advertisement
-					</Link>
-				</CardActions>
-			</Card>
-		))
 	}
 
 	const deleteJob = async(job_id) => {
@@ -150,45 +161,103 @@ export default function AdminDashboard() {
 		})	
 	} 
 
+	function truncateText(text) {
+		if (text.length > 180) {
+			return text.slice(0, 180) + "..."
+		}
+		return text
+	}
+
+	const renderJobs = () => {
+		var selectedJobs = []
+		if (jobStatus === "open") {
+			selectedJobs = openJobs
+		} else if (jobStatus === "closed") {
+			selectedJobs = closedJobs
+		} else {
+			selectedJobs = jobs
+		}
+		return selectedJobs.length===0? (
+			<div style={{display:'flex',justifyContent:'center',marginTop:100}}>No results. Try another search?</div>
+			) : (selectedJobs.map((job) => (
+			<div><div style={{display: 'flex', justifyContent: 'center'}}>
+				<Card style={ job[1].status=='open'? 
+					{width:"80%", height:"200px"} : 
+					{backgroundColor:'lightgrey', opacity:"0.5", width:"80%", height:"200px"}} >
+					<Card.Body>
+						<Row>
+							<Col>
+								<Card.Title><Link href={"/advertisement/"+job[0]}>{job[1].title}</Link></Card.Title>
+								<Card.Text style={{fontStyle: 'italic'}}>{job[1].company} | {job[1].location} | {job[1].job_type}</Card.Text>
+								<Card.Text>{truncateText(job[1].description)}</Card.Text>
+							</Col>
+							<Col xs={4}>
+								<div style={{textAlign:'right'}}>
+									{job[1].status == "open" ? 
+											<Card.Text>Closing date: {job[1].closing_date}</Card.Text> :
+											<Card.Text>This job is closed</Card.Text>
+									}
+									<IconButton aria-label="delete" onClick={() => {deleteJob(job[0])}}>
+										<DeleteIcon/>
+									</IconButton>
+								</div>
+							</Col>
+						</Row>
+					</Card.Body>
+				</Card>
+			</div><br/></div>
+		)))
+	}
+
 	return loading ? (
-		<div></div>
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
 	) : (
 		<Grid>      
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
-					<SideMenu random={[
-						{'text':'Jobs','href': '#', 'active': true},
-						{'text':'Users','href': '/admin/userlist', 'active': true}]}/>
+				<SideMenu random={[
+					{'text':'Jobs','href': '/admindashboard', 'active': true},
+					{'text':'Users','href': '/admin/userlist', 'active': false}]}/>
 				</Col >
 				<Col>
 					<Typography variant="h4" style={{color: 'black', textAlign: "center",margin:20 }}>
 						Job Search
 					</Typography>
 					<Form onSubmit={handleSubmit}>
-						<Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>
+						<Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>									
 							<TextField size="small"
 								onChange={ (event) => setSearchString(event.target.value)}
 								style={{ margin: 8 }}
-								placeholder="Job Title, Company,Skills"
+								placeholder="Enter keywords"
 								margin="normal"
+								value={searchString}
 								InputLabelProps={{shrink: true,}}
 								variant="outlined"/>
 							<TextField size="small"
 								onChange={ (event) => setLocation(event.target.value)}
 								style={{ margin: 8 }}
 								placeholder="Location"
+								value={location}
 								margin="normal"
 								InputLabelProps={{shrink: true,}}
 								variant="outlined"/>
-							<Button type="submit" variant="contained" style={{margin:10}}>
+							<Button  type="submit" variant="contained" color="primary" style={{margin:10, maxHeight: '40px'}}>
 								Search
+							</Button>
+							<Button size="small"  onClick={()=>clearSearch()} variant="contained" style={{margin:10, maxHeight: '40px'}}>
+								Clear
 							</Button>
 						</Col>
 
 						<Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>
 							<Link href="#" onClick={handleToggleFilters} aria-controls="filter-collapse" aria-expanded={open}>
-								Advanced Filters
+								Advanced Criteria
 							</Link>
 						</Col>
 
@@ -218,8 +287,17 @@ export default function AdminDashboard() {
 											<MenuItem value='Executive'>Executive</MenuItem>
 										</Select>
 									</FormControl>
-						
-				
+
+									<FormControl variant="outlined" style={{ margin: 8 , flexBasis:'10%'}}>
+										<InputLabel>Status</InputLabel>
+										<Select autoWidth={true} value={jobStatus} onChange={e=> setJobStatus(e.target.value)} label="Status">
+											<MenuItem value='open'>Open</MenuItem>
+											<MenuItem value='closed'>Closed</MenuItem>
+											<MenuItem value='open and closed'>All jobs</MenuItem>
+										</Select>
+									</FormControl>
+								</Col>
+								<Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>
 									<FormControl variant="outlined" style={{ margin: 8, flexBasis:'50%' }}>
 										<Typography id="range-slider" gutterBottom>
 											Salary Range (p.a)
@@ -237,12 +315,17 @@ export default function AdminDashboard() {
 							</div>
 						</Collapse>
 					</Form>
-					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
-						All Jobs
-					</Typography>
-					<div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
-						{renderJobs()}
-					</div>
+					<br/><br/>
+					<Container>
+						{loadingJobs ? ( 
+							<div style={{
+								position: 'absolute', left: '50%', top: '70%',
+								transform: 'translate(-50%, -50%)'
+								}}>
+								<CircularProgress/>
+							</div>
+						) : (renderJobs())}
+					</Container>
 				</Col>
 			</Row>
 		</Grid>

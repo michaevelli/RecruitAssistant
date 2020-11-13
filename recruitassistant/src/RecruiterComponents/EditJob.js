@@ -30,8 +30,7 @@ export default function EditJob({match}) {
 	const [location,setLocation] = useState('');
 	const [jobType,setJobType] = useState('');
 	const [experienceLevel,setExperienceLevel] = useState('');
-	//salary units in units k/$1000
-	const [salary,setSalary] = useState(100);
+	const [salary,setSalary] = useState(0);
 	const [closingDate,setClosingDate] = useState('');
 	//will be comma seperated strings - split on the commas to get an array
 	const [requiredDocs,setRequiredDocs] = useState([]);
@@ -266,7 +265,7 @@ export default function EditJob({match}) {
 						</Form.Group>
 
 						<Form.Group controlId="responsibilities">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Key Responsibilities
 							<IconButton onClick={() => handleAddResponsibility()}>
 								<AddIcon />
@@ -331,7 +330,7 @@ export default function EditJob({match}) {
 
 						<Form.Group controlId="salary">
 							<Form.Label column sm={2}>
-							Salary K/p.a
+							Salary
 							</Form.Label>
 							
 							<Col sm={10}>
@@ -342,12 +341,9 @@ export default function EditJob({match}) {
 									<Form.Control 
 									placeholder=""
 									required
-									defaultValue={salary}
+									value={salary}
 									type="number"
 									onChange={ (event) => setSalary(event.target.value)}/>
-									<Form.Text className="text-muted">
-									Please enter salary in units of K/$1000
-									</Form.Text>
 									<Form.Control.Feedback type="invalid">
 									Please enter a number
 									</Form.Control.Feedback>
@@ -359,7 +355,7 @@ export default function EditJob({match}) {
 						
 							
 						<Form.Group controlId="qualifications">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Desired Qualifications
 							<IconButton onClick={() => handleAddQuality()}>
 								<AddIcon />
@@ -387,7 +383,7 @@ export default function EditJob({match}) {
 						</Form.Group>
 
 						<Form.Group controlId="requiredDocs">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Required Documents
 							<IconButton onClick={() => handleAddDoc()}>
 								<AddIcon />
@@ -415,7 +411,7 @@ export default function EditJob({match}) {
 						</Form.Group>
 
 						<Form.Group controlId="additionalQuestions">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Additional Questions
 							<IconButton onClick={() => handleAddQuestion()}>
 								<AddIcon />

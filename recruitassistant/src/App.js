@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import Login from './Authentication/Login';
-import SignUpRecruiter from './Authentication/SignUpRecruiter';
-import SignUpJobSeeker from './Authentication/SignUpJobSeeker';
 import SignUp from './Authentication/SignUp';
 import Unauthorised from './Authentication/Unauthorised';
-import DashBoardTemplate from './SharedComponents/Dashboard';
 import AdminDashboard from './AdminComponents/AdminDashboard';
 import RecruiterDashboard from './RecruiterComponents/RecruiterDashboard';
 import JobSeekerDashboard from './JobSeekerComponents/JobSeekerDashboard';
@@ -37,11 +34,8 @@ function App() {
         <Switch>
           <Route exact path="/" component={Home}/>
           <Route path="/login" component={Login}/>
-          <Route path="/signuprecruiter" component={SignUpRecruiter}/>
-          <Route path="/signupjobseeker" component={SignUpJobSeeker}/>
-          <Route exact path="/signup" component={SignUp}/>
+          <Route path="/signup" component={SignUp}/>
           <Route path="/unauthorised" component={Unauthorised}/>
-          <Route path="/dashboard" component={DashBoardTemplate}/>
           <Route path="/admindashboard" component={AdminDashboard}/>
           <Route path="/recruiterdashboard" component={RecruiterDashboard}/>
           <Route path="/jobseekerdashboard" component={JobSeekerDashboard}/>

@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Button } from "@material-ui/core";
-import { withStyles } from '@material-ui/core/styles';
-import {Card, Container} from 'react-bootstrap';
-import { Redirect } from "react-router-dom";
+import { TextField, Button, CircularProgress, InputAdornment, Typography } from "@material-ui/core";
+import { AccountCircle,Lock } from "@material-ui/icons";
+import {Container, Col, Row} from 'react-bootstrap';
 import axios from "axios";
-import { useHistory, withRouter } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
-import logo from '../SharedComponents/Picture2.png'; 
+import logo from '../SharedComponents/Picture2.png';
+
 export const submitLogin="http://localhost:5000/login"
 
 function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	// const [user, setUser] = useState("");
-	// const [redirect, setRedirect] = useState(false);
 	const [errorStatus, setErrorStatus] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [loading, setLoading] = useState(true);
@@ -54,33 +52,89 @@ function Login() {
 			})
 			.catch(function(error) {
 				console.log(error.response)
-				setErrorMessage(error.response.data.message)
+				if (error.response == null) {
+					setErrorMessage("Error: Backend server not running!")
+				} else {
+					setErrorMessage(error.response.data.message)
+				}
 				setErrorStatus(true)
 			})
 	}
 
 	return loading ? (
-		<div></div>
-	) : (
-		<div>
-			<Container style={{'textAlign': 'center'}}>
-				<img src={logo} style={{ width:400, height:100, marginBottom:10,marginTop:20, marginLeft:20}}></img>
-				<br/>
-				<br/>
-				<form onSubmit={handleSubmit}>
-					<TextField label="Email" value={email} error={errorStatus} onChange={e=>setEmail(e.target.value)}></TextField>
-					<br/>
-					<TextField label="Password" type="password" value={password} error={errorStatus} onChange={e=>setPassword(e.target.value)}></TextField>
-					<br/>
-					<div id="error" style={{color: 'red'}}>{errorMessage}</div>
-					<Button type="submit"
-					variant="contained" style={{margin:25}}>Log In</Button>
-				</form>
-				<br/>
-			
-				Don't have an account? <a href="/signup">Sign Up</a>
-			</Container>
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
 		</div>
+	) : (
+		<Container style={{backgroundColor:'white'}} fluid>
+			<Row style={{height: '100vh'}}>
+				<Col xs={5} style={{backgroundColor:'#348360'}}>
+					<Row style={{position:'absolute',left:'10%',top:'30%',color:'white'}}>
+						<img src={logo} style={{ width:500, height:125}}></img>
+						<br/>
+						<h3 style={{position:'absolute', top:100, left:100, width:400}}>Connect with the right people.</h3>
+					</Row>
+				</Col>
+				<Col xs={7} style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+					<Button onClick={() => {history.push('/')}} style={{position:'absolute', top:30, left:30}}>
+						Home
+					</Button>					
+					<div style={{width:'50%', textAlign:'center'}}>
+					<Row style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+						<Typography variant="h6" style={{color: 'grey'}}>
+							Welcome to RecruitAssistant
+						</Typography>
+						<br/><br/><br/>
+					</Row>
+					<Row>
+						<div style={{width:'100%', textAlign:'center'}}>
+						<form onSubmit={handleSubmit}>
+							<TextField fullWidth
+								value={email} 
+								error={errorStatus}
+								placeholder="Email"
+								onChange={e=>setEmail(e.target.value)}
+								InputProps={{
+									startAdornment: (
+										<InputAdornment position="start">
+											<AccountCircle />
+										</InputAdornment>
+									),
+								}}/>
+							<br/><br/>
+							<TextField fullWidth
+								placeholder="Password"
+								type="password" 
+								value={password} 
+								error={errorStatus} 
+								onChange={e=>setPassword(e.target.value)}
+								InputProps={{
+									startAdornment: (
+										<InputAdornment position="start">
+											<Lock/>
+										</InputAdornment>
+									),
+								}}/>
+							<br/><br/>
+							<div id="error" style={{color: 'red'}}>{errorMessage}</div>
+							<br/>
+							<Button type="submit"variant="contained" 
+								style={{backgroundColor:'#348360', width:'100%', color:'white', borderRadius:15}}>
+								Log In
+							</Button>
+						</form>
+						<br/>
+						Don't have an account? <a href="/signup">Sign Up</a>
+						</div>
+					</Row>
+					</div>
+				</Col>
+			</Row>
+		
+		</Container>
 	)
 }
 

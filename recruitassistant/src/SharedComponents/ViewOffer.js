@@ -221,6 +221,7 @@ export default function ViewOffer({match}) {
 		return (		
 			<SideMenu random={[
 				{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
+				{'text':offer.title,'href': `/applications/${offer.jobID}`,'active': true},
 				{'text':'FAQ','href':'/recruiterFAQ','active': false}
 			]}/>
 		);

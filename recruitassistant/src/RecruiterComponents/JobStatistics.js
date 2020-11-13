@@ -101,7 +101,7 @@ export default function JobStatistics({match}) {
                 workingRights.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]}/>)
                 }
                 </Pie>
-                <Tooltip/>
+                <Tooltip formatter={(label) => (label/numCandidates)*100 + "% of applicants"}/>
                 <Legend />
             </PieChart>
            </ResponsiveContainer>
@@ -119,7 +119,7 @@ export default function JobStatistics({match}) {
               qualificationsInfo.map((entry, index) => <Cell fill={COLORS[(index+2) % COLORS.length]}/>)
               }
               </Pie>
-              <Tooltip formatter={(label) => label + " applicant(s)"}/>
+              <Tooltip formatter={(label) => (label/numCandidates)*100 + "% of applicants"}/>
               <Legend />
           </PieChart>
          </ResponsiveContainer>
@@ -138,7 +138,7 @@ export default function JobStatistics({match}) {
               <YAxis 
                 label={{ value: "Number of Applicants", angle: -90}} 
                 allowDecimals={false} />
-              <Tooltip />
+              <Tooltip/>
               <Bar dataKey="Number of Applicants" fill="#f39c12"/>
             </BarChart>
           </ResponsiveContainer>

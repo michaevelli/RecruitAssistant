@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from firebase_admin import auth
 from .init_app import app, ref
 from backend import notifications
 import uuid

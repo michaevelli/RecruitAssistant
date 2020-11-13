@@ -364,14 +364,12 @@ export default function ApplicationList({match}) {
 												<div style={{display:'flex', justifyContent:'center', flexWrap: 'wrap'}}>
 													<Button disabled = {status === "open"} 
 													variant="contained" 
-													color="secondary" 
-													style={{width:'80%', marginBottom:5, borderRadius:15}}
+													style={{width:'80%', marginBottom:5, borderRadius:15, backgroundColor:'#348360', color:'white'}}
 													onClick={() => {handleShow(app[0])}}> 
 															Interview
 													</Button><br/>
-													<Button variant="contained" 
-													color="secondary" 
-													style={{width:'80%', marginBottom:5, borderRadius:15}}>
+													<Button variant="contained"  
+													style={{width:'80%', marginBottom:5, borderRadius:15, backgroundColor:'#348360'}}>
 														<Link style={{color: '#FFF'}} to={{
 															pathname: `/createoffer`,
 															state: {
@@ -382,7 +380,6 @@ export default function ApplicationList({match}) {
 													</Button><br/>
 													<Button style={{width:'80%', marginBottom:5, borderRadius:15}} 
 													variant="contained" 
-													color="secondary" 
 													onClick={() => {dismiss(app, index)}}>
 														Dismiss
 													</Button>
@@ -604,8 +601,7 @@ export default function ApplicationList({match}) {
 							<Col xs={4}>
 								<Button disabled = {detail[1].status === "open"}
 								variant="contained" 
-								color="secondary"
-								style={{borderRadius: 30}}
+								style={{borderRadius: 30, backgroundColor:"#1C5253", color:'white'}}
 								onClick={() =>{
 									if (sendTop){
 										postInterviews()
