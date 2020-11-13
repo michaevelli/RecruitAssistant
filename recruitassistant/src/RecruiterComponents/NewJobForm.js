@@ -290,10 +290,10 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="salary">
-							<Form.Label column sm={2}>
+							{/* <Form.Label column sm={2}>
 							Salary K/p.a*
 							</Form.Label>
-							
+							 */}
 							<Col sm={10}>
 								<InputGroup>
 									<InputGroup.Prepend>

@@ -3,6 +3,7 @@ from .init_app import app, ref
 from backend import notifications
 import uuid
 from datetime import date, datetime
+from firebase_admin import auth
 
 @app.route('/jobapplications', methods=["POST"])
 def post_application():
