@@ -33,7 +33,7 @@ export default function Advertisement() {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
-				setLoading(false)
+				
 				//Both recruiters and job seekers should be able to view an advert
 				if (!response.success) {
 					history.push("/unauthorised");
@@ -42,6 +42,7 @@ export default function Advertisement() {
 					//hide apply button and side menu, just show the ad
 					setRecruiter(true)
 				}
+				setLoading(false)
 			})
 	}
 	
@@ -141,11 +142,17 @@ export default function Advertisement() {
 	}
 
 	return recruiter ? (
-		<Grid>      
-			<Row>
+		<Grid>
+		<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
+		<Row noGutters style={{height:'100vh',paddingTop: 60}}>
+			<Col sm={2}>
+				<SideMenu random={[
+                    {'text':'Recruiter Dashboard','href': '/recruiterdashboard', 'active': false},   
+                    {'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
+			</Col >
 			{advertPanel()}
-			</Row>
-		</Grid>
+		</Row>
+	</Grid>
 	) : (
 		<Grid>      
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>

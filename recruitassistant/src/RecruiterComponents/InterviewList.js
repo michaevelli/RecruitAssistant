@@ -105,15 +105,15 @@ export default function InterviewList({match}) {
 				<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 					<Col sm="2">
 					<SideMenu random={[
-							{'text':'Job View','href': '#','active': false,
-							'nested':[
-								{'text':'Applications','href': `/applications/${jobID}`,'active': false},
-								{'text':'Interviews','href': '#','active': true},
-								{'text':'Offers','href': `/offers/${jobID}`,'active': false},
-							]},
-							{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-							{'text':'FAQ','href':'/recruiterFAQ','active': false}
-						]}/>
+						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
+						{'text': 'Job View','href': '#','active': false,
+						'nested':[
+							{'text':'Applications','href': `/applications/${jobID}`,'active': false},
+							{'text':'Interviews','href': `/interviews/${jobID}`,'active': true},
+							{'text':'Offers','href': `/offers/${jobID}`,'active': false},
+							{'text': 'Statistics','href': `/jobstatistics/${jobID}`,'active': false},
+						]},
+						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 					</Col>
 
 					<Col sm="9">

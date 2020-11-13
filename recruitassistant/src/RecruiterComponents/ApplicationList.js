@@ -316,7 +316,7 @@ export default function ApplicationList({match}) {
 			return applications.slice(0, selection).map((app, index) => (
 				<Grid>
 					<Row>
-						<Col xs={9}>
+						<Col xs={10}>
 							<Card style={{margin: 60}}>
 								<CardContent>                          
 									<Grid>
@@ -563,9 +563,10 @@ export default function ApplicationList({match}) {
 							{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
 							{'text': 'Job View','href': '#','active': false,
 							'nested':[
-								{'text':'Applications','href': '#','active': true},
+								{'text':'Applications','href': `/applications/${jobID}`,'active': true},
 								{'text':'Interviews','href': `/interviews/${jobID}`,'active': false},
 								{'text':'Offers','href': `/offers/${jobID}`,'active': false},
+								{'text': 'Statistics','href': `/jobstatistics/${jobID}`,'active': false},
 							]},
 							{'text':'FAQ','href':'/recruiterFAQ','active': false}
 						]}/>
