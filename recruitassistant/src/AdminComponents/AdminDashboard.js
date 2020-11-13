@@ -159,7 +159,7 @@ export default function AdminDashboard() {
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Jobs','href': '#', 'active': true},
-						{'text':'Users','href': '/admin/userlist', 'active': true}]}/>
+						{'text':'Users','href': '/admin/userlist', 'active': false}]}/>
 				</Col >
 				<Col>
 					<Typography variant="h4" style={{color: 'black', textAlign: "center",margin:20 }}>

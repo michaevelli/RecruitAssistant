@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Grid,Button,TextField} from "@material-ui/core";
+import {Grid,Button,TextField,Snackbar,IconButton} from "@material-ui/core";
+import CloseIcon from '@material-ui/icons/Close'
 import {Form,Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -22,6 +23,9 @@ export default function JobApply() {
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
 	const [applied, setApplied] = useState([]);
+	const [open, setOpen] = useState(false)
+	const [disable, setDisable] = useState(false)
+	const [message, setMessage] = useState('')
 	//form data
 	const [first_name,setFirstName] = useState('');
 	const [last_name, setLastName] = useState('');
@@ -135,6 +139,13 @@ export default function JobApply() {
 		setAnswer(answer_list)
 	}
 
+	const handleClose = () => {
+		setOpen(false)
+		if (message === "Applied successfully") {
+			history.push("/jobseekerdashboard")
+		}
+	}
+
 	const applyJob = async () => {
 		const url = `${applicationUrl}`
 		//get qualifications the user ticked
@@ -159,13 +170,15 @@ export default function JobApply() {
 		//console.log("data: ",data)
 		await axios.post(url, data)
 			.then(res => {
-				//console.log("response: ", res)			
-				alert("Job application successfully created")
-				history.push("/jobseekerdashboard")
+				//console.log("response: ", res)
+				setMessage("Applied successfully")
+				setOpen(true)
+				setDisable(true)
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
-				alert("An error occured, please try again")
+				setMessage("An error occurred, please try again")
+				setOpen(true)
 			})
 	};
 
@@ -191,7 +204,8 @@ export default function JobApply() {
 			var filetype= event.target.files[0].type
 			console.log(filetype)
 			if(filetype!="application/pdf"){
-				alert("please upload a pdf")
+				setMessage("Please upload a pdf")
+				setOpen(true)
 				return 0
 			}
 			const reader = new FileReader()
@@ -209,7 +223,22 @@ export default function JobApply() {
 
 	return job.map((detail) => (
 		<Grid>
-			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'right',
+				}}
+				open={open}
+				autoHideDuration={5000}
+				onClose={() => handleClose()}
+				message={message}
+				action={
+					<IconButton size="small" aria-label="close" color="inherit" onClick={() => handleClose()}>
+						<CloseIcon fontSize="small" />
+					</IconButton>
+				}
+			/>
+		<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
 					<SideMenu random={[
@@ -342,7 +371,7 @@ export default function JobApply() {
 							</Form.Group>
 						</div>
 						
-						<Button disabled = {applied || detail[1].status === "closed"} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
+						<Button disabled = {applied || detail[1].status === "closed" || disable} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
 							Submit Application
 						</Button>
 					</Form>

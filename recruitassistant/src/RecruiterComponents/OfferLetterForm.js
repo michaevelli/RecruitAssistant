@@ -1,7 +1,8 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField,FormGroup,FormControlLabel,Switch}
+import {IconButton,Grid,Button,TextField,FormGroup,FormControlLabel,Switch,Snackbar}
  from "@material-ui/core";
+import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
@@ -30,6 +31,9 @@ export default function OfferLetterForm(props) {
 
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
+	const [open, setOpen] = useState(false)
+	const [disable, setDisable] = useState(false)
+	const [message, setMessage] = useState('')
 
 	const [location,setLocation] = useState('');
 	const [title,setTitle] = useState('');
@@ -71,7 +75,8 @@ export default function OfferLetterForm(props) {
 				
 			}).catch((error) => {
 				console.log("error: ", error.response)
-				alert("An error occured, please try again")
+				setMessage("An error occured, please try again")
+				setOpen(true)
 			})	
 	}
 
@@ -89,7 +94,8 @@ export default function OfferLetterForm(props) {
 				setJobSeekerID(job_data['jobseeker_id'])
 			}).catch((error) => {
 				console.log("error: ", error.response)
-				alert("An error occured, please try again")
+				setMessage("An error occured, please try again")
+				setOpen(true)
 			})	
 	}
 	
@@ -123,16 +129,20 @@ export default function OfferLetterForm(props) {
 	const handleChangeDoc = (index,event) => {	
 		console.log(index)
 		var file=event.target.files[0]
-		var filename=event.target.files[0].name
-		var filetype= event.target.files[0].type
-		console.log(filetype)
-		if(filetype!="application/pdf"){
-			alert("please upload a pdf")
-			return 0
+		if (file) {
+			var filename=event.target.files[0].name
+			var filetype= event.target.files[0].type
+			console.log(filetype)
+			if(filetype!="application/pdf"){
+				setMessage("Please upload a pdf")
+				setOpen(true)
+				return 0
+			}
+			const reader = new FileReader()
+			reader.onload = (e) => handleFileLoad(filename,index,e);
+			reader.readAsDataURL(file)
 		}
-		const reader = new FileReader()
-		reader.onload = (e) => handleFileLoad(filename,index,e);
-		reader.readAsDataURL(file)
+		
 	}
 
 	const handleFileLoad= (filename,index,event)=>{
@@ -142,6 +152,12 @@ export default function OfferLetterForm(props) {
 		setAdditionalDocs(docs)
 	}
 
+	const handleClose = () => {
+		setOpen(false)
+		if (message === "Offer successfully sent") {
+			history.push("/recruiterdashboard")
+		}
+	}
 
 	const postOffer = async () => {
 		const url = offerURL
@@ -170,21 +186,21 @@ export default function OfferLetterForm(props) {
 		await axios.post(url, data)
 			.then(res => {
 				console.log("response: ", res)
-				alert("Offer successfully sent")
-				history.push("/recruiterdashboard")
+				setMessage("Offer successfully sent")
+				setOpen(true)
+				setDisable(true)
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
-				alert("An error occured, please try again")
+				setMessage("An error occured, please try again")
+				setOpen(true)
 			})	
 	};
-	
 
 	//check start date is after todays date
 	const startDatevalidator =()=>{
 		return startDate !== "" && t < Date.parse(startDate)
 	}
-	
    
 	const handleSubmit= async (event) =>{	
 		event.preventDefault();
@@ -202,6 +218,21 @@ export default function OfferLetterForm(props) {
 	
 	return (
 		<Grid>
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'right',
+				}}
+				open={open}
+				autoHideDuration={5000}
+				onClose={() => handleClose()}
+				message={message}
+				action={
+					<IconButton size="small" aria-label="close" color="inherit" onClick={() => handleClose()}>
+						<CloseIcon fontSize="small" />
+					</IconButton>
+				}
+			/>
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
@@ -305,7 +336,7 @@ export default function OfferLetterForm(props) {
 
 						<Form.Group controlId="salary">
 							<Form.Label column sm={2}>
-							 *Renumeration:
+							 *Remuneration:
 							</Form.Label>	
 							<Col sm={10}>
 								<InputGroup>
@@ -382,7 +413,7 @@ export default function OfferLetterForm(props) {
 											
 						</Form.Group>
 
-						<Button variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
+						<Button disabled={disable} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
 						Send Offer
 						</Button> 
 					</Form>  		

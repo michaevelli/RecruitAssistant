@@ -1,7 +1,8 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField} from "@material-ui/core";
+import {IconButton,Grid,Button,TextField,Snackbar} from "@material-ui/core";
 import RemoveIcon from '@material-ui/icons/Remove';
+import CloseIcon from '@material-ui/icons/Close';
 import AddIcon from '@material-ui/icons/Add';
 import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
@@ -20,6 +21,9 @@ export default function EditJob({match}) {
 	const jobID = match.params.jobID;
 	const [recruiterID, setRecruiterID] = useState('');
 	const [datePosted, setDatePosted] = useState('');
+	const [open, setOpen] = useState(false)
+	const [disable, setDisable] = useState(false)
+	const [message, setMessage] = useState('')
 
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
@@ -139,6 +143,13 @@ export default function EditJob({match}) {
 		setResponsibilities(rs)
 	}
 
+	const handleClose = () => {
+		setOpen(false)
+		if (message === "Changes successfully saved") {
+			history.push("/recruiterdashboard")
+		}
+	}
+
 	//TODO - ADD real RECRUITER ID TO JOB POST
 	const postJobUpdate = async () => {
 		const data={
@@ -163,15 +174,16 @@ export default function EditJob({match}) {
 		await axios.post(editJobUrl, data)
 			.then(res => {
 				console.log("response: ", res)
-				alert("Changes successfully saved")
-				history.push("/recruiterdashboard")
+				setMessage("Changes successfully saved")
+				setOpen(true)
+				setDisable(true)
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
-				alert("An error occured, please try again")
+				setMessage("An error occured, please try again")
+				setOpen(true)
 			})	
 	};
-	
 	
 	const handleSubmit= async (event) =>{	
 		event.preventDefault();
@@ -188,6 +200,21 @@ export default function EditJob({match}) {
 
 	return (
 		<Grid>
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'right',
+				}}
+				open={open}
+				autoHideDuration={5000}
+				onClose={() => handleClose()}
+				message={message}
+				action={
+					<IconButton size="small" aria-label="close" color="inherit" onClick={() => handleClose()}>
+						<CloseIcon fontSize="small" />
+					</IconButton>
+				}
+			/>
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
@@ -443,7 +470,7 @@ export default function EditJob({match}) {
 							</Col>					
 						</Form.Group>
 
-						<Button variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
+						<Button disabled={disable} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
 							Submit changes
 						</Button> 
 					</Form>  		

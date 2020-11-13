@@ -110,8 +110,8 @@ export default function UserList() {
             <Row noGutters style={{height:'100vh',paddingTop: 60}}>
                 <Col sm={2}>
                     <SideMenu random={[
-                        {'text':'Jobs','href': '/admindashboard', 'active': true},
-                        {'text':'Users','href': '/admin/userlist', 'active': false}]}/>
+                        {'text':'Jobs','href': '/admindashboard', 'active': false},
+                        {'text':'Users','href': '/admin/userlist', 'active': true}]}/>
                 </Col >
                 <Col sm="9">
                 <Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
@@ -119,7 +119,7 @@ export default function UserList() {
                 </Typography>
                 <Row>
                     <div style={{ height: 600, width: '100%', marginLeft: 100 }}>
-                        <DataGrid rows={renderUsers()} columns={columns} pageSize={20}/>
+                        <DataGrid rows={renderUsers()} columns={columns} disableSelectionOnClick={true} pageSize={20}/>
                     </div>
                 </Row>
             </Col>

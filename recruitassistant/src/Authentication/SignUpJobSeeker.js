@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // import { withRouter } from 'react-router-dom';
-import { TextField, Button } from "@material-ui/core";
+import { TextField, Button, IconButton, Snackbar} from "@material-ui/core";
+import CloseIcon from '@material-ui/icons/Close'
 import {Container} from 'react-bootstrap';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
@@ -15,6 +16,8 @@ function SignUpJobSeeker(props) {
 	const [password, setPassword] = useState("");
 	const [repassword, setRepassword] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
+	const [open, setOpen] = useState(false)
+	const [disable, setDisable] = useState(false)
 	const history = useHistory();
 
 	async function handleSubmit(e) {
@@ -34,8 +37,8 @@ function SignUpJobSeeker(props) {
 		console.log(ndata)
 		axios.post(submitSignUp, ndata).then(function(response) {
 			console.log("response:", response)
-			alert("successfully created account")
-			history.push("/login")
+			setOpen(true)
+			setDisable(true)
 		})
 		.catch(function(error){
 			console.log("error:", error.response)
@@ -51,12 +54,32 @@ function SignUpJobSeeker(props) {
 		
 	}
 
+	const handleClose = () => {
+		setOpen(false)
+		history.push("/login")
+	}
 
 	return (
 		<div>
 			<Container style={{'textAlign': 'center'}}>
 				<img src={logo} style={{ width:400, height:100, marginBottom:20,marginTop:20, marginLeft:20}}></img>
 				
+				<Snackbar
+					anchorOrigin={{
+						vertical: 'bottom',
+						horizontal: 'right',
+					}}
+					open={open}
+					autoHideDuration={5000}
+					onClose={() => handleClose()}
+					message="Account successfully created"
+					action={
+						<IconButton size="small" aria-label="close" color="inherit" onClick={() => handleClose()}>
+							<CloseIcon fontSize="small" />
+						</IconButton>
+					}
+				/>
+
 				<form onSubmit={handleSubmit}>
 					<TextField label="First Name" required value={first_name} onChange={e=>setFirstName(e.target.value)}/>
 					<br/>
@@ -69,7 +92,7 @@ function SignUpJobSeeker(props) {
 					<TextField label="Re-enter password" required type="password" value={repassword} onChange={e=>setRepassword(e.target.value)}/>
 					<br/>
 					<div id="error" style={{color: 'red'}}>{errorMessage}</div>
-					<Button type="submit" variant="contained" style={{margin:20}}> Sign Up </Button>
+					<Button disabled={disable} type="submit" variant="contained" style={{margin:20}}> Sign Up </Button>
 				</form>
 			</Container>
 		</div>
