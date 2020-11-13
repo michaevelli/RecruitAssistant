@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
-import { Button, Grid, List,CardContent, CardActions, Typography } from "@material-ui/core";
+import { Divider, Grid, List, ListItem, Typography } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -13,14 +13,14 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {Card, Container,Col,Row,} from 'react-bootstrap';
 import axios from "axios";
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   paper: {
+//     backgroundColor: theme.palette.background.paper,
+//     border: '2px solid #000',
+//     boxShadow: theme.shadows[5],
+//     padding: theme.spacing(2, 4, 3),
+//   },
+// }));
 
 const StyledBadge = withStyles((theme) => ({
   badge: {
@@ -208,47 +208,28 @@ export default function Notifications() {
     }
     else{
       return notif.map(data => (
-        <Card style={data[1].seen?{backgroundColor:'lightgrey', opacity:"0.7", margin: 2}:{margin: 2}}>
-          <CardContent>
-          <CardActions style={{ width: '100%', justifyContent: 'flex-end' }}>
-            <IconButton aria-label="delete" onClick={() => {deleteNotif(data[0])}}>
-              <DeleteIcon />
-            </IconButton>    
-          </CardActions>
-                                
+        <div>
+        <ListItem style={data[1].seen?{backgroundColor:'lightgrey', opacity:"0.7", margin: 2}:{margin: 2}}>
+          <Card.Body>
             <Grid>
               <Row>
-                <Col>
-                {renderNotifText(data[1].type, data[1].url)}
-                  {/* <Typography variant="h5" component="h2">
-                    Hi {localStorage.getItem("name")}!
-                  </Typography>
-                  <br></br>
-                  <Typography color="textSecondary">
-                    You have one {data[1].type} to view!
-                  </Typography>
-                  <br></br>
-                  <Typography color="textSecondary">
-                    Please make sure to check it out for more details!
-                  </Typography>
-                  <br></br>
-                  <Link href={data[1].url}>
-                      Link
-                  </Link>
-                  <br></br>
-                  <Typography color="textSecondary">
-                    Regards,
-                    RecruitAssistant Team.
-                  </Typography> */}
-                  <br></br>
+                <Col xs={9}>
+                  {renderNotifText(data[1].type, data[1].url)}
                   <Typography color="textSecondary">
                     {data[1].date_time}
                   </Typography>
                 </Col>
+                <Col xs={3}>
+                  <IconButton aria-label="delete" onClick={() => {deleteNotif(data[0])}}>
+                    <DeleteIcon />
+                  </IconButton>
+                </Col>
               </Row>
             </Grid>
-          </CardContent>
-        </Card>
+          </Card.Body>
+        </ListItem>
+        <Divider/>
+        </div>
       ));
 
     }
@@ -278,7 +259,7 @@ export default function Notifications() {
           },
         }}
       >
-      {renderNotif()}
+      <List>{renderNotif()}</List>
       </Menu>
 
     </>

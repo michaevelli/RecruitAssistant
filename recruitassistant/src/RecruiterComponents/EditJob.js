@@ -277,6 +277,7 @@ export default function EditJob({match}) {
 							{responsibilities.map((r, index) => (
 								<ul key={index}>
 									<li><TextField 
+									required
 									name="Responsibility"
 									variant="outlined"
 									size="small"
@@ -368,7 +369,8 @@ export default function EditJob({match}) {
 							<Col sm={10}>
 							{qualifications.map((q, index) => (
 								<ul key={index}>
-									<li><TextField 
+									<li><TextField
+									required
 									name="Quality"
 									variant="outlined"
 									size="small"
@@ -396,6 +398,7 @@ export default function EditJob({match}) {
 							{requiredDocs.map((doc, index) => (
 								<ul key={index}>
 									<li><TextField 
+									required
 									name="Document"
 									variant="outlined"
 									size="small"
@@ -420,9 +423,10 @@ export default function EditJob({match}) {
 							</Form.Label>
 							
 							<Col sm={10}>
-							{additionalQuestions.map((question, index) => (
+							<ol> {additionalQuestions.map((question, index) => (
 								<div key={index}>
-									<TextField 
+									<li><TextField 
+									required
 									name="Question"
 									variant="outlined"
 									size="small"
@@ -432,9 +436,10 @@ export default function EditJob({match}) {
 									/>
 									<IconButton onClick={() => handleRemoveQuestion(index)}>
 										<RemoveIcon />
-									</IconButton>
+									</IconButton></li>
 								</div>
 							))}
+							</ol>
 							</Col>					
 						</Form.Group>
 

@@ -5,6 +5,7 @@ from backend import notifications
 from firebase_admin import auth
 from datetime import date, datetime
 import uuid
+
 #TODO comment what is this function doing
 @app.route('/interviewlist', methods=['POST'])
 def getInterviews():
@@ -123,6 +124,8 @@ def send_interview():
 						'last_name': u["last_name"],
 						'interview_date': u["date"],
 						'interview_time': u["time"],
+						'interview_details': u["details"],
+						'recruiter_email' : u["recruiter_email"],
 						'status': "Pending"
 					},
 				})

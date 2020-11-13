@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Grid,Button} from "@material-ui/core";
+import {Grid,Button,TextField} from "@material-ui/core";
 import {Form,Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -27,12 +27,16 @@ export default function JobApply() {
 	const [last_name, setLastName] = useState('');
 	const [phone_number, setPhoneNumber] = useState('');
 	const [rights, setRights] = useState('');
-	const [required_docs, setRequiredDocs] = useState([]);
 	const [qualification_list, setQualificationList] = useState([]);
+	const [answers, setAnswer] = useState([])
 	//which required qualifications the user
+	const [additional_questions, setAdditionalQuestions] = useState([]);
+	const [required_docs, setRequiredDocs] = useState([]);
 	const [matching_list, setMatchingList] = useState([]);
 	const [job, setJob] = useState([]);
 	const [additionalDocs, setAdditionalDocs] = useState([]);
+	const [needQualities, setNeedQualities] = useState(false);
+	const [needQuestions, setNeedQuestions] = useState(false);
 	const [needDocs, setNeedDocs] = useState(false);
 
 	useEffect(() => {
@@ -71,12 +75,23 @@ export default function JobApply() {
 				setRequiredDocs(req_docs)
 				setNeedDocs(true)
 			}
+			//initialise need for additional questions
+			const questions= res.data.job[0][1].additional_questions
+			if (typeof questions === "undefined") {
+				setAdditionalQuestions([])
+				setNeedQuestions(false)
+			} else {
+				setAdditionalQuestions(questions)
+				setNeedQuestions(true)
+			}
 			//initialise qualifications list
 			const req_quals= res.data.job[0][1].req_qualifications
 			if (typeof req_quals === "undefined") {
 				setQualificationList([])
+				setNeedQualities(false)
 			} else {
 				setQualificationList(req_quals)
+				setNeedQualities(true)
 			}
 			//initialise matching qualifications list to all false
 			var initial_list=[]
@@ -114,6 +129,12 @@ export default function JobApply() {
 		setMatchingList(matching)
 	}
 
+	const handleChangeAnswer = (index, answer) => {
+		const answer_list = [...answers]
+		answer_list[index] = answer
+		setAnswer(answer_list)
+	}
+
 	const applyJob = async () => {
 		const url = `${applicationUrl}`
 		//get qualifications the user ticked
@@ -130,6 +151,7 @@ export default function JobApply() {
 			rights: rights,
 			qualifications: final_qualifications,
 			qualities_met: final_qualifications.length,
+			answers: answers,
 			jobseeker_id: jobseeker_id,
 			job_id: jobID,
 			submitted_docs: additionalDocs
@@ -164,16 +186,18 @@ export default function JobApply() {
 	const handleChangeDoc = (index,document_name,event) => {	
 		console.log(index)
 		var file=event.target.files[0]
-		var filename=event.target.files[0].name
-		var filetype= event.target.files[0].type
-		console.log(filetype)
-		if(filetype!="application/pdf"){
-			alert("please upload a pdf")
-			return 0
+		if (file) {
+			var filename=event.target.files[0].name
+			var filetype= event.target.files[0].type
+			console.log(filetype)
+			if(filetype!="application/pdf"){
+				alert("please upload a pdf")
+				return 0
+			}
+			const reader = new FileReader()
+			reader.onload = (e) => handleFileLoad(filename,document_name,index,e);
+			reader.readAsDataURL(file)
 		}
-		const reader = new FileReader()
-		reader.onload = (e) => handleFileLoad(filename,document_name,index,e);
-		reader.readAsDataURL(file)
 	}
 	
 	const handleFileLoad= (filename,document_name,index,event)=>{
@@ -217,6 +241,7 @@ export default function JobApply() {
 									onChange = { (event) => setFirstName(event.target.value)} />
 							</Col>
 						</Form.Group>
+
 						<Form.Group controlId="last_name">
 							<Form.Label column sm={10}>Last Name</Form.Label>
 							<Col sm={10}>
@@ -252,20 +277,47 @@ export default function JobApply() {
 							</Col>	
 						</Form.Group>
 
-						<Form.Group controlId="qualifications">
-							<Form.Label column sm={10}>
-								Please indicate the skills/experience you have for the following:
-							</Form.Label>
-							<Col sm={10}>
-							{qualification_list.map((qualification, index) => (
-								<Form.Check
-									type = "checkbox"
-									id = {qualification}
-									label = {qualification}
-									onClick = { (event) => handleChangeQualification(index)}/>
-							))}
-							</Col>					
-						</Form.Group>
+						<div style={{visibility: needQualities? 'visible': 'hidden'}}>
+							<Form.Group controlId="qualifications">
+								<Form.Label column sm={10}>
+									Please indicate the skills/experience you have for the following:
+								</Form.Label>
+								<Col sm={10}>
+								{qualification_list.map((qualification, index) => (
+									<Form.Check
+										type = "checkbox"
+										id = {qualification}
+										label = {qualification}
+										onClick = { (event) => handleChangeQualification(index)}/>
+								))}
+								</Col>					
+							</Form.Group>
+						</div>
+
+						<div style={{visibility: needQuestions? 'visible': 'hidden'}}>
+							<Form.Group controlId="additional_questions" >
+							<Form.Label column sm={10}>Please answer the following questions:</Form.Label>
+								<Col sm={10} lineHeight={2}>
+									<ol>
+										{additional_questions.map((question,index) => (
+											<li>
+												<p>{question}</p>
+												<TextField
+													required
+													id = {index}
+													name = {question}
+													style = {{width: 745, marginBottom: 20}}
+													variant="outlined"
+													placeholder = "Answer"
+													onChange = {(e)=>handleChangeAnswer(index,e.target.value)}/>
+												<br></br>
+											</li>
+										))}
+									</ol>
+								</Col>
+							</Form.Group>
+						</div>
+
 						<div style={{visibility: needDocs? 'visible': 'hidden'}}>
 							<Form.Group controlId="required_docs" >
 							<Form.Label column sm={10}>Please upload the following documents as a pdf.</Form.Label>
@@ -274,7 +326,7 @@ export default function JobApply() {
 										{required_docs.map((document,index) => (
 											<li>
 												<Form.File
-													required = {needDocs === "block"}
+													required
 													id = {index}
 													name = {document}
 													label = {document}

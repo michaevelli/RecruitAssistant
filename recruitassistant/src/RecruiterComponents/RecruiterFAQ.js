@@ -47,7 +47,6 @@ export default function RecruiterDashboard() {
 				<Col sm="2">
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-						{'text':'Post a new job','href': '/createJobPost','active': false},
 						{'text':'FAQ','href':'#','active': true}]}/>
 				</Col>
 
@@ -60,6 +59,13 @@ export default function RecruiterDashboard() {
                         <h style={{fontWeight: 'bold'}}> How do I see the interviews or offers I have sent?</h>
                         <p> On the Recruiter Dashboard click "view applications"
                             on a job. You will now see menu links for 'offers' and 'interviews' related to this job
+                        </p>
+
+						<h style={{fontWeight: 'bold'}}> How are the applicants ranked in candidate suitability to my job?</h>
+                        <p> Applicants are ranked based off how many qualifications listed on the job advertisement they meet.
+							You can view more information such as their working rights or provided documentation by clicking on
+							"view application" next to the candidate's name. You can also reorder the ranking by clicking on the
+							arrow buttons beside each application card once the job has closed.
                         </p>
 
                         <h style={{fontWeight: 'bold'}}>  Why can't I send interview invites? </h>

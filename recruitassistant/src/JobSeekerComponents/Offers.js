@@ -148,7 +148,9 @@ export default function Offers() {
 				}}>
 				<CircularProgress/>
 			</div>
-		) : (offers.map((offer) => (
+		) : (offers.length===0? (
+			<div style={{display:'flex',justifyContent:'center',marginTop:100}}> No offers yet. Fingers crossed!</div>
+			) : (offers.map((offer) => (
 			<div><div style={{display: 'flex', justifyContent: 'center'}}>
 				<Card style={{width:"60%"}}>
 					<Card.Body>
@@ -165,7 +167,7 @@ export default function Offers() {
 					</Card.Body>
 				</Card>
 			</div><br/></div>
-		)))
+		))))
 	}
 
 	const renderInterviewStatus = (interview) => {
@@ -188,7 +190,9 @@ export default function Offers() {
 				}}>
 				<CircularProgress/>
 			</div>
-		) : (interviews.map((interview) => (
+		) : (interviews.length===0? (
+			<div style={{display:'flex',justifyContent:'center',marginTop:100}}> No interviews yet. Check back soon!</div>
+			) : (interviews.map((interview) => (
 			<div><div style={{display: 'flex', justifyContent: 'center'}}>
 				<Card style={{width:"60%"}}>
 					<Card.Body>
@@ -205,7 +209,7 @@ export default function Offers() {
 					</Card.Body>
 				</Card>
 			</div><br/></div>
-		)))
+		))))
 	}
 
 	const renderAppStatus = (status) => {
@@ -230,7 +234,9 @@ export default function Offers() {
 				}}>
 				<CircularProgress/>
 			</div>
-		) : (applications.map((application) => (
+		) : (applications.length===0? (
+			<div style={{display:'flex',justifyContent:'center',marginTop:100}}>No applications yet. Get applying!</div>
+			) : (applications.map((application) => (
 			<div><div style={{display: 'flex', justifyContent: 'center'}}>
 				<Card style={{width:"60%"}}>
 					<Card.Body>
@@ -249,7 +255,7 @@ export default function Offers() {
 					</Card.Body>
 				</Card>
 			</div><br/></div>
-		)))
+		))))
 	}
 
 	return loading ? (

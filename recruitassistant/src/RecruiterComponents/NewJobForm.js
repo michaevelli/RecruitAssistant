@@ -179,8 +179,7 @@ export default function NewJobForm() {
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
 					<SideMenu random={[
-						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-						{'text':'Post a new job','href': '/createJobPost','active': true},
+						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': true},
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 
@@ -239,7 +238,8 @@ export default function NewJobForm() {
 							<Col sm={10}>
 							{responsibilities.map((r, index) => (
 								<ul key={index}>
-									<li><TextField 
+									<li><TextField
+									required
 									name="Responsibility"
 									variant="outlined"
 									size="small"
@@ -290,10 +290,10 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="salary">
-							<Form.Label column sm={2}>
+							{/* <Form.Label column sm={2}>
 							Salary K/p.a*
 							</Form.Label>
-							
+							 */}
 							<Col sm={10}>
 								<InputGroup>
 									<InputGroup.Prepend>
@@ -350,6 +350,7 @@ export default function NewJobForm() {
 							{qualifications.map((q, index) => (
 								<ul key={index}>
 									<li><TextField 
+									required
 									name="Quality"
 									variant="outlined"
 									size="small"
@@ -377,6 +378,7 @@ export default function NewJobForm() {
 							{requiredDocs.map((d, index) => (
 								<ul key={index}>
 									<li><TextField 
+									required
 									name="Document"
 									variant="outlined"
 									size="small"
@@ -401,9 +403,10 @@ export default function NewJobForm() {
 							</Form.Label>
 							
 							<Col sm={10}>
-							{additionalQuestions.map((question, index) => (
+							<ol> {additionalQuestions.map((question, index) => (
 								<div key={index}>
-									<TextField 
+									<li><TextField 
+									required
 									name="Question"
 									variant="outlined"
 									size="small"
@@ -413,9 +416,10 @@ export default function NewJobForm() {
 									/>
 									<IconButton onClick={() => handleRemoveQuestion(index)}>
 										<RemoveIcon />
-									</IconButton>
+									</IconButton></li>
 								</div>
 							))}
+							</ol>
 							</Col>					
 						</Form.Group>
 

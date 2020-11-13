@@ -67,7 +67,7 @@ export default function OfferLetterForm(props) {
 				setCompany(job_data["company"]);
 				setLocation(job_data["location"]);
 				setJobType(job_data["job_type"]);
-				setSalary(job_data["salary_pa"]*1000);
+				setSalary(job_data["salary_pa"]);
 				
 			}).catch((error) => {
 				console.log("error: ", error.response)
@@ -211,9 +211,7 @@ export default function OfferLetterForm(props) {
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 				
-				<Col sm="10" >
-					<a href={`/advertisement/${jobID}`} target="_blank" style={{textAlign: "center",margin:20 }}> View Original Job Advert</a>
-				
+				<Col sm="10" >				
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						Create Offer Letter
 						

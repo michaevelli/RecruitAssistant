@@ -1,8 +1,9 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import { Button,Link, Grid } from "@material-ui/core";
+import {Link, Button, Grid, IconButton } from "@material-ui/core";
 import {Col,Row,Card, Container} from 'react-bootstrap';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -14,10 +15,10 @@ import checkAuth from "../Authentication/Authenticate";
 export const jobUrl="http://localhost:5000/jobadverts/"
 
 export default function RecruiterDashboard() {
-	// var recruiterID = "1234";
 	const recruiterID = sessionStorage.getItem("uid")
 	const history = useHistory();
 	const [loading, setLoading] = useState(true);
+	const [loadingJobs, setLoadingJobs] = useState(true);
 	const [jobs, setJobs] = useState([])
 
 	useEffect(() => {
@@ -43,6 +44,7 @@ export default function RecruiterDashboard() {
 		await axios.get(url)
 			.then(res => {
 				setJobs(res.data.jobs)
+				setLoadingJobs(false)
 				console.log("response: ", res)
 			})
 			.catch((error) => {
@@ -58,7 +60,19 @@ export default function RecruiterDashboard() {
 	}
 
 	const renderJobs = () => {
-		return jobs.length===0? (<p style={{marginLeft:400,marginTop:100}}> No results</p>) : (jobs.map((job) => (
+		return loadingJobs ? (
+			<div style={{
+				position: 'absolute', left: '50%', top: '50%',
+				transform: 'translate(-50%, -50%)'
+				}}>
+				<CircularProgress/>
+			</div>
+		) : (
+			jobs.length===0? (
+			<div style={{display:'flex',justifyContent:'center',marginTop:100}}>
+				You have no jobs posted. Click 'Create a Job' to get started!
+			</div>
+		) : (jobs.map((job) => (
 			<div><div style={{display: 'flex', justifyContent: 'center'}}>
 				<Card style={{width:"80%", height:"200px"}} >
 					<Card.Body>
@@ -72,10 +86,9 @@ export default function RecruiterDashboard() {
 								<div style={{textAlign:'right'}}>
 									{job[1].status == "open" ? 
 											<Card.Text>Closing date: {job[1].closing_date}</Card.Text> :
-											<Card.Text>This job is closed</Card.Text>
+											<Card.Text style={{color:'red'}}>This job is closed</Card.Text>
 									}
-									<br/>
-									<Link  href={"/editjob/"+job[0]}>
+									<Link href={"/editjob/"+job[0]}>
 										Edit Job
 									</Link><br/><br/>
 									<Link href={`/applications/${job[0]}`}>
@@ -87,7 +100,7 @@ export default function RecruiterDashboard() {
 					</Card.Body>
 				</Card>
 			</div><br/></div>
-		)))
+		))))
 	}
 
 	return loading ? (
@@ -104,7 +117,6 @@ export default function RecruiterDashboard() {
 				<Col sm="2">
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '#','active': true},
-						{'text':'Post a new job','href': '/createJobPost','active': false},
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 
@@ -116,10 +128,14 @@ export default function RecruiterDashboard() {
 				</Col>
 					
 				<Col>
-					<Button variant="contained" color="secondary" href="/createJobPost" style={{position: 'fixed', right: 0, top: 40, margin: 30}}>
+					<Button href="/createJobPost" 
+						style={{position: 'fixed', minHeight: 55, right: 5, bottom: 40, margin: 30, borderRadius: 30, color: '#FFF'}}
+						startIcon={<AddCircleIcon/>}
+						color="primary"
+						variant="contained"
+						size="medium">
 						Create a Job
-					</Button>      
-					{/* <SendInterview></SendInterview> */}
+					</Button>
 				</Col>
 			</Row>
 		</Grid>

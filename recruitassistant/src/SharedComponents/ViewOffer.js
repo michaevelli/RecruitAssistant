@@ -1,6 +1,6 @@
 import React, { useState,useLayoutEffect,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Grid,Button} from "@material-ui/core";
+import {Link, Grid,Button, CircularProgress} from "@material-ui/core";
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
@@ -229,13 +229,18 @@ export default function ViewOffer({match}) {
 		return (		
 		<SideMenu random={[
 			{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': false},
-			{'text':'Your Applications','href': '/offers', 'active': true},         
+			{'text':'Your Applications','href': '/yourapplications', 'active': true},         
 			{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>	
 		);
 	}
 
 	return loading ? (
-		<div></div>
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
 	) : (
 		<Grid>      
 			<Row noGutters fluid><TitleBar/></Row>
