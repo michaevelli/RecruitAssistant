@@ -71,11 +71,12 @@ function Login() {
 	) : (
 		<Container style={{backgroundColor:'white'}} fluid>
 			<Row style={{height: '100vh'}}>
-				<Col xs={5} style={{backgroundColor:'#348360'}}>
-					<Row style={{position:'absolute',left:'10%',top:'30%',color:'white'}}>
-						<img src={logo} style={{ width:500, height:125}}></img>
+				<Col xs={5} style={{display:'flex', justifyContent:'center', alignItems:'center',backgroundColor:'#348360'}}>
+					<Row style={{display:'flex', justifyContent:'center', color:'white'}}>
+						<img src={logo} style={{ width:'80%', height:'auto'}}/>
 						<br/>
-						<h3 style={{position:'absolute', top:100, left:100, width:400}}>Connect with the right people.</h3>
+						<h4 style={{textAlign:'center', width:'100%', height:'auto'}}>
+							Connect with the right people.</h4>
 					</Row>
 				</Col>
 				<Col xs={7} style={{display:'flex', justifyContent:'center', alignItems:'center'}}>

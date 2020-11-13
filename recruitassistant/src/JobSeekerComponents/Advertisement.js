@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import {Button, Grid, CircularProgress} from "@material-ui/core";
-import {Col,Row} from 'react-bootstrap';
+import {Col,Row, Card, Table, ListGroup, ListGroupItem} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import TitleBar from "../SharedComponents/TitleBar.js";
@@ -36,6 +36,8 @@ export default function Advertisement() {
 				setLoading(false)
 				//Public users, recruiters, and job seekers should be able to view an advert
 				if (!response.success) {
+					window.sessionStorage.clear()
+					window.localStorage.clear()
 					setUserType('public')
 				} else if (response.userInfo["type"] === "recruiter") {
 					//hide apply button and side menu, just show the ad
@@ -102,52 +104,52 @@ export default function Advertisement() {
 		
 		return (
 			job.map((detail) => (
-				<Col>
-					<Typography component="div" style={{color: 'black', margin: 50}}>
-						<Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
-							{detail[1].title}
-						</Box>
-						<Box fontSize="h5.fontSize">
-							{detail[1].company} | {detail[1].location}
-						</Box>
-						<Box fontSize="h6.fontSize" lineHeight={2}>
-							{detail[1].job_type}
-						</Box>
-						<Box fontSize="h6.fontSize" lineHeight={2} >
-							Remuneration: ${detail[1].salary_pa}
-						</Box>
-						<br/>
-						<Box fontSize="h6.fontSize" >
-							{detail[1].description}
-						</Box>
-						<br/>
-						<Box fontSize="h6.fontSize" lineHeight={2}>
-							Responsibilities:
-							{renderListItems(detail[1].responsibilities)}
-						</Box>
-						<Box fontSize="h6.fontSize" lineHeight={2}>
-							Qualifications:
-							{renderListItems(detail[1].req_qualifications)}
-						</Box>
-						<Box fontSize="h6.fontSize" lineHeight={2}>
-							Experience level: {detail[1].experience_level}
-						</Box>
-						<Box fontSize="h6.fontSize" lineHeight={2}>
-							Closing date: {detail[1].closing_date}
-						</Box>
-					</Typography>
-					{userType==='jobseeker' ? (
-						<Button disabled={applied || detail[1].status =='closed'} variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
-							Apply
-						</Button>
-					) : ( userType==='public' && (
-						<Typography variant="h6" style={{color: '#348360', textAlign: "center",margin:20 }}>
-							<a href="/login">Log in to apply to this job!</a>
+				<Row>
+					<Col xs={1}></Col>
+					<Col xs={6}>
+						<Typography component="div" style={{color: 'black', margin: 50}}>
+							<Typography variant='h5'>{detail[1].title}</Typography>
+							<Typography variant='subtitle1'>{detail[1].company}</Typography>
+							<br/>
+							<Typography variant='body1'>{detail[1].description}</Typography>
+							<br/><br/>
+							<Typography variant='body1'>{detail[1].responsibilities != null && 'Job Responsibilities:'}</Typography>
+							<Typography variant='body1'>{renderListItems(detail[1].responsibilities)}</Typography>
+							<br/>
+							<Typography variant='body1'>{detail[1].req_qualifications != null && 'Desired qualifications:'}</Typography>
+							<Typography variant='body1'>{renderListItems(detail[1].req_qualifications)}</Typography>
 						</Typography>
-						)
-					)}
-					
-				</Col>
+						
+					</Col>
+					<Col xs={5} style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+						<Row style={{height:400,width:'60%',position:'absolute', top:80}}>
+							<Card border='success'style={{width:'100%'}}>
+								<Card.Body>
+									<Card.Title>Job Details</Card.Title>
+									<Table borderless hover>
+										<tbody>
+											<tr><td>Location: </td><td>{detail[1].location}</td></tr>
+											<tr><td>Job Type: </td><td>{detail[1].job_type}</td></tr>
+											<tr><td>Renumeration: </td><td>${detail[1].salary_pa}</td></tr>
+											<tr><td>Experience: </td><td>{detail[1].experience_level}</td></tr>
+											<tr><td>Closing date: </td><td>{detail[1].closing_date}</td></tr>
+										</tbody>
+									</Table>
+								</Card.Body>
+								{userType==='jobseeker' ? (
+									<Button disabled={applied || detail[1].status =='closed'} variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
+										Apply Now
+									</Button>
+								) : ( userType==='public' && (
+									<Typography variant="h6" style={{color: '#348360', textAlign: "center",margin:20 }}>
+										<a href="/login">Log in to apply to this job!</a>
+									</Typography>
+									)
+								)}
+							</Card>
+						</Row>
+					</Col>
+				</Row>
 			))
 		);
 	}
@@ -166,20 +168,24 @@ export default function Advertisement() {
 				<Col sm={2}>
 					{userType==='jobseeker' ? (
 							<SideMenu random={[
-								{'text':'Job Seeker Dashboard','href': '#', 'active': true},
+								{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
 								{'text':'Your Applications','href': '/yourapplications', 'active': false},       
 								{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 						) : ( userType==='recruiter' ? (
 							<SideMenu random={[
-								{'text':'Recruiter Dashboard','href': '/recruiterdashboard', 'active': true}
-								]}/>
-						) : (
+								{'text':'Recruiter Dashboard','href': '/recruiterdashboard', 'active': true},
+								{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
+						) : ( userType==='admin' ? (
 							<SideMenu random={[
 								{'text':'Jobs','href': '/admindashboard', 'active': true},
 								{'text':'Users','href': '/admin/userlist', 'active': false}]}/>
-						))}
+						) : (
+							<SideMenu random={[
+								{'text':'Home','href': '/', 'active': false},
+								{'text':'Browse Jobs','href': '/jobseekerdashboard', 'active': true}]}/>
+						)))}
 				</Col >
-				{advertPanel()}
+				<Col sm={10}>{advertPanel()}</Col>
 			</Row>
 		</Grid>
 	);

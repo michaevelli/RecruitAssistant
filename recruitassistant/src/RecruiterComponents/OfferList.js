@@ -114,7 +114,7 @@ export default function OfferList({match}) {
 					<Col sm="2">
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-						{'text': 'Job View','href': '#','active': false,
+						{'text': detail[1].title,'href': '#','active': false,
 						'nested':[
 							{'text':'Applications','href': `/applications/${jobID}`,'active': false},
 							{'text':'Interviews','href': `/interviews/${jobID}`,'active': false},
