@@ -14,7 +14,7 @@ import checkAuth from "../Authentication/Authenticate";
 export const uploadUrl="http://localhost:5000/upload"
 export const applicationUrl="http://localhost:5000/jobapplications"
 export const advertisementUrl="http://localhost:5000/advertisement"
-
+export const userUrl="http://localhost:5000/user"
 export default function JobApply() {
 	const history = useHistory();
 	const jobseeker_id = sessionStorage.getItem("uid");
@@ -27,8 +27,8 @@ export default function JobApply() {
 	const [disable, setDisable] = useState(false)
 	const [message, setMessage] = useState('')
 	//form data
-	const [first_name,setFirstName] = useState('');
-	const [last_name, setLastName] = useState('');
+	const [firstName,setFirstName] = useState('');
+	const [lastName, setLastName] = useState('');
 	const [phone_number, setPhoneNumber] = useState('');
 	const [rights, setRights] = useState('');
 	const [qualification_list, setQualificationList] = useState([]);
@@ -45,8 +45,9 @@ export default function JobApply() {
 
 	useEffect(() => {
 		auth();
+		getName();
 		getJob();
-		checkJobApplied();
+		checkJobApplied();	
 	}, []);
 
 	const auth = async () => {
@@ -109,6 +110,22 @@ export default function JobApply() {
 		})
 	};
 
+	//get the job seeker who is applying fullname, to prefill application
+	const getName = async()=>{
+		await axios.get(userUrl, {
+			params: {
+				jobseeker_id: jobseeker_id
+			},
+		})
+		.then(res => {
+			console.log(res)
+			setFirstName(res.data.user['first_name'])
+			setLastName(res.data.user['last_name'])
+		}).catch((error) => {
+			console.log("error: ", error.response)
+		})
+	}
+
 	const checkJobApplied = async () => {
 		const url = `${applicationUrl}`
 		console.log(url)
@@ -156,8 +173,8 @@ export default function JobApply() {
 			}
 		}
 		const data={
-			first_name: first_name,
-			last_name: last_name,
+			first_name: firstName,
+			last_name: lastName,
 			phone_number: phone_number,
 			rights: rights,
 			qualifications: final_qualifications,
@@ -266,6 +283,7 @@ export default function JobApply() {
 							<Col sm={10}>
 								<Form.Control 
 									required
+									value={firstName}
 									placeholder = "First Name"
 									onChange = { (event) => setFirstName(event.target.value)} />
 							</Col>
@@ -276,6 +294,7 @@ export default function JobApply() {
 							<Col sm={10}>
 								<Form.Control
 								required
+								value={lastName}
 								placeholder = "Last Name"
 								onChange = { (event) => setLastName(event.target.value)}/>
 							</Col>

@@ -83,3 +83,17 @@ def login():
 		error_code = json.loads(e.args[1])['error']['code']
 		
 		return jsonify({"message": "Invalid Email or Password"}), 401
+
+
+#get first and last name of signed in user
+@app.route('/user', methods=["GET"])
+def get_user_info():  
+	try:
+		jobseeker_id = request.args.get('jobseeker_id')
+		first_name= ref.child("user").child(jobseeker_id).child("first_name").get()
+		last_name=ref.child("user").child(jobseeker_id).child("last_name").get()
+		return jsonify({'user': {'first_name':first_name,'last_name':last_name}}), 200
+	except Exception as e:
+		print(e)
+		return jsonify({"error": "something bad happened"}),500
+	return
