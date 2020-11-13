@@ -1,9 +1,8 @@
 import React, {useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import {Button, Grid} from "@material-ui/core";
-import {Col,Row} from 'react-bootstrap';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import {Col,Row,Card} from 'react-bootstrap';
+import {Typography,Box} from '@material-ui/core';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
@@ -70,8 +69,9 @@ export default function JobStatistics({match}) {
                 setQualificationsInfo(r)
                 
                 var q=[]
-                for(var i=0; i<=stats.max_qualities_met; i++){
-                  q.push({name: String(i), value: parseInt(stats.num_qualities_met[i]) || 0 })
+                const max=stats.max_qualities_met
+                for(var i=0; i<=max; i++){
+                  q.push({'Qualifications': `${i}/${max}`, 'Number of Applicants': parseInt(stats.num_qualities_met[i]) || 0 })
                 }
                 console.log(q)
                 setNumQualifications(q)
@@ -85,9 +85,9 @@ export default function JobStatistics({match}) {
     const WorkingRights = ()=>{      
           return (
             
-            <ResponsiveContainer width="99%" aspect={3}>
+            <ResponsiveContainer width="100%" aspect={2}>
             <PieChart title='yyee' >
-            <Pie data={workingRights}  innerRadius={60} outerRadius={80}>
+            <Pie data={workingRights}>
             {
           	workingRights.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]}/>)
             }
@@ -100,17 +100,21 @@ export default function JobStatistics({match}) {
           
         );
       }
+
+    
+
+      
       const qualificationsPie = ()=>{
         return (
           
-          <ResponsiveContainer width="99%" aspect={3}>
+          <ResponsiveContainer width="100%" aspect={2}>
           <PieChart title='yyee'>
-          <Pie data={qualificationsInfo}  dataKey="Number of Candidates"  innerRadius={60} outerRadius={80}>
+          <Pie data={qualificationsInfo}  dataKey="Number of Candidates"  >
           {
           qualificationsInfo.map((entry, index) => <Cell fill={COLORS[(index+5) % COLORS.length]}/>)
           }
           </Pie>
-          <Tooltip/>
+          <Tooltip formatter={(label) => label + " applicant(s)"}/>
           <Legend />
          </PieChart>
          </ResponsiveContainer>
@@ -121,22 +125,19 @@ export default function JobStatistics({match}) {
         
         return ( 
          
-         <ResponsiveContainer width="99%" aspect={3}>
-        <BarChart
-          data={numQualifications}
-          dataKey="value"
-       
-        >
-        <CartesianGrid  />
-        <XAxis  label={{ value: 'Number of qualifications met'}}  dataKey="name"/>
-        <YAxis label={{ value: "Number of applicants", angle: -90}} 
-        allowDecimals={false} />
-        <Tooltip />
-        
-        
-        <Bar dataKey="value" fill="#aaffc3"/>
-       
-      </BarChart>
+        <ResponsiveContainer width="99%" aspect={2}>
+          <BarChart
+            data={numQualifications}
+            dataKey="Number of Applicants"
+          >
+          <CartesianGrid  />
+          <XAxis dataKey="Qualifications" label={{ value: 'Number of Qualifications Met',position: "insideBottom", dy: 10}} />
+          <YAxis 
+            label={{ value: "Number of Applicants", angle: -90}} 
+            allowDecimals={false} />
+          <Tooltip />
+          <Bar dataKey="Number of Applicants" fill="#e67e22"/>
+        </BarChart>
       </ResponsiveContainer>
       
     );
@@ -155,47 +156,70 @@ export default function JobStatistics({match}) {
                     {'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
             </Col >
             
-            <Col>
-            <Row noGutters>
-              
-                <Col >
-                 
-                  
-                  <span style={{fontWeight:"bold"}}>Number of applicants:  </span>{numCandidates}
-                  
-                  <br/>
-                  
-                  <span style={{fontWeight:"bold"}}>Number of Interviews sent: </span>{numInterviews}
-                  
-                  <br/>
-                  
-                  <span style={{fontWeight:"bold"}}>Number of Offers sent: </span>{numOffers}
-                  
-                 
-                  </Col>
-                  <Col >
-                  <Typography component="div" style={{color: 'black'}}>
-                    <Box fontSize="h8.fontSize">
-                    Number of Applicants with working rights for this job
-                    {WorkingRights()}
-                    </Box>
+            <Col sm={10}>
+            <Typography variant="h3" style={{color: 'black', textAlign: "center",margin:20 }}>
+						Job Statistics
+					  </Typography>
+            <Row noGutters style={{justifyContent: 'center',paddingTop:20,paddingLeft:50}}>
+              <Col xs={4} >
+              <div style={{display: 'vertical',justifyContent: 'center'}}>
+                <Card border="primary" style={{marginBottom:20,width:'70%', height:'20%'}}>
+                  <Typography variant="h4" component="h2" style={{marginTop:10,marginLeft:20}}>
+                  {numCandidates}
                   </Typography>
-                  </Col>
-                
-            </Row>
-          
-            <Row style={{marginTop:30}} noGutters>
-              <Col >
-                
-                How many applicants meet each qualification
-                {qualificationsPie()}
-                
-              </Col>
-              <Col>
-                
-                Number of required qualifications that applicants meet
-                {numberQualificationsBar()}
+                  <Typography variant="h8" color="textSecondary" style={{marginLeft:20 ,marginBottom:20}}>
+                  Applicants
+                  </Typography>
+                </Card>
+              
+                <Card  border="warning" style={{marginBottom:20,width:'70%', height:'20%'}}>
+                <Typography variant="h4" component="h2" style={{marginTop:10,marginLeft:20}}>
+                  {numInterviews}
+                  </Typography>
+                  <Typography variant="h8" color="textSecondary" style={{marginLeft:20 ,marginBottom:20}}>
+                  Interviews sent
+                  </Typography>
+                </Card>
                
+                <Card border="success" style={{marginBottom:20,width:'70%', height:'20%'}}>
+                <Typography variant="h4" component="h2" style={{marginTop:10,marginLeft:20}}>
+                  {numOffers}
+                  </Typography>
+                  <Typography variant="h8" color="textSecondary" style={{marginLeft:20 ,marginBottom:20}}>
+                  Offers made
+                  </Typography>
+                </Card>
+                </div>
+              </Col>
+              <Col xs={8}>
+                <Card style={{marginLeft:10,marginRight:30}}>
+                  <Card.Header as="h5" style={{"textAlign":"center"}}>Number of Required Qualifications Applicants  Fulfil</Card.Header>
+                  <Card.Body>
+                  {numberQualificationsBar()}
+                  </Card.Body>
+                </Card>
+              </Col>
+             
+            </Row>
+
+
+            <Row noGutters style={{justifyContent: 'center',paddingLeft:20,paddingRight:10,paddingBottom:10,paddingTop:30}}>
+              
+              <Col xs={7}>
+                <Card style={{marginRight:30}}>
+                  <Card.Header as="h5">Qualifications Breakdown</Card.Header>
+                  <Card.Body>
+                  {qualificationsPie()}
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col xs={5}>
+              <Card style={{marginRight:20}}>
+                <Card.Header as="h5">Applicants With Working Rights For Job Location</Card.Header>
+                <Card.Body>
+                  {WorkingRights()}
+                </Card.Body>
+              </Card>
               </Col>
             </Row>
           </Col>
