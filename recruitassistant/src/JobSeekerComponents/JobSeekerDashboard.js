@@ -49,6 +49,10 @@ export default function JobSeekerDashboard() {
 				setLoading(false)				
 				if (response.success && response.userInfo["type"] === "jobseeker") {
 					setPublicUser(false)
+				} else {
+					window.sessionStorage.clear()
+					window.localStorage.clear()
+					setPublicUser(true)
 				}
 			})
 	}

@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
-import { List, ListItem, ListItemText, Collapse, Divider } from '@material-ui/core';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import { List, ListItem, ListItemText, ListItemIcon, Collapse, Divider } from '@material-ui/core';
+import { ExpandLess, ExpandMore, ExitToApp } from '@material-ui/icons';
 import { useHistory } from "react-router-dom";
 
 export default function SideMenu(props) {
@@ -45,9 +45,13 @@ export default function SideMenu(props) {
 						</Collapse>))}
 					</div>
 				))}
+				
 				{window.localStorage.getItem("name")!=null && (
-						<ListItem button onClick={logout} key={'logout'} style={{width:'15%', position:'fixed', bottom:0}}>
-							<ListItemText primary={'LOGOUT'} style={{color: '#348360'}}/>
+						<ListItem button onClick={logout} key={'logout'} 
+							style={{width:'15%', height:80, position:'fixed', bottom:0, color: '#348360'}}>
+							<ListItemIcon><ExitToApp /></ListItemIcon>
+							<ListItemText primary={'Log Out'} 
+								primaryTypographyProps={{style:{fontWeight:'bold'}}}/>
 						</ListItem>
 					)}
 			</List>
