@@ -90,8 +90,8 @@ export default function OfferList({match}) {
 		const rows = []
 		offers.map((offer) => (
 			rows.push({
-								id: offer[0],
-								appID: offer[1].application_id,
+				id: offer[0],
+				appID: offer[1].application_id,
                 candidate: offer[1].full_name,
                 status: offer[1].status,
                 offer: "View Offer"})
@@ -113,15 +113,16 @@ export default function OfferList({match}) {
 				<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 					<Col sm="2">
 					<SideMenu random={[
-							{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-							{'text':detail[1].title,'href': '#','active': false,
-							'nested':[
-								{'text':'Applications','href': `/applications/${jobID}`,'active': false},
-								{'text':'Interviews','href': `/interviews/${jobID}`,'active': false},
-								{'text':'Offers','href': '#','active': true},
-							]},
-							{'text':'FAQ','href':'/recruiterFAQ','active': false}
-						]}/>
+						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
+						{'text': 'Job View','href': '#','active': false,
+						'nested':[
+							{'text':'Applications','href': `/applications/${jobID}`,'active': false},
+							{'text':'Interviews','href': `/interviews/${jobID}`,'active': false},
+							{'text':'Offers','href': `/offers/${jobID}`,'active': true},
+							{'text': 'Statistics','href': `/jobstatistics/${jobID}`,'active': false},
+						]},
+						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
+
 					</Col>
 
 					<Col sm="9">

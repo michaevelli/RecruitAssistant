@@ -8,15 +8,12 @@ import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
 export const jobUrl="http://localhost:5000/jobadverts/"
 export const searchUrl="http://localhost:5000/search/"
 
 export default function JobSeekerDashboard() {
-	
-	const history = useHistory();
 	const [publicUser, setPublicUser] = useState(true);
 	const [loading, setLoading] = useState(true);
 	const [loadingJobs, setLoadingJobs] = useState(true);
@@ -226,7 +223,7 @@ export default function JobSeekerDashboard() {
 							<TextField size="small"
 								onChange={ (event) => setSearchString(event.target.value)}
 								style={{ margin: 8 }}
-								placeholder="Job Title, Company, Skills"
+								placeholder="Enter keywords"
 								margin="normal"
 								value={searchString}
 								InputLabelProps={{shrink: true,}}
@@ -312,15 +309,14 @@ export default function JobSeekerDashboard() {
 					</Typography> */}
 					<br/><br/>
 					<Container>
-						{loadingJobs && 
+						{loadingJobs ? ( 
 							<div style={{
 								position: 'absolute', left: '50%', top: '70%',
 								transform: 'translate(-50%, -50%)'
 								}}>
 								<CircularProgress/>
 							</div>
-						}
-						{!loadingJobs && renderJobs()}
+						) : (renderJobs())}
 					</Container>
 					{/* <div className="card-deck"  style={{ display: 'flex', flexWrap: 'wrap',justifyContent: 'normal', paddingLeft:'5%'}}>
 						{renderJobs()}

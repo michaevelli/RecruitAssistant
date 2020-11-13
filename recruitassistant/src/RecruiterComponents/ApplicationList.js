@@ -34,6 +34,7 @@ export default function ApplicationList({match}) {
 	const [open, setOpen] = useState(false)
 	const [message, setMessage] = useState('')
 	const [disable, setDisable] = useState(false)
+	const [email, setEmail] = useState('')
 	
 	//there is one modal per application on the page
 	//showing is a dictionary with value being whether or not a
@@ -73,6 +74,7 @@ export default function ApplicationList({match}) {
 				if (!response.success || response.userInfo["type"] !== "recruiter") {
 					history.push("/unauthorised");
 				}
+				setEmail(response.userInfo["email"])
 			})
 	}
 
@@ -113,7 +115,7 @@ export default function ApplicationList({match}) {
 	const handleDate = (date, jobseeker, application) => {
 		var considering = {...inviteList}
 		if (!(jobseeker in considering)) {
-			considering[jobseeker] = {app_id: application[0], date: "", time: ""}
+			considering[jobseeker] = {app_id: application[0], date: "", time: "", details: ""}
 		}
 		considering[jobseeker]["date"] = date
 		setInviteList(considering)
@@ -122,9 +124,18 @@ export default function ApplicationList({match}) {
 	const handleTime = (time, jobseeker, application) => {
 		var considering = {...inviteList}
 		if (!(jobseeker in considering)) {
-			considering[jobseeker] = {app_id: application[0], date: "", time: ""}
+			considering[jobseeker] = {app_id: application[0], date: "", time: "", details: ""}
 		}
 		considering[jobseeker]["time"] = time
+		setInviteList(considering)
+	}
+
+	const handleDetails = (details, jobseeker, application) => {
+		var considering = {...inviteList}
+		if (!(jobseeker in considering)) {
+			considering[jobseeker] = {app_id: application[0], date: "", time: "", details: ""}
+		}
+		considering[jobseeker]["details"] = details
 		setInviteList(considering)
 	}
 
@@ -195,7 +206,9 @@ export default function ApplicationList({match}) {
 				first_name: app[1]["first_name"],
 				last_name: app[1]["last_name"],
 				date: inviteList[jobseeker]["date"],
-				time: inviteList[jobseeker]["time"]
+				time: inviteList[jobseeker]["time"],
+				details: inviteList[jobseeker]["details"],
+				recruiter_email: email
 			})
 
 			const data={
@@ -237,7 +250,9 @@ export default function ApplicationList({match}) {
 					first_name: applications[i][1]["first_name"],
 					last_name: applications[i][1]["last_name"],
 					date: inviteList[jobseeker]["date"],
-					time: inviteList[jobseeker]["time"]
+					time: inviteList[jobseeker]["time"],
+					details: inviteList[jobseeker]["details"],
+					recruiter_email: email
 				})
 			}
 			const data={
@@ -292,7 +307,7 @@ export default function ApplicationList({match}) {
 		var considering = {...inviteList}
 		var initialise_showing={}
 		for (let i = 0; i < applicationList.length; i++) {
-			considering[applicationList[i][1]["jobseeker_id"]] = {app_id: applicationList[i][0], date: "", time: ""}
+			considering[applicationList[i][1]["jobseeker_id"]] = {app_id: applicationList[i][0], date: "", time: "", details: ""}
 			initialise_showing[applicationList[i][0]]=false
 		}
 
@@ -353,6 +368,7 @@ export default function ApplicationList({match}) {
 		}
 		if (selection > 0) {
 			return applications.slice(0, selection).map((app, index) => (
+
 					<Row style={{display:'flex', alignItems:'center'}}>
 						<Col xs={8}>
 							<Card style={{margin: 30, width:"100%"}}>
@@ -367,14 +383,12 @@ export default function ApplicationList({match}) {
 												<div style={{display:'flex', justifyContent:'center', flexWrap: 'wrap'}}>
 													<Button disabled = {status === "open"} 
 													variant="contained" 
-													color="secondary" 
-													style={{width:'80%', marginBottom:5, borderRadius:15}}
+													style={{width:'80%', marginBottom:5, borderRadius:15, backgroundColor:'#348360', color:'white'}}
 													onClick={() => {handleShow(app[0])}}> 
 															Interview
 													</Button><br/>
-													<Button variant="contained" 
-													color="secondary" 
-													style={{width:'80%', marginBottom:5, borderRadius:15}}>
+													<Button variant="contained"  
+													style={{width:'80%', marginBottom:5, borderRadius:15, backgroundColor:'#348360'}}>
 														<Link style={{color: '#FFF'}} to={{
 															pathname: `/createoffer`,
 															state: {
@@ -385,7 +399,6 @@ export default function ApplicationList({match}) {
 													</Button><br/>
 													<Button style={{width:'80%', marginBottom:5, borderRadius:15}} 
 													variant="contained" 
-													color="secondary" 
 													onClick={() => {dismiss(app, index)}}>
 														Dismiss
 													</Button>
@@ -434,6 +447,25 @@ export default function ApplicationList({match}) {
 															<Form.Control.Feedback type="invalid">
 																Please enter a time
 															</Form.Control.Feedback>
+													</Form.Group>
+													</Form.Row>
+												</Col>
+												<Col>
+													<Form.Row>
+													<Form.Group>
+														<TextField
+															name = "Details"
+															variant = "outlined"
+															required
+															value = {inviteList[app[1].jobseeker_id]["details"]}
+															InputProps={{
+																style: {width: 400, marginLeft: 8,},
+															}}
+															placeholder = "Details of Interview"
+															multiline
+															rows={5}
+															onChange = { (event) => handleDetails(event.target.value, app[1].jobseeker_id, app)}
+															/>
 													</Form.Group>
 													</Form.Row>
 												</Col>
@@ -497,6 +529,22 @@ export default function ApplicationList({match}) {
 														Please enter a time
 													</Form.Control.Feedback>
 											</Form.Group>
+											<Form.Group>
+												<TextField
+													name = "Details"
+													variant = "outlined"
+													required
+													value = {inviteList[app[1].jobseeker_id]["details"]}
+													InputProps={{
+														style: {width: 400, marginLeft: 8,},
+													}}
+													placeholder = "Details of Interview"
+													multiline
+													rows={5}
+													onChange = { (event) => handleDetails(event.target.value, app[1].jobseeker_id, app)}
+													/>
+											</Form.Group>
+											
 									</Form>	
 								</Row>
 							</Modal.Body>
@@ -548,9 +596,10 @@ export default function ApplicationList({match}) {
 							{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
 							{'text': detail[1].title,'href': '#','active': false,
 							'nested':[
-								{'text':'Applications','href': '#','active': true},
+								{'text':'Applications','href': `/applications/${jobID}`,'active': true},
 								{'text':'Interviews','href': `/interviews/${jobID}`,'active': false},
 								{'text':'Offers','href': `/offers/${jobID}`,'active': false},
+								{'text': 'Statistics','href': `/jobstatistics/${jobID}`,'active': false},
 							]},
 							{'text':'FAQ','href':'/recruiterFAQ','active': false}
 						]}/>
@@ -587,8 +636,7 @@ export default function ApplicationList({match}) {
 							<Col xs={4}>
 								<Button disabled = {detail[1].status === "open"}
 								variant="contained" 
-								color="secondary"
-								style={{borderRadius: 30}}
+								style={{borderRadius: 30, backgroundColor:"#1C5253", color:'white'}}
 								onClick={() =>{
 									if (sendTop){
 										postInterviews()

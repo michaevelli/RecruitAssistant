@@ -1,8 +1,8 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField,FormGroup,FormControlLabel,Switch,Snackbar}
- from "@material-ui/core";
-import CloseIcon from '@material-ui/icons/Close';
+import {IconButton,Grid,Button,TextField,FormGroup,FormControlLabel,Switch,Snackbar} from "@material-ui/core";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import CloseIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
@@ -19,7 +19,7 @@ export const applicationsUrl ="http://localhost:5000/jobapplication"
 
 export default function OfferLetterForm(props) {
 
-	//console.log(props.location.state)
+	const [loading, setLoading] = useState(true);
 	const jobAppID = props.location.state.jobAppID
 	const jobID= props.location.state.jobID
 
@@ -72,7 +72,7 @@ export default function OfferLetterForm(props) {
 				setLocation(job_data["location"]);
 				setJobType(job_data["job_type"]);
 				setSalary(job_data["salary_pa"]);
-				
+				setLoading(false);
 			}).catch((error) => {
 				console.log("error: ", error.response)
 				setMessage("An error occured, please try again")
@@ -216,7 +216,14 @@ export default function OfferLetterForm(props) {
 	}
 
 	
-	return (
+	return loading ? (
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
+	) : (
 		<Grid>
 			<Snackbar
 				anchorOrigin={{
@@ -237,8 +244,10 @@ export default function OfferLetterForm(props) {
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
 					<SideMenu random={[
-						{'text':'Job Applications','href': `/applications/${jobID}`,'active': true},
+
+						{'text':'Back to Job Applications','href': `/applications/${jobID}`,'active': true},
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
+						{'text':title,'href': `/applications/${jobID}`,'active': true},
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 				

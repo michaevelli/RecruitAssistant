@@ -124,6 +124,8 @@ def send_interview():
 						'last_name': u["last_name"],
 						'interview_date': u["date"],
 						'interview_time': u["time"],
+						'interview_details': u["details"],
+						'recruiter_email' : u["recruiter_email"],
 						'status': "Pending"
 					},
 				})

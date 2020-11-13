@@ -1,11 +1,11 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField,Snackbar} from "@material-ui/core";
+import {IconButton,Grid,Button,TextField,InputAdornment,Snackbar} from "@material-ui/core";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
-import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
+import {Form,InputGroup,Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -256,7 +256,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="responsibilities">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Key Responsibilities
 							<IconButton onClick={() => handleAddResponsibility()}>
 								<AddIcon />
@@ -319,9 +319,8 @@ export default function NewJobForm() {
 
 						<Form.Group controlId="salary">
 							<Form.Label column sm={2}>
-							Salary K/p.a*
+							Salary (p.a)*
 							</Form.Label>
-							
 							<Col sm={10}>
 								<InputGroup>
 									<InputGroup.Prepend>
@@ -332,9 +331,6 @@ export default function NewJobForm() {
 									required
 									type="number"
 									onChange={ (event) => setSalary(event.target.value)}/>
-									<Form.Text className="text-muted">
-									Please enter salary in units of K/$1000
-									</Form.Text>
 									<Form.Control.Feedback type="invalid">
 									Please enter a number
 									</Form.Control.Feedback>
@@ -344,7 +340,7 @@ export default function NewJobForm() {
 
 						
 						<Form.Group controlId="closingDate">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Application Closing Date*</Form.Label>
 							<Col sm={10}>
 							<TextField 
@@ -367,7 +363,7 @@ export default function NewJobForm() {
 						</Form.Group>
 							
 						<Form.Group controlId="qualifications">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Desired Qualifications
 							<IconButton onClick={() => handleAddQuality()}>
 								<AddIcon />
@@ -395,7 +391,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="requiredDocs">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Required Documents
 							<IconButton onClick={() => handleAddDoc()}>
 								<AddIcon />
@@ -423,7 +419,7 @@ export default function NewJobForm() {
 						</Form.Group>
 
 						<Form.Group controlId="additionalQuestions">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Additional Questions
 							<IconButton onClick={() => handleAddQuestion()}>
 								<AddIcon />

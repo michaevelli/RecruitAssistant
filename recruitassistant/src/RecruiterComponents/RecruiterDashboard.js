@@ -88,12 +88,12 @@ export default function RecruiterDashboard() {
 											<Card.Text>Closing date: {job[1].closing_date}</Card.Text> :
 											<Card.Text style={{color:'red'}}>This job is closed</Card.Text>
 									}
-									<Button  href={"/editjob/"+job[0]}>
+									<Link href={"/editjob/"+job[0]}>
 										Edit Job
-									</Button><br/>
-									<Button href={`/applications/${job[0]}`}>
+									</Link><br/><br/>
+									<Link href={`/applications/${job[0]}`}>
 										View Applications
-									</Button>
+									</Link>
 								</div>
 							</Col>
 						</Row>

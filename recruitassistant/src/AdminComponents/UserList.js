@@ -21,9 +21,9 @@ export default function UserList() {
     const columns = [
 		{ field: 'first_name', headerName: 'First Name', width: 200 },
         { field: 'last_name', headerName: 'Last Name', width: 200 },
-        { field: 'email', headerName: 'Email', width: 200 },
+        { field: 'email', headerName: 'Email', width: 300 },
         { field: 'type', headerName: 'Type', width: 100},
-        {field: 'delete', headerName: 'Delete', width:300,
+        {field: 'delete', headerName: 'Delete', width:100,
         renderCell: (params) => {
             const click = () => {
                 const api = params.api;

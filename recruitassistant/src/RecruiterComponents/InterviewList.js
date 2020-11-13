@@ -23,12 +23,19 @@ export default function InterviewList({match}) {
 
 	const columns = [
 		{ field: 'candidate', headerName: 'Candidate', width: 200, 
-		renderCell: (params) => (
-			<Link to={"/viewapplication/"+jobID+'/'+params.value.appID}>{params.value.name}</Link>
+		renderCell: (row) => (
+			<Link to={"/viewapplication/"+jobID+'/'+row.data.appID}>{row.data.candidate}</Link>
 		)},
 		{ field: 'datetime', headerName: 'Date & Time', type: 'dateTime', width: 150 },
 		{ field: 'status', headerName: 'Status', width: 100 },
 		{ field: 'reason', headerName: 'Reason', width: 470, resizable: true, sortable: false },
+		{ field: 'offer', headerName: 'Make Offer', sortable: false, width: 400,
+			renderCell: (row) => (
+				<Link to={{pathname: `/createoffer`, state:{jobAppID: row.data.appID, jobID: jobID}}}>
+					Offer
+				</Link>
+			)
+		}
 	];
 
 	useEffect(() => {
@@ -91,9 +98,8 @@ export default function InterviewList({match}) {
 		interviews.map((interview) => (
 			rows.push({
 				id: interview[0],
-				candidate: {
-					name:returnFull(interview[1].first_name, interview[1].last_name),
-					appID: interview[1].application_id},
+				appID: interview[1].application_id,
+				candidate: returnFull(interview[1].first_name, interview[1].last_name),
 				datetime: returnFull(interview[1].interview_date, interview[1].interview_time),
 				status: interview[1].status,
 				reason: interview[1].reason})
@@ -115,15 +121,15 @@ export default function InterviewList({match}) {
 				<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 					<Col sm="2">
 					<SideMenu random={[
-							{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-							{'text':detail[1].title,'href': '#','active': false,
-							'nested':[
-								{'text':'Applications','href': `/applications/${jobID}`,'active': false},
-								{'text':'Interviews','href': '#','active': true},
-								{'text':'Offers','href': `/offers/${jobID}`,'active': false},
-							]},
-							{'text':'FAQ','href':'/recruiterFAQ','active': false}
-						]}/>
+						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
+						{'text': 'Job View','href': '#','active': false,
+						'nested':[
+							{'text':'Applications','href': `/applications/${jobID}`,'active': false},
+							{'text':'Interviews','href': `/interviews/${jobID}`,'active': true},
+							{'text':'Offers','href': `/offers/${jobID}`,'active': false},
+							{'text': 'Statistics','href': `/jobstatistics/${jobID}`,'active': false},
+						]},
+						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 					</Col>
 
 					<Col sm="9">

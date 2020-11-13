@@ -37,12 +37,15 @@ export default function Advertisement() {
 				//Public users, recruiters, and job seekers should be able to view an advert
 				if (!response.success) {
 					setUserType('public')
-				} else if (response.userInfo["type"] == "recruiter") {
+				} else if (response.userInfo["type"] === "recruiter") {
 					//hide apply button and side menu, just show the ad
 					setUserType('recruiter')
+				} else if (response.userInfo["type"] === "admin") {
+					setUserType('admin')
 				} else {
 					setUserType('jobseeker')
 				}
+				setLoading(false)
 			})
 	}
 	
@@ -139,7 +142,7 @@ export default function Advertisement() {
 						</Button>
 					) : ( userType==='public' && (
 						<Typography variant="h6" style={{color: '#348360', textAlign: "center",margin:20 }}>
-							Log in to apply to this job!
+							<a href="/login">Log in to apply to this job!</a>
 						</Typography>
 						)
 					)}
@@ -156,12 +159,6 @@ export default function Advertisement() {
 			}}>
 			<CircularProgress/>
 		</div>
-	) : ( userType==='recruiter' ? (
-		<Grid>      
-			<Row>
-			{advertPanel()}
-			</Row>
-		</Grid>
 	) : (
 		<Grid>      
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
@@ -172,14 +169,18 @@ export default function Advertisement() {
 								{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
 								{'text':'Your Applications','href': '/yourapplications', 'active': false},       
 								{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
+						) : ( userType==='recruiter' ? (
+							<SideMenu random={[
+								{'text':'Recruiter Dashboard','href': '/recruiterdashboard', 'active': true}
+								]}/>
 						) : (
 							<SideMenu random={[
-								{'text':'Home','href': '/', 'active': false},
-								{'text':'Browse Jobs','href': '#', 'active': true}]}/>
-						)}
+								{'text':'Jobs','href': '/admindashboard', 'active': true},
+								{'text':'Users','href': '/admin/userlist', 'active': false}]}/>
+						))}
 				</Col >
 				{advertPanel()}
 			</Row>
 		</Grid>
-	));
+	);
 }
