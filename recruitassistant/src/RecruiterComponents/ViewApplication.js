@@ -118,11 +118,19 @@ export default function ViewApplication() {
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
 					{usertype=="jobseeker"?
-				   ( <SideMenu random={[{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
-					{'text':'FAQ','href':'/jobSeekerFAQ','active': false}]}/>
-					) :(
-					<SideMenu random={[{'text':'Recruiter Dashboard','href': '/recruiterdashboard', 'active': true},
-					{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>)
+					( <SideMenu random={[{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
+						{'text':'Your Applications','href': '/yourapplications', 'active': false},       
+						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
+					) : (
+					<SideMenu random={[
+						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
+						{'text': job.title,'href': '#','active': false,
+						'nested':[
+							{'text':'Applications','href': `/applications/${jobID}`,'active': true},
+							{'text':'Interviews','href': `/interviews/${jobID}`,'active': false},
+							{'text':'Offers','href': `/offers/${jobID}`,'active': false},
+							]},
+						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>)
 					}
 				</Col >
 				<Col>

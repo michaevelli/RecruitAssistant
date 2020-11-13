@@ -1,8 +1,9 @@
 import React, { useState,useLayoutEffect,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Grid,Button, CircularProgress} from "@material-ui/core";
+import {Link, Grid,Button, CircularProgress, Snackbar, IconButton} from "@material-ui/core";
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
+import CloseIcon from '@material-ui/icons/Close';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 import {Col,Row,Alert} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
@@ -34,6 +35,7 @@ export default function ViewOffer({match}) {
 	const [counter_offer_shown, setCounterOfferShown]= useState('none')
 	const [loading, setLoading] = useState(true);
 	const [open, setOpen] = useState(false);
+	const [openSnackbar, setOpenSnackbar] = useState(false);
 
 	useEffect(() => {
 		auth();	
@@ -200,7 +202,7 @@ export default function ViewOffer({match}) {
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
-				alert("An error occured, please try again")
+				setOpenSnackbar(true)
 			})
 	}
 
@@ -213,7 +215,7 @@ export default function ViewOffer({match}) {
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
-				alert("An error occured, please try again")
+				setOpenSnackbar(true)
 			})
 	}
 	
@@ -221,9 +223,13 @@ export default function ViewOffer({match}) {
 		return (		
 			<SideMenu random={[
 				{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-				{'text':offer.title,'href': `/applications/${offer.jobID}`,'active': true},
-				{'text':'FAQ','href':'/recruiterFAQ','active': false}
-			]}/>
+				{'text': offer.title,'href': '#','active': false,
+				'nested':[
+					{'text':'Applications','href': `/applications/${offer.job_id}`,'active': false},
+					{'text':'Interviews','href': `/interviews/${offer.job_id}`,'active': false},
+					{'text':'Offers','href': `/offers/${offer.job_id}`,'active': true},
+					]},
+				{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 		);
 	}
 	const jobseekerMenu = () => {
@@ -244,6 +250,21 @@ export default function ViewOffer({match}) {
 		</div>
 	) : (
 		<Grid>      
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'right',
+				}}
+				open={openSnackbar}
+				autoHideDuration={5000}
+				onClose={() => setOpenSnackbar(false)}
+				message="An error occurred, please try again"
+				action={
+					<IconButton size="small" aria-label="close" color="inherit" onClick={() => setOpenSnackbar(false)}>
+						<CloseIcon fontSize="small" />
+					</IconButton>
+				}
+			/>
 			<Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>

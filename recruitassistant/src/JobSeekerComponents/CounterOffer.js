@@ -1,21 +1,16 @@
-import React, { useState,useEffect } from "react";
+import React, { useState } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField} from "@material-ui/core";
-import RemoveIcon from '@material-ui/icons/Remove';
-import AddIcon from '@material-ui/icons/Add';
-import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
-import Typography from '@material-ui/core/Typography';
-import TitleBar from "../SharedComponents/TitleBar.js";
-import SideMenu from "../SharedComponents/SideMenu.js";
+import {IconButton, Button, Snackbar} from "@material-ui/core";
+import CloseIcon from '@material-ui/icons/Close'
+import {Form,Col} from 'react-bootstrap';
 import axios from "axios";
-import { useHistory } from "react-router-dom";
-import checkAuth from "../Authentication/Authenticate";
 
 export const counterofferurl="http://localhost:5000/counteroffer"
 
 export default function CounterOffer(params) {
 	const offerID = params.offerID;
 	const closed = params.closed;
+	const [openError, setOpenError] = useState(false)
 	const [counterOffer,setCounterOffer] = useState('');
 
 	async function handleSendCounter(e) {
@@ -24,12 +19,11 @@ export default function CounterOffer(params) {
 		await axios.post(counterofferurl, data)
 		.then(res => {
 			console.log("response: ", res)
-			alert("Comments/counter offer successfully sent")
 			window.location.reload();
 		})
 		.catch((error) => {
 			console.log("error: ", error.response)
-			alert("An error occured, please try again")
+			setOpenError(true)
 		})
 	}
 
@@ -38,18 +32,35 @@ export default function CounterOffer(params) {
 	}
 	
 	return (
-		<Form onSubmit={(e) => handleSendCounter(e)} style={{marginRight: 20}}>     
-			<h4>Additional comments or counter offers</h4>
-			<Form.Group controlId="description">
-				<Col sm={10}>
-					<Form.Control as="textarea" rows="10" 
-						onChange={(e) => setCounterOffer(e.target.value)}/>
-				</Col>
-			</Form.Group>
-			
-			<Button variant="contained" color="secondary" type="submit" onSubmit={(e) => handleSendCounter(e)} style={{margin: 20}}>
-				Send Counter-Offer
-			</Button> 
-		</Form>
+		<div>
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'right',
+				}}
+				open={openError}
+				autoHideDuration={5000}
+				onClose={() => setOpenError(false)}
+				message="An error occurred, please try again"
+				action={
+					<IconButton size="small" aria-label="close" color="inherit" onClick={() => setOpenError(false)}>
+						<CloseIcon fontSize="small" />
+					</IconButton>
+				}
+			/>
+			<Form onSubmit={(e) => handleSendCounter(e)} style={{marginRight: 20}}>     
+				<h4>Additional comments or counter offers</h4>
+				<Form.Group controlId="description">
+					<Col sm={10}>
+						<Form.Control as="textarea" rows="10" 
+							onChange={(e) => setCounterOffer(e.target.value)}/>
+					</Col>
+				</Form.Group>
+				
+				<Button variant="contained" color="secondary" type="submit" onSubmit={(e) => handleSendCounter(e)} style={{margin: 20}}>
+					Send Counter-Offer
+				</Button> 
+			</Form>
+		</div>
 	);
 }

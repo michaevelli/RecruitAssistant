@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField} from "@material-ui/core";
+import {IconButton,Grid,Button,TextField,Snackbar} from "@material-ui/core";
+import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
@@ -27,6 +28,9 @@ export default function EditOffer({match}) {
 	const t  = new Date();
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
+	const [open, setOpen] = useState(false)
+	const [disable, setDisable] = useState(false)
+	const [message, setMessage] = useState('')
 
 	// offer letter form fields
 	const [location,setLocation] = useState('');
@@ -75,7 +79,8 @@ export default function EditOffer({match}) {
 				
 			}).catch((error) => {
 				console.log("error: ", error.response)
-				alert("An error occured, please try again")
+				setMessage("An error occured, please try again")
+				setOpen(true)
 			})	
 	}	
 	
@@ -117,7 +122,8 @@ export default function EditOffer({match}) {
 		var filetype= event.target.files[0].type
 		console.log(filetype)
 		if(filetype!="application/pdf"){
-			alert("please upload a pdf")
+			setMessage("Please upload a pdf")
+			setOpen(true)
 			return 0
 		}
 		const reader = new FileReader()
@@ -132,6 +138,12 @@ export default function EditOffer({match}) {
 		setAdditionalDocs(docs)
 	}
 
+	const handleClose = () => {
+		setOpen(false)
+		if (message === "Edited offer successfully sent") {
+			history.push("/recruiterdashboard")
+		}
+	}
 
 	// --- submit edited offer to database ---
 	const postOffer = async () => {
@@ -161,12 +173,14 @@ export default function EditOffer({match}) {
 		await axios.post(editofferurl, data)
 			.then(res => {
 				console.log("response: ", res)
-				alert("Edited offer successfully sent")
-				history.push("/recruiterdashboard")
+				setMessage("Edited offer successfully sent")
+				setOpen(true)
+				setDisable(true)
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
-				alert("An error occured, please try again")
+				setMessage("An error occured, please try again")
+				setOpen(true)
 			})	
 	};
 	
@@ -193,6 +207,21 @@ export default function EditOffer({match}) {
 	
 	return (
 		<Grid>
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'right',
+				}}
+				open={open}
+				autoHideDuration={5000}
+				onClose={() => handleClose()}
+				message={message}
+				action={
+					<IconButton size="small" aria-label="close" color="inherit" onClick={() => handleClose()}>
+						<CloseIcon fontSize="small" />
+					</IconButton>
+				}
+			/>
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
@@ -368,7 +397,7 @@ export default function EditOffer({match}) {
 											
 						</Form.Group>
 
-						<Button variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
+						<Button disabled={disable} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
 						Send Offer
 						</Button> 
 					</Form>  		

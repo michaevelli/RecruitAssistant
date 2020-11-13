@@ -119,7 +119,7 @@ export default function UserList() {
                 </Typography>
                 <Row>
                     <div style={{ height: 600, width: '100%', marginLeft: 100 }}>
-                        <DataGrid rows={renderUsers()} columns={columns} pageSize={20}/>
+                        <DataGrid rows={renderUsers()} columns={columns} disableSelectionOnClick={true} pageSize={20}/>
                     </div>
                 </Row>
             </Col>

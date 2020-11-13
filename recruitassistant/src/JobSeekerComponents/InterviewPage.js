@@ -1,7 +1,8 @@
 import React, { useState,useEffect,useLayoutEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {Grid,Button,TextField} from "@material-ui/core";
+import {Grid,Button,TextField,Snackbar,IconButton} from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close"
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import {Col,Row,Alert} from 'react-bootstrap';
@@ -32,6 +33,7 @@ export default function InterviewPage({match}) {
 	const [desc, setDesc] = useState('')
 	const [variant, setVariant]=useState('')
 	const [open, setOpen] = useState(false);
+	const [openError, setOpenError] = useState(false)
   
 	useEffect(() => {
 		auth();
@@ -79,6 +81,21 @@ export default function InterviewPage({match}) {
     const interviewInfo = () => {
         return (
         <div>
+		<Snackbar
+			anchorOrigin={{
+				vertical: 'bottom',
+				horizontal: 'right',
+			}}
+			open={openError}
+			autoHideDuration={5000}
+			onClose={() => setOpenError(false)}
+			message="An error occurred, please try again"
+			action={
+				<IconButton size="small" aria-label="close" color="inherit" onClick={() => setOpenError(false)}>
+					<CloseIcon fontSize="small" />
+				</IconButton>
+			}
+		/>
         <Alert style={{visibility: (open? 'visible':'hidden'), margin:10}}  variant={variant} >
             {desc}
         </Alert>

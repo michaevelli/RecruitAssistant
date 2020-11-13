@@ -1,7 +1,8 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField,InputAdornment} from "@material-ui/core";
+import {IconButton,Grid,Button,TextField,InputAdornment,Snackbar} from "@material-ui/core";
 import CircularProgress from '@material-ui/core/CircularProgress';
+import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import {Form,InputGroup,Col,Row} from 'react-bootstrap';
@@ -21,6 +22,9 @@ export default function NewJobForm() {
 
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
+	const [open, setOpen] = useState(false)
+	const [disable, setDisable] = useState(false)
+	const [message, setMessage] = useState('')
 	//form data
 	const [title,setTitle] = useState('');
 	const [company,setCompany] = useState('');
@@ -115,6 +119,13 @@ export default function NewJobForm() {
 		setResponsibilities(rs)
 	}
 
+	const handleClose = () => {
+		setOpen(false)
+		if (message === "Job successfully created") {
+			history.push("/recruiterdashboard")
+		}
+	}
+
 	//TODO - ADD real RECRUITER ID TO JOB POST
 	const postJob = async () => {
         const url = jobUrl
@@ -138,12 +149,14 @@ export default function NewJobForm() {
 		await axios.post(url, data)
 			.then(res => {
 				console.log("response: ", res)
-				alert("Job successfully created")
-				history.push("/recruiterdashboard")
+				setMessage("Job successfully created")
+				setOpen(true)
+				setDisable(true)
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
-				alert("An error occured, please try again")
+				setMessage("An error occured, please try again")
+				setOpen(true)
 			})	
 	};
 	
@@ -175,6 +188,21 @@ export default function NewJobForm() {
 		</div>
 	) : (
 		<Grid>
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'right',
+				}}
+				open={open}
+				autoHideDuration={5000}
+				onClose={() => handleClose()}
+				message={message}
+				action={
+					<IconButton size="small" aria-label="close" color="inherit" onClick={() => handleClose()}>
+						<CloseIcon fontSize="small" />
+					</IconButton>
+				}
+			/>
 			<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
@@ -419,7 +447,7 @@ export default function NewJobForm() {
 							</Col>					
 						</Form.Group>
 
-						<Button variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
+						<Button disabled={disable} variant="contained" color="secondary" type="submit" onSubmit={handleSubmit} style={{margin: 20}}>
 						Create New Job
 						</Button> 
 					</Form>  		

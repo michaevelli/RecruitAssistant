@@ -41,3 +41,7 @@ Worked on feature to share a job advertisement to social media.
 However, I could not fully implement it because the Facebook,Twitter,LinkedIn APIs do not allow
 the sharing of links to localhost URLS. For now I will use fake URLS.
 
+--week 9---
+As per the tutor's guidance we decided to scrap the social media sharing novel feature and instead implement a recruiter statistics page which I
+made this week with the help of Rechart.js. I also completed minor UI changes, including changes to the application list page and the interview invite flow.
+

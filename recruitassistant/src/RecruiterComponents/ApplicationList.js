@@ -1,7 +1,8 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton, Button, ButtonGroup, Grid, CardContent, CardActions, TextField} from "@material-ui/core";
+import {IconButton, Button, Grid, Snackbar, TextField} from "@material-ui/core";
 //Card
+import CloseIcon from '@material-ui/icons/Close'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -30,8 +31,10 @@ export default function ApplicationList({match}) {
 	const [inviteList, setInviteList] = useState({})
 	const [job, setJob] = useState([])
 	const [selection, setSelection] = useState()
+	const [open, setOpen] = useState(false)
+	const [message, setMessage] = useState('')
+	const [disable, setDisable] = useState(false)
 	const [email, setEmail] = useState('')
-
 	
 	//there is one modal per application on the page
 	//showing is a dictionary with value being whether or not a
@@ -161,6 +164,15 @@ export default function ApplicationList({match}) {
 		}
 	};
 
+	const handleCloseSnackbar = (reason) => {
+		setOpen(false)
+		if (message.includes("Interview successfully sent for")) {
+			window.location.reload()
+			//Close dialog box
+			// handleClose(app[0])
+		}
+	}
+
 	const dismiss = async (app, index) => {
 		const data={
 			job_id: jobID,
@@ -170,15 +182,17 @@ export default function ApplicationList({match}) {
 		.then(res => {
 			console.log("response: ", res)
 			removeApp(index)
-			alert(app[1]["first_name"] + " " + app[1]["last_name"] + "'s application dismissed")
+			setMessage(app[1]["first_name"] + " " + app[1]["last_name"] + "'s application dismissed")
+			setOpen(true)
 		})
 		.catch((error) => {
 			console.log("error: ", error.response)
-			alert("An error occured, please try again")
+			setMessage("An error occured, please try again")
+			setOpen(true)
 		})
 	};
 
-	const postInterview = async (app) => {
+	const postInterview = async (event, app) => {
 		if (datevalidator(app[1]["jobseeker_id"]) === true && timevalidator(app[1]["jobseeker_id"]) === true) {
 			var invite_list = []
 			var emp_id = sessionStorage.getItem("uid")
@@ -204,17 +218,19 @@ export default function ApplicationList({match}) {
 			await axios.post(interviewUrl, data)
 			.then(res => {
 				console.log("response: ", res)
-				alert("Interview Successfully Sent")
-				window.location.reload()
-				//Close dialog box
-				// handleClose(app[0])
+				setDisable(true)
+				setMessage("Interview successfully sent for " + app[1]["first_name"] + " " + app[1]["last_name"])
+				setOpen(true)
+
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
-				alert("An error occured, please try again")
+				setMessage("An error occured, please try again")
+				setOpen(true)
 			})
 		} else {
-			alert("Please fill in all fields correctly for " + app[1]["first_name"] + " " + app[1]["last_name"])
+			setMessage("Please fill in all fields correctly for " + app[1]["first_name"] + " " + app[1]["last_name"])
+			setOpen(true)
 		}
 	};
 
@@ -246,16 +262,19 @@ export default function ApplicationList({match}) {
 			await axios.post(interviewUrl, data)
 			.then(res => {
 				console.log("response: ", res)
-				alert("Interviews Successfully Sent")
+				setMessage(selection + " interviews successfully sent")
+				setOpen(true)
 				//hide this page again
 				setSendTop(false)
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
-				alert("An error occured, please try again")
+				setMessage("An error occured, please try again")
+				setOpen(true)
 			})
 		} else {
-			alert(res)
+			setMessage(res)
+			setOpen(true)
 		}
 	};
 
@@ -532,10 +551,11 @@ export default function ApplicationList({match}) {
 							<Modal.Footer style={{marginTop:20}}>
 								<Button variant="contained" color="default" onClick={()=>handleClose(app[0])}>Cancel</Button>
 								<Button variant="contained" 
-								style={{marginLeft:10}}
-								color="secondary"
-								id={"interview_modal_" + app[0]} 
-								onClick={()=>postInterview(app)}>Send</Button>
+									disabled={disable}
+									style={{marginLeft:10}}
+									color="secondary"
+									id={"interview_modal_" + app[0]} 
+									onClick={(event)=>postInterview(event, app)}>Send</Button>
 							</Modal.Footer>
 						</Modal>
 					</Row>
@@ -554,6 +574,21 @@ export default function ApplicationList({match}) {
 	) : (
 		job.map((detail) => (
 			<Grid>
+				<Snackbar
+					anchorOrigin={{
+						vertical: 'bottom',
+						horizontal: 'right',
+					}}
+					open={open}
+					autoHideDuration={5000}
+					onClose={() => handleCloseSnackbar()}
+					message={message}
+					action={
+						<IconButton size="small" aria-label="close" color="inherit" onClick={() => handleCloseSnackbar()}>
+							<CloseIcon fontSize="small" />
+						</IconButton>
+					}
+				/>
 				<Row noGutters fluid><TitleBar name={window.localStorage.getItem("name")}/></Row>
 				<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 					<Col sm="2">
