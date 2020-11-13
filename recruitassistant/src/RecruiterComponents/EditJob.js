@@ -265,7 +265,7 @@ export default function EditJob({match}) {
 						</Form.Group>
 
 						<Form.Group controlId="responsibilities">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Key Responsibilities
 							<IconButton onClick={() => handleAddResponsibility()}>
 								<AddIcon />
@@ -276,6 +276,7 @@ export default function EditJob({match}) {
 							{responsibilities.map((r, index) => (
 								<ul key={index}>
 									<li><TextField 
+									required
 									name="Responsibility"
 									variant="outlined"
 									size="small"
@@ -354,7 +355,7 @@ export default function EditJob({match}) {
 						
 							
 						<Form.Group controlId="qualifications">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Desired Qualifications
 							<IconButton onClick={() => handleAddQuality()}>
 								<AddIcon />
@@ -364,7 +365,8 @@ export default function EditJob({match}) {
 							<Col sm={10}>
 							{qualifications.map((q, index) => (
 								<ul key={index}>
-									<li><TextField 
+									<li><TextField
+									required
 									name="Quality"
 									variant="outlined"
 									size="small"
@@ -381,7 +383,7 @@ export default function EditJob({match}) {
 						</Form.Group>
 
 						<Form.Group controlId="requiredDocs">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Required Documents
 							<IconButton onClick={() => handleAddDoc()}>
 								<AddIcon />
@@ -392,6 +394,7 @@ export default function EditJob({match}) {
 							{requiredDocs.map((doc, index) => (
 								<ul key={index}>
 									<li><TextField 
+									required
 									name="Document"
 									variant="outlined"
 									size="small"
@@ -408,7 +411,7 @@ export default function EditJob({match}) {
 						</Form.Group>
 
 						<Form.Group controlId="additionalQuestions">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Additional Questions
 							<IconButton onClick={() => handleAddQuestion()}>
 								<AddIcon />
@@ -416,9 +419,10 @@ export default function EditJob({match}) {
 							</Form.Label>
 							
 							<Col sm={10}>
-							{additionalQuestions.map((question, index) => (
+							<ol> {additionalQuestions.map((question, index) => (
 								<div key={index}>
-									<TextField 
+									<li><TextField 
+									required
 									name="Question"
 									variant="outlined"
 									size="small"
@@ -428,9 +432,10 @@ export default function EditJob({match}) {
 									/>
 									<IconButton onClick={() => handleRemoveQuestion(index)}>
 										<RemoveIcon />
-									</IconButton>
+									</IconButton></li>
 								</div>
 							))}
+							</ol>
 							</Col>					
 						</Form.Group>
 

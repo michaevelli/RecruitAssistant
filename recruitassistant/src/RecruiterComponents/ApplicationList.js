@@ -30,6 +30,8 @@ export default function ApplicationList({match}) {
 	const [inviteList, setInviteList] = useState({})
 	const [job, setJob] = useState([])
 	const [selection, setSelection] = useState()
+	const [email, setEmail] = useState('')
+
 	
 	//there is one modal per application on the page
 	//showing is a dictionary with value being whether or not a
@@ -69,6 +71,7 @@ export default function ApplicationList({match}) {
 				if (!response.success || response.userInfo["type"] !== "recruiter") {
 					history.push("/unauthorised");
 				}
+				setEmail(response.userInfo["email"])
 			})
 	}
 
@@ -109,7 +112,7 @@ export default function ApplicationList({match}) {
 	const handleDate = (date, jobseeker, application) => {
 		var considering = {...inviteList}
 		if (!(jobseeker in considering)) {
-			considering[jobseeker] = {app_id: application[0], date: "", time: ""}
+			considering[jobseeker] = {app_id: application[0], date: "", time: "", details: ""}
 		}
 		considering[jobseeker]["date"] = date
 		setInviteList(considering)
@@ -118,9 +121,18 @@ export default function ApplicationList({match}) {
 	const handleTime = (time, jobseeker, application) => {
 		var considering = {...inviteList}
 		if (!(jobseeker in considering)) {
-			considering[jobseeker] = {app_id: application[0], date: "", time: ""}
+			considering[jobseeker] = {app_id: application[0], date: "", time: "", details: ""}
 		}
 		considering[jobseeker]["time"] = time
+		setInviteList(considering)
+	}
+
+	const handleDetails = (details, jobseeker, application) => {
+		var considering = {...inviteList}
+		if (!(jobseeker in considering)) {
+			considering[jobseeker] = {app_id: application[0], date: "", time: "", details: ""}
+		}
+		considering[jobseeker]["details"] = details
 		setInviteList(considering)
 	}
 
@@ -180,7 +192,9 @@ export default function ApplicationList({match}) {
 				first_name: app[1]["first_name"],
 				last_name: app[1]["last_name"],
 				date: inviteList[jobseeker]["date"],
-				time: inviteList[jobseeker]["time"]
+				time: inviteList[jobseeker]["time"],
+				details: inviteList[jobseeker]["details"],
+				recruiter_email: email
 			})
 
 			const data={
@@ -220,7 +234,9 @@ export default function ApplicationList({match}) {
 					first_name: applications[i][1]["first_name"],
 					last_name: applications[i][1]["last_name"],
 					date: inviteList[jobseeker]["date"],
-					time: inviteList[jobseeker]["time"]
+					time: inviteList[jobseeker]["time"],
+					details: inviteList[jobseeker]["details"],
+					recruiter_email: email
 				})
 			}
 			const data={
@@ -272,7 +288,7 @@ export default function ApplicationList({match}) {
 		var considering = {...inviteList}
 		var initialise_showing={}
 		for (let i = 0; i < applicationList.length; i++) {
-			considering[applicationList[i][1]["jobseeker_id"]] = {app_id: applicationList[i][0], date: "", time: ""}
+			considering[applicationList[i][1]["jobseeker_id"]] = {app_id: applicationList[i][0], date: "", time: "", details: ""}
 			initialise_showing[applicationList[i][0]]=false
 		}
 
@@ -414,6 +430,25 @@ export default function ApplicationList({match}) {
 													</Form.Group>
 													</Form.Row>
 												</Col>
+												<Col>
+													<Form.Row>
+													<Form.Group>
+														<TextField
+															name = "Details"
+															variant = "outlined"
+															required
+															value = {inviteList[app[1].jobseeker_id]["details"]}
+															InputProps={{
+																style: {width: 400, marginLeft: 8,},
+															}}
+															placeholder = "Details of Interview"
+															multiline
+															rows={5}
+															onChange = { (event) => handleDetails(event.target.value, app[1].jobseeker_id, app)}
+															/>
+													</Form.Group>
+													</Form.Row>
+												</Col>
 											</Form>	
 										</Row>)}
 									</Grid>
@@ -474,6 +509,22 @@ export default function ApplicationList({match}) {
 														Please enter a time
 													</Form.Control.Feedback>
 											</Form.Group>
+											<Form.Group>
+												<TextField
+													name = "Details"
+													variant = "outlined"
+													required
+													value = {inviteList[app[1].jobseeker_id]["details"]}
+													InputProps={{
+														style: {width: 400, marginLeft: 8,},
+													}}
+													placeholder = "Details of Interview"
+													multiline
+													rows={5}
+													onChange = { (event) => handleDetails(event.target.value, app[1].jobseeker_id, app)}
+													/>
+											</Form.Group>
+											
 									</Form>	
 								</Row>
 							</Modal.Body>

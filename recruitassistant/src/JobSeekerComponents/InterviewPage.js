@@ -10,6 +10,7 @@ import Box from '@material-ui/core/Box';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
+import Link from '@material-ui/core/Link';
 
 export const interviewURL ="http://localhost:5000/interviews"
 
@@ -23,6 +24,9 @@ export default function InterviewPage({match}) {
 	const [reason, setReason] = useState('')
 	const [loading, setLoading]=useState(true)
 	const [show, setShow] = useState('none')
+	const [details, setDetails] = useState('')
+	const [email, setEmail] = useState('')
+	const [joblink, setlink] = useState('')
 
 	//for alert bar
 	const [desc, setDesc] = useState('')
@@ -84,7 +88,9 @@ export default function InterviewPage({match}) {
                 Interview Details
             </Box>
             <br/>
-           
+			
+            <br/>
+
             <Box fontSize="h5.fontSize">
                 <span style={{fontWeight: "bold"}}>Date:</span> {date}
             </Box>
@@ -92,7 +98,22 @@ export default function InterviewPage({match}) {
             <Box fontSize="h5.fontSize">
                 <span style={{fontWeight: "bold"}}>Time:</span> {time}
             </Box>
+			<br />
+			<Box fontSize="h5.fontSize">
+                <span style={{fontWeight: "bold"}}>Details:</span> {details}
+            </Box>
+
+			<br/>
+			<br/>
+			<br/>
+			<Box fontSize="h7.fontSize" visibility={email === ''?"hidden":"visible"}>
+				<span style={{fontWeight: "bold"}}>Recruiter Email:</span> {email}
+            </Box>
+
             <br/>
+			<Box fontSize="h7.fontSize">
+				<Link href={joblink}>Job Advertisement</Link>
+            </Box>
             {status=="Pending" &&
             <Box style={{marginTop: 50}}>
                 <Button variant="contained"  color="secondary" style={{marginRight:30,backgroundColor: 'green'}} onClick={()=>handleResponse("Accepted")}>
@@ -116,6 +137,9 @@ export default function InterviewPage({match}) {
 			setTime(interview_data["interview_time"]);
 			setStatus(interview_data["status"] || 'Pending'); 
 			setReason(interview_data["reason"] || ''); 
+			setDetails(interview_data["interview_details"] || '');
+			setlink('http://localhost:3000/advertisement/' + interview_data['job_id']);
+			setEmail(interview_data['recruiter_email']|| '')
 			setLoading(false)
 		}).catch((error) => {
 			console.log("error: ", error.response)

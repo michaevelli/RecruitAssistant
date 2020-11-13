@@ -4,6 +4,7 @@ from .init_app import app, ref
 from backend import notifications
 import uuid
 from datetime import date, datetime
+from firebase_admin import auth
 
 @app.route('/jobapplications', methods=["POST"])
 def post_application():
@@ -26,6 +27,7 @@ def post_application():
 					'date_posted': date_posted,
 					'qualifications':json_data["qualifications"],
 					'qualities_met':json_data["qualities_met"],
+					'answers':json_data["answers"],
 					'submitted_docs': json_data["submitted_docs"],
 					'jobseeker_id':json_data["jobseeker_id"],
 					'status': "pending" # status can be active or dismissed

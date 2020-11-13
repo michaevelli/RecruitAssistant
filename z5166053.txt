@@ -18,3 +18,6 @@ Completed the edit job user story and worked a little on the home page before it
 
 Week 7
 Worked on counter-offer functionality as well as accept/decline buttons for both offers and counter-offers. Built off the 'view offer' page to support both jobseeker and recruiter views and render dynamically based on offer status. 
+
+Week 8
+Merged code with others and minor ui updates and bug fixes in preparation for the second progressive demo. Contributed to the Retrospective B and also planned the next sprint and delegated tasks. Worked on UI updates as well as refresh tokens to prevent unwanted session expiry. Helped diagnose excessive firebase download issue in team meetings.

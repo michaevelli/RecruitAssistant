@@ -25,6 +25,7 @@ export default function ViewApplication() {
 	const [application, setApp] = useState({})
 	const [job, setJob] = useState({})
 	const [qualifications, setQualifications] = useState([])
+	const [answers, setAnswers] = useState([])
 	const [documentsList, setDocumentsList] = useState([])
 	const [loading,setLoading]= useState(true)
 	const [usertype, setUsertype] = useState("")
@@ -51,8 +52,6 @@ export default function ViewApplication() {
 				}
 			})
 	}
-	
-	
 
 	const getApplication = async () => {
 		await axios.get(jobUrl, {
@@ -79,6 +78,11 @@ export default function ViewApplication() {
 			setQualifications( data.jobinfo.req_qualifications)
 		}else{
 			setQualifications([])
+		}
+		if (data.applications.answers){
+			setAnswers(data.applications.answers)
+		}else{
+			setAnswers([])
 		}
 		if (data.applications.submitted_docs){
 			setDocumentsList(data.applications.submitted_docs)
@@ -127,11 +131,11 @@ export default function ViewApplication() {
 							Applicant: {application.first_name} {application.last_name}
 						</Box>
 						<Box fontSize="h5.fontSize">
-							Job: {job.title}
+							<b>Job:</b> {job.title}
 						</Box>
 						<br></br>
 						<Box fontSize="h6.fontSize">
-							Phone Number: {application.phone_number}
+							<b>Phone Number:</b> {application.phone_number}
 						</Box>
 						<br></br>
 						<Box fontSize="h6.fontSize" component = "div" display = "inline">
@@ -145,8 +149,8 @@ export default function ViewApplication() {
 						</Box>
 						<br></br>
 						<br></br>
-						<Box fontSize="h6.fontSize" lineHeight={2}>
-							Qualifications:
+						<Box fontSize="h6.fontSize" lineHeight={2} visibility={qualifications.length === 0?"hidden":"visible"}>
+							<b>Qualifications:</b>
 							{qualifications.map((quality) => (
 								<ul>
 									<CheckIcon hidden = {!application.qualifications.includes(quality)}/>
@@ -155,8 +159,17 @@ export default function ViewApplication() {
 								</ul>
 							))}
 						</Box>
+						<Box fontSize="h6.fontSize" lineHeight={2} visibility={answers.length === 0?"hidden":"visible"}>
+							<b>Responses:</b>
+							<ol> {answers.map((answer, index) => (
+									<li><b>{job.additional_questions[index]}</b>
+									<p>{answer}</p>
+									</li>
+							))}
+							</ol>
+						</Box>
 						<Box fontSize="h6.fontSize" lineHeight={2} component="div" visibility={documentsList.length === 0?"hidden":"visible"}>
-							Documentation:
+							<b>Documentation:</b>
 							{documentsList.map((document) => (
 								<ul>
 									<Link style={{ cursor: 'pointer'}} onClick={()=>downloadFile(document.src,document.filename)} target="_blank">
