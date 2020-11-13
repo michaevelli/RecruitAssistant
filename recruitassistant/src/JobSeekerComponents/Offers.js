@@ -172,7 +172,7 @@ export default function Offers() {
 
 	const renderInterviewStatus = (interview) => {
 		if (interview.status === "Pending") {
-			return <Card.Text>You have an interview offer!</Card.Text>
+			return <Card.Text>You have an interview invite!</Card.Text>
 		} else if (interview.status == "Accepted") {
 			return <Card.Text>You have an interview on {interview.interview_date} at {interview.interview_time} </Card.Text>
 		} else if (interview.status == "Declined") {

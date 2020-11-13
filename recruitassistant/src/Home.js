@@ -49,8 +49,8 @@ export default function Home() {
 								RecruitAssistant matches the best companies with the best candidates.		
 							</p>
 							<br/>
-							<Button variant="contained" color="secondary" href="/jobseekerdashboard"
-							style={{ width:180, height:50}}>
+							<Button variant="contained" href="/jobseekerdashboard"
+							style={{backgroundColor:"#348360",color:'white',width:180, height:50}}>
 								Browse jobs
 							</Button>
 						</div>
@@ -65,8 +65,8 @@ export default function Home() {
 					<div class="row" style={{ margin:120}}>
 						<div class="col-md-7 order-md-2">
 							<h2>Employers</h2>
+							<h3><span class="text-muted">Manage the recruitment process from advertising to offers.</span></h3>
 							<p class="lead">
-								Manage the recruitment process from advertising to offers. 
 								<ul>
 								<li>Automatic sorting of candidates by suitability</li>
 								<li>Easily send interview invites and offers to top candidates </li>
@@ -98,8 +98,8 @@ export default function Home() {
 					</div>
 					
 					<div class="row" style={{ marginLeft:'45%', marginBottom: '5%'}}>
-						<Button variant="contained" color="secondary" href="/signup"
-						style={{ width:200, height:60}}>
+						<Button variant="contained" href="/signup"
+						style={{backgroundColor:"#348360",color:'white',width:200, height:60}}>
 							Sign Up Today!
 						</Button>
 					</div>

@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
-import { Divider, Grid, List, ListItem, Typography } from "@material-ui/core";
+import { Divider, Grid, Menu, MenuItem, Typography } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
-import DeleteIcon from '@material-ui/icons/Delete';
+import CancelIcon from '@material-ui/icons/Cancel';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Link from '@material-ui/core/Link';
-import Menu from '@material-ui/core/Menu';
-
-
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {Card, Container,Col,Row,} from 'react-bootstrap';
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 
 // const useStyles = makeStyles((theme) => ({
@@ -32,6 +30,7 @@ const StyledBadge = withStyles((theme) => ({
 }))(Badge);
 
 export default function Notifications() {
+  const history = useHistory();
   const [notif, setNotif] = useState([])
   const [notifLength, setLength] = useState(0)
   const [open, setOpen] = useState(false)
@@ -199,35 +198,35 @@ export default function Notifications() {
   const renderNotif = () => {
     if(notif.length == 0){
       return ( 
-        <List style={{'textAlign': 'center'}}>
+        <MenuItem style={{display:'flex', justifyContent:'center'}}>
           <Typography color="textSecondary">
             Nothing to view!
           </Typography>
-        </List>
+        </MenuItem>
       )
     }
     else{
       return notif.map(data => (
         <div>
-        <ListItem style={data[1].seen?{backgroundColor:'lightgrey', opacity:"0.7", margin: 2}:{margin: 2}}>
+        <MenuItem style={data[1].seen ? {backgroundColor:'lightgrey', opacity:"0.7", cursor: 'default'} : {cursor: 'default'}} divider>
           <Card.Body>
-            <Grid>
+            {/* <Grid> */}
               <Row>
-                <Col xs={9}>
+                <Col xs={10}>
                   {renderNotifText(data[1].type, data[1].url)}
                   <Typography color="textSecondary">
                     {data[1].date_time}
                   </Typography>
                 </Col>
-                <Col xs={3}>
+                <Col xs={2}>
                   <IconButton aria-label="delete" onClick={() => {deleteNotif(data[0])}}>
-                    <DeleteIcon />
+                    <CancelIcon />
                   </IconButton>
                 </Col>
               </Row>
-            </Grid>
+            {/* </Grid> */}
           </Card.Body>
-        </ListItem>
+        </MenuItem>
         <Divider/>
         </div>
       ));
@@ -253,13 +252,14 @@ export default function Notifications() {
         transformOrigin={{vertical: 'top', horizontal: 'center'}}
         PaperProps={{
           style: {
-            // maxHeight: '400px',
-            // marginTop: '30px',
-            width: '400px',
+            width: '400px'
           },
         }}
       >
-      <List>{renderNotif()}</List>
+        {/* <MenuItem>a</MenuItem>
+        <MenuItem>a</MenuItem>
+        <MenuItem>a</MenuItem> */}
+      {renderNotif()}
       </Menu>
 
     </>

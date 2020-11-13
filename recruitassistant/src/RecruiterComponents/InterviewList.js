@@ -23,12 +23,19 @@ export default function InterviewList({match}) {
 
 	const columns = [
 		{ field: 'candidate', headerName: 'Candidate', width: 200, 
-		renderCell: (params) => (
-			<Link to={"/viewapplication/"+jobID+'/'+params.value.appID}>{params.value.name}</Link>
+		renderCell: (row) => (
+			<Link to={"/viewapplication/"+jobID+'/'+row.data.appID}>{row.data.candidate}</Link>
 		)},
 		{ field: 'datetime', headerName: 'Date & Time', type: 'dateTime', width: 150 },
 		{ field: 'status', headerName: 'Status', width: 100 },
 		{ field: 'reason', headerName: 'Reason', width: 470, resizable: true, sortable: false },
+		{ field: 'offer', headerName: 'Make Offer', sortable: false, width: 400,
+			renderCell: (row) => (
+				<Link to={{pathname: `/createoffer`, state:{jobAppID: row.data.appID, jobID: jobID}}}>
+					Offer
+				</Link>
+			)
+		}
 	];
 
 	useEffect(() => {
@@ -91,9 +98,8 @@ export default function InterviewList({match}) {
 		interviews.map((interview) => (
 			rows.push({
 				id: interview[0],
-				candidate: {
-					name:returnFull(interview[1].first_name, interview[1].last_name),
-					appID: interview[1].application_id},
+				appID: interview[1].application_id,
+				candidate: returnFull(interview[1].first_name, interview[1].last_name),
 				datetime: returnFull(interview[1].interview_date, interview[1].interview_time),
 				status: interview[1].status,
 				reason: interview[1].reason})

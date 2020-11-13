@@ -27,12 +27,10 @@ def user_signup():
 	email = json_data["email"]
 	password = json_data["password"]
 	u_type = json_data["type"]
-	if u_type == "jobseeker":
-		company = "null"
-	else:
-		company = json_data["company"]
-
-	# print(json_data)
+	# if u_type == "jobseeker":
+	# 	company = "null"
+	# else:
+	# 	company = json_data["company"]
     
 	if email is None or password is None:
 		return jsonify({'message': 'Error missing email or password'}),400
@@ -48,8 +46,7 @@ def user_signup():
 				'first_name': json_data["first_name"],
 				'last_name' : json_data["last_name"],
 				'email' : email,
-				'type' : u_type,
-				'company' : company,
+				'type' : u_type
 			},
 		})
 

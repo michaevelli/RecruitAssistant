@@ -21,9 +21,9 @@ export default function UserList() {
     const columns = [
 		{ field: 'first_name', headerName: 'First Name', width: 200 },
         { field: 'last_name', headerName: 'Last Name', width: 200 },
-        { field: 'email', headerName: 'Email', width: 200 },
+        { field: 'email', headerName: 'Email', width: 300 },
         { field: 'type', headerName: 'Type', width: 100},
-        {field: 'delete', headerName: 'Delete', width:300,
+        {field: 'delete', headerName: 'Delete', width:100,
         renderCell: (params) => {
             const click = () => {
                 const api = params.api;
@@ -110,8 +110,8 @@ export default function UserList() {
             <Row noGutters style={{height:'100vh',paddingTop: 60}}>
                 <Col sm={2}>
                     <SideMenu random={[
-                        {'text':'Jobs','href': '/admindashboard', 'active': true},
-                        {'text':'Users','href': '/admin/userlist', 'active': false}]}/>
+                        {'text':'Jobs','href': '/admindashboard', 'active': false},
+                        {'text':'Users','href': '/admin/userlist', 'active': true}]}/>
                 </Col >
                 <Col sm="9">
                 <Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>

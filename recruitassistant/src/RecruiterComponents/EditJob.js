@@ -30,8 +30,7 @@ export default function EditJob({match}) {
 	const [location,setLocation] = useState('');
 	const [jobType,setJobType] = useState('');
 	const [experienceLevel,setExperienceLevel] = useState('');
-	//salary units in units k/$1000
-	const [salary,setSalary] = useState(100);
+	const [salary,setSalary] = useState(0);
 	const [closingDate,setClosingDate] = useState('');
 	//will be comma seperated strings - split on the commas to get an array
 	const [requiredDocs,setRequiredDocs] = useState([]);
@@ -330,7 +329,7 @@ export default function EditJob({match}) {
 
 						<Form.Group controlId="salary">
 							<Form.Label column sm={2}>
-							Salary K/p.a
+							Salary
 							</Form.Label>
 							
 							<Col sm={10}>
@@ -341,12 +340,9 @@ export default function EditJob({match}) {
 									<Form.Control 
 									placeholder=""
 									required
-									defaultValue={salary}
+									value={salary}
 									type="number"
 									onChange={ (event) => setSalary(event.target.value)}/>
-									<Form.Text className="text-muted">
-									Please enter salary in units of K/$1000
-									</Form.Text>
 									<Form.Control.Feedback type="invalid">
 									Please enter a number
 									</Form.Control.Feedback>
