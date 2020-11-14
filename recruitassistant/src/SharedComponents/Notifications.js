@@ -210,21 +210,19 @@ export default function Notifications() {
         <div>
         <MenuItem style={data[1].seen ? {backgroundColor:'lightgrey', opacity:"0.7", cursor: 'default'} : {cursor: 'default'}} divider>
           <Card.Body>
-            {/* <Grid> */}
-              <Row>
-                <Col xs={10}>
-                  {renderNotifText(data[1].type, data[1].url)}
-                  <Typography color="textSecondary">
-                    {data[1].date_time}
-                  </Typography>
-                </Col>
-                <Col xs={2}>
-                  <IconButton aria-label="delete" onClick={() => {deleteNotif(data[0])}}>
-                    <CancelIcon />
-                  </IconButton>
-                </Col>
-              </Row>
-            {/* </Grid> */}
+            <Row>
+              <Col xs={10} style={{whiteSpace:'initial'}}>
+                {renderNotifText(data[1].type, data[1].url)}
+                <Typography color="textSecondary">
+                  {data[1].date_time}
+                </Typography>
+              </Col>
+              <Col xs={2}>
+                <IconButton aria-label="delete" onClick={() => {deleteNotif(data[0])}}>
+                  <CancelIcon />
+                </IconButton>
+              </Col>
+            </Row>
           </Card.Body>
         </MenuItem>
         <Divider/>

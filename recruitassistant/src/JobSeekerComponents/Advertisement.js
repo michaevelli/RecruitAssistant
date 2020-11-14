@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Button, Grid, CircularProgress} from "@material-ui/core";
+import {Button, Grid, CircularProgress, Divider} from "@material-ui/core";
 import {Col,Row, Card, Table, ListGroup, ListGroupItem} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -111,11 +111,13 @@ export default function Advertisement() {
 							<Typography variant='h5'>{detail[1].title}</Typography>
 							<Typography variant='subtitle1'>{detail[1].company}</Typography>
 							<br/>
+							<Divider/>
+							<br/>
 							<Typography variant='body1'>{detail[1].description}</Typography>
-							<br/><br/>
+							<br/>{detail[1].responsibilities != null && <Divider/>}<br/>
 							<Typography variant='body1'>{detail[1].responsibilities != null && 'Job Responsibilities:'}</Typography>
 							<Typography variant='body1'>{renderListItems(detail[1].responsibilities)}</Typography>
-							<br/>
+							<br/>{detail[1].req_qualifications != null && <Divider/>}<br/>
 							<Typography variant='body1'>{detail[1].req_qualifications != null && 'Desired qualifications:'}</Typography>
 							<Typography variant='body1'>{renderListItems(detail[1].req_qualifications)}</Typography>
 						</Typography>

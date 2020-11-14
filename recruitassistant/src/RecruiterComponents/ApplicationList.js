@@ -463,7 +463,7 @@ export default function ApplicationList({match}) {
 															InputProps={{
 																style: {width: 400, marginLeft: 8,},
 															}}
-															placeholder = "Details of Interview"
+															placeholder = "Provide additional details"
 															multiline
 															rows={5}
 															onChange = { (event) => handleDetails(event.target.value, app[1].jobseeker_id, app)}
@@ -540,7 +540,7 @@ export default function ApplicationList({match}) {
 													InputProps={{
 														style: {width: 400, marginLeft: 8,},
 													}}
-													placeholder = "Details of Interview"
+													placeholder = "Provide additional details"
 													multiline
 													rows={5}
 													onChange = { (event) => handleDetails(event.target.value, app[1].jobseeker_id, app)}

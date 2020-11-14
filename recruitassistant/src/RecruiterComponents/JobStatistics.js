@@ -231,7 +231,7 @@ export default function JobStatistics({match}) {
             <Col sm={2}>
                 <SideMenu random={[
                    {'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-                   {'text': jobTitle,'href': '#','active': false,
+                   {'text': jobTitle!='' ? (jobTitle):('Job View'),'href': '#','active': false,
                    'nested':[
                      {'text':'Applications','href': `/applications/${jobID}`,'active': false},
                      {'text':'Interviews','href': `/interviews/${jobID}`,'active': false},
@@ -243,7 +243,11 @@ export default function JobStatistics({match}) {
             
             <Col sm={10}>
              
-              {stats? renderStats(): <p>There are currently no applications or statistics for this job. Please return once the job has applicants.</p>}
+              {stats? renderStats(): (
+                <div style={{display:'flex',justifyContent:'center',marginTop:100}}>
+                  There are currently no applications or statistics for this job. Check back soon!
+                </div>
+              )}
               
           </Col>
         </Row>

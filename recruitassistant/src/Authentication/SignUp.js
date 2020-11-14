@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Button, CircularProgress, InputAdornment, Typography } from "@material-ui/core";
-import { Work, People } from "@material-ui/icons";
+import { TextField, Button, CircularProgress, InputAdornment, Typography, IconButton, Snackbar } from "@material-ui/core";
+import { Work, People, Close } from "@material-ui/icons";
 import {Container, Col, Row} from 'react-bootstrap';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
@@ -18,6 +18,8 @@ function SignUp() {
 	const [password, setPassword] = useState("");
 	const [repassword, setRepassword] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
+	const [open, setOpen] = useState(false)
+	const [disable, setDisable] = useState(false)
 
 	async function handleSubmit(e) {
 		e.preventDefault()
@@ -36,8 +38,8 @@ function SignUp() {
 		console.log(ndata)
 		axios.post(submitSignUp, ndata).then(function(response) {
 			console.log("response:", response)
-			alert("successfully created account")
-			history.push("/login")
+			setOpen(true)
+			setDisable(true)
 		})
 		.catch(function(error){
 			console.log("error:", error.response)
@@ -52,8 +54,27 @@ function SignUp() {
 		})
 	}
 
+	const handleClose = () => {
+		setOpen(false)
+		history.push("/login")
+	}
+
 	return (
 		<Container style={{backgroundColor:'white'}} fluid>
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'right',
+				}}
+				open={open}
+				autoHideDuration={5000}
+				onClose={() => handleClose()}
+				message="Account successfully created"
+				action={
+					<IconButton size="small" aria-label="close" color="inherit" onClick={() => handleClose()}>
+						<Close fontSize="small" />
+					</IconButton>
+				}/>
 			<Row style={{height: '100vh'}}>
 				<Col xs={5} style={{display:'flex', justifyContent:'center', alignItems:'center',backgroundColor:'#348360'}}>
 					<Row style={{display:'flex', justifyContent:'center', color:'white'}}>
@@ -126,7 +147,7 @@ function SignUp() {
 									<br/><br/>
 									<div id="error" style={{color: 'red'}}>{errorMessage}</div>
 									<br/>
-									<Button type="submit"variant="contained" 
+									<Button type="submit"variant="contained" disabled={disable}
 										style={{backgroundColor:'#348360', width:'40%', color:'white', borderRadius:30}}>
 										Sign Up
 									</Button>
