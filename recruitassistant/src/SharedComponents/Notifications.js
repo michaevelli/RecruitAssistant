@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
-import { Divider, Grid, Menu, MenuItem, Typography } from "@material-ui/core";
+import { Divider, Grid, Menu, MenuItem, Typography, CircularProgress } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -35,6 +35,7 @@ export default function Notifications() {
   const [notifLength, setLength] = useState(0)
   const [open, setOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null);
+  const [loading, setLoading] = useState(true)
 
   const checkUrl = "http://localhost:5000/checknotif"
   const delUrl = "http://localhost:5000/remnotif"
@@ -59,6 +60,7 @@ export default function Notifications() {
     await axios.post(checkUrl, data)
 			.then(res => {
         handleData(res.data.data)
+        setLoading(false)
         // setNotif(res.data.data)
 			})
 			.catch((error) => {
@@ -103,6 +105,7 @@ export default function Notifications() {
   }
 
   const deleteNotif = async(id) => {
+    setLoading(true)
     const data={
       id : id,
       uid: sessionStorage.getItem("uid"),
@@ -196,7 +199,18 @@ export default function Notifications() {
 
 
   const renderNotif = () => {
-    if(notif.length == 0){
+    if(loading){
+      return ( 
+        <MenuItem style={{display:'flex', justifyContent:'center', height:200}}>
+          <div style={{
+            position: 'absolute', left: '50%', top: '50%',
+            transform: 'translate(-50%, -50%)'
+            }}>
+            <CircularProgress/>
+          </div>
+        </MenuItem>
+      )
+    } else if(notif.length == 0){
       return ( 
         <MenuItem style={{display:'flex', justifyContent:'center'}}>
           <Typography color="textSecondary">

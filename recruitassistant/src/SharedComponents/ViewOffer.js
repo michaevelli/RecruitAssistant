@@ -114,6 +114,7 @@ export default function ViewOffer({match}) {
 		} else {
 			return (
 				<Typography variant='body1'>
+					<Divider/><br/>
 					Documents:
 					{offer.additional_docs.map((document) => (
 						<ul>
@@ -290,14 +291,14 @@ export default function ViewOffer({match}) {
 								<Divider/>
 								<br/>
 								<Typography variant='body1'>{renderDesc()}</Typography>
+								<br/>
+								{renderDocumentItems()}
+								<br/>
 							</Typography>
-							<br/>
-							{renderDocumentItems()}
-							<br/>
 							{renderAcceptButtons()}
 						</Col>
 						<Col xs={5} style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
-							<Row style={{height:400,width:'60%',position:'absolute', top:80}}>
+							<Row style={{height:400,width:'80%',position:'absolute', top:80}}>
 								<Card border='success'style={{width:'100%'}}>
 									<Card.Body>
 										<Card.Title>Offer Details</Card.Title>

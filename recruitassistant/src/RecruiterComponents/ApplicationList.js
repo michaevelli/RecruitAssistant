@@ -378,12 +378,12 @@ export default function ApplicationList({match}) {
 													<Button disabled = {status === "open"}
 													color='primary'
 													variant="contained" 
-													style={{width:'80%', marginBottom:5, borderRadius:15, color:'white'}}
+													style={{width:'80%', marginBottom:5, borderRadius:15}}
 													onClick={() => {handleShow(app[0])}}> 
 															Interview
 													</Button><br/>
-													<Button variant="contained"
-													style={{width:'80%', marginBottom:5, borderRadius:15, backgroundColor:'#348360'}}
+													<Button variant="contained" color='primary'
+													style={{width:'80%', marginBottom:5, borderRadius:15}}
 													onClick={() => {handleNavOffer(app[0])}}>
 															Offer
 													</Button><br/>
