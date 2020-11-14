@@ -67,10 +67,13 @@ export default function ViewOffer({match}) {
 					console.log("response:", response.data)
 					/*initialise(response.data)*/
 					setOffer(response.data.offer)
-					setLoading(false)
+					
 				}).catch(function(error) {
 					console.log(error.response)
+					//page not found
+					history.push("/*")
 				})	
+				setLoading(false)
 
 	}
 	const updateAlert = ()=>{
@@ -220,8 +223,10 @@ export default function ViewOffer({match}) {
 	}
 	
 	const recruiterMenu = () => {
+		console.log(history)
 		return (		
 			<SideMenu random={[
+				{'text':'Back','href':history.location.from,'active': false},
 				{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
 				{'text': offer.title,'href': '#','active': false,
 				'nested':[

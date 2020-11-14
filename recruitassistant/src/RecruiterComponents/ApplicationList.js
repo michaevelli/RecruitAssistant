@@ -70,7 +70,7 @@ export default function ApplicationList({match}) {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
-				setLoading(false)
+				
 				if (!response.success || response.userInfo["type"] !== "recruiter") {
 					history.push("/unauthorised");
 				}
@@ -92,6 +92,7 @@ export default function ApplicationList({match}) {
 			.catch((error) => {
 				console.log("error: ", error.response)
 			})
+			
 	};
 
 	const getApplications = async () => {
@@ -110,6 +111,7 @@ export default function ApplicationList({match}) {
 			.catch((error) => {
 				console.log("error: ", error.response)
 			})
+			setLoading(false)
 	};
 
 	const handleDate = (date, jobseeker, application) => {

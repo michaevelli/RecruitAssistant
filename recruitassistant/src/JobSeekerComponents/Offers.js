@@ -116,12 +116,14 @@ export default function Offers() {
 				.then(function(response) {
 					console.log("application response:", response.data)
 					setApplications(response.data.applications)
-					setLoadingApps(false)
+					
 				})
 				.catch(function(error) {
 					console.log("error in applications")
 					console.log(error.response)
 				})
+				//move outside of promise, to prevent endless loading symbol
+				setLoadingApps(false)
 	};
 	
 	// --- render posts ---
@@ -161,7 +163,7 @@ export default function Offers() {
 								{renderOfferStatus(offer[1])}
 							</Col>
 							<Col style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
-								<Button onClick={() => {history.push("/offer/"+offer[0])}}>View Offer</Button>
+								<Link onClick={() => {history.push("/offer/"+offer[0])}}>View Offer</Link>
 							</Col>
 						</Row>
 					</Card.Body>
@@ -203,7 +205,7 @@ export default function Offers() {
 								{renderInterviewStatus(interview[1])}
 							</Col>
 							<Col style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
-								<Button onClick={() => {history.push("/interview/"+interview[0])}}>View Interview</Button>
+								<Link onClick={() => {history.push("/interview/"+interview[0])}}>View Interview</Link>
 							</Col>
 						</Row>
 					</Card.Body>
@@ -247,9 +249,13 @@ export default function Offers() {
 								{renderAppStatus(application[1].status)}
 							</Col>
 							<Col style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
-								<Button onClick={() => {history.push("/viewapplication/"+application[2]+"/"+application[0])}}>View Application</Button>
+								
+								<Link onClick={() => {history.push("/viewapplication/"+application[2]+"/"+application[0])}}>View Application</Link>
+								
 								&nbsp;&nbsp;&nbsp;
-								<Button onClick={() => {history.push("/advertisement/"+application[2])}}>View Job</Button>
+								
+								<Link onClick={() => {history.push("/advertisement/"+application[2])}}>View Job</Link>
+								
 							</Col>
 						</Row>
 					</Card.Body>

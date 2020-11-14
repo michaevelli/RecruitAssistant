@@ -35,10 +35,12 @@ def user_signup():
 	if email is None or password is None:
 		return jsonify({'message': 'Error missing email or password'}),400
 	try:
+		print("here1")
 		user = auth.create_user(
 				email=email,
 				password=password
 		)
+		print("hereeee")
 		users_ref = ref.child('user')
 
 		users_ref.update({

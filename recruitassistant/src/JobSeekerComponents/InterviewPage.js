@@ -157,10 +157,12 @@ export default function InterviewPage({match}) {
 			setDetails(interview_data["interview_details"] || '');
 			setlink('http://localhost:3000/advertisement/' + interview_data['job_id']);
 			setEmail(interview_data['recruiter_email']|| '')
-			setLoading(false)
+			
 		}).catch((error) => {
 			console.log("error: ", error.response)
+			history.push('/*')
 		})	
+		setLoading(false)
 	}
 
    

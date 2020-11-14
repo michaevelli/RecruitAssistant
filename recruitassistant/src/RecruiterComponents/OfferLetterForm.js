@@ -5,7 +5,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CloseIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
-import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
+import {Form,InputGroup,Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -247,7 +247,6 @@ export default function OfferLetterForm(props) {
 
 						{'text':'Back to Job Applications','href': `/applications/${jobID}`,'active': true},
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-						{'text':title,'href': `/applications/${jobID}`,'active': true},
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 				

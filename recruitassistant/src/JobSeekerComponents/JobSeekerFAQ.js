@@ -51,7 +51,7 @@ export default function JobSeekerFAQ() {
 						
                         <h style={{fontWeight: 'bold'}}> How do I see the status of my applications?</h>
                         <p> On the Job Seeker Dashboard click 'My applications' to view all your past applications.
-							Click on the 'InterviewS' tab to see which jobs you have interview invites,
+							Click on the 'Interviews' tab to see which jobs you have interview invites,
 							and the 'Offers' tabs to view all received offers.
                         </p>
 
