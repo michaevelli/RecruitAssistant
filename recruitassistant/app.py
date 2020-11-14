@@ -35,6 +35,6 @@ def check_postings():
 			print(key)
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=check_postings, trigger="interval", seconds=5)
+scheduler.add_job(func=check_postings, trigger="interval", seconds=60)
 scheduler.start()
 # atexit.register(lambda: scheduler.shutdown())
