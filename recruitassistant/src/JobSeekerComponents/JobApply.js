@@ -282,7 +282,7 @@ export default function JobApply() {
 
 					<Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
 						<Form.Group controlId="first_name">
-							<Form.Label column sm={10}>First Name*</Form.Label>
+							<Form.Label column sm={10}>*First Name</Form.Label>
 							<Col sm={10}>
 								<Form.Control 
 									required
@@ -293,7 +293,7 @@ export default function JobApply() {
 						</Form.Group>
 
 						<Form.Group controlId="last_name">
-							<Form.Label column sm={10}>Last Name*</Form.Label>
+							<Form.Label column sm={10}>*Last Name</Form.Label>
 							<Col sm={10}>
 								<Form.Control
 								required
@@ -305,7 +305,7 @@ export default function JobApply() {
 
 						<Form.Group controlId="phone_number">
 
-							<Form.Label column sm={10}>Phone Number*</Form.Label>
+							<Form.Label column sm={10}>*Phone Number</Form.Label>
 							<Col sm={10}>
 							<MuiPhoneNumber 
 							error={phone_number? false: true}
@@ -314,7 +314,7 @@ export default function JobApply() {
 						</Form.Group>
 
 						<Form.Group controlId="rights">
-						<Form.Label column sm={10}>Do you have the rights to work in {detail[1].location}?*</Form.Label>
+						<Form.Label column sm={10}>*Do you have the rights to work in {detail[1].location}?</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
 								required
@@ -351,7 +351,7 @@ export default function JobApply() {
 									<ol>
 										{additional_questions.map((question,index) => (
 											<li>
-												<p>{question}</p>
+												<p>*{question}</p>
 												<TextField
 													required
 													id = {index}
@@ -370,7 +370,7 @@ export default function JobApply() {
 
 						<div style={{visibility: needDocs? 'visible': 'hidden'}}>
 							<Form.Group controlId="required_docs" >
-							<Form.Label column sm={10}>Please upload the following documents as a pdf.*</Form.Label>
+							<Form.Label column sm={10}>*Please upload the following documents as a pdf.</Form.Label>
 								<Col sm={10}>
 									<ul>
 										{required_docs.map((document,index) => (
