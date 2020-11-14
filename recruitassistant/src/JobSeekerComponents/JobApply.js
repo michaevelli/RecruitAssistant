@@ -1,5 +1,4 @@
 import React, { useState,useEffect } from "react";
-import  'bootstrap/dist/css/bootstrap.css';
 import {Grid,Button,TextField,Snackbar,IconButton} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close'
 import {Form,Col,Row} from 'react-bootstrap';
@@ -8,8 +7,11 @@ import Box from '@material-ui/core/Box';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
+import MuiPhoneNumber from "material-ui-phone-number";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
+
+
 
 export const uploadUrl="http://localhost:5000/upload"
 export const applicationUrl="http://localhost:5000/jobapplications"
@@ -184,7 +186,7 @@ export default function JobApply() {
 			job_id: jobID,
 			submitted_docs: additionalDocs
 		}
-		//console.log("data: ",data)
+		console.log("data: ",data)
 		await axios.post(url, data)
 			.then(res => {
 				//console.log("response: ", res)
@@ -203,7 +205,7 @@ export default function JobApply() {
 		event.preventDefault();
 		
 		const form = event.currentTarget;
-		if (form.checkValidity() === false) {	
+		if (form.checkValidity() === false || !phone_number ) {	
 			event.stopPropagation();
 			setValidated(true);
 		} else {
@@ -236,8 +238,9 @@ export default function JobApply() {
 		docs[index]={'req_document': document_name,'filename': filename, 'src': event.target.result}
 		setAdditionalDocs(docs)
 	}
-
-
+	
+								
+	
 	return job.map((detail) => (
 		<Grid>
 			<Snackbar
@@ -279,7 +282,7 @@ export default function JobApply() {
 
 					<Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
 						<Form.Group controlId="first_name">
-							<Form.Label column sm={10}>First Name</Form.Label>
+							<Form.Label column sm={10}>*First Name</Form.Label>
 							<Col sm={10}>
 								<Form.Control 
 									required
@@ -290,7 +293,7 @@ export default function JobApply() {
 						</Form.Group>
 
 						<Form.Group controlId="last_name">
-							<Form.Label column sm={10}>Last Name</Form.Label>
+							<Form.Label column sm={10}>*Last Name</Form.Label>
 							<Col sm={10}>
 								<Form.Control
 								required
@@ -301,18 +304,17 @@ export default function JobApply() {
 						</Form.Group>
 
 						<Form.Group controlId="phone_number">
-							<Form.Label column sm={10}>Phone Number</Form.Label>
+
+							<Form.Label column sm={10}>*Phone Number</Form.Label>
 							<Col sm={10}>
-								<Form.Control 
-								required
-								type = "number"
-								placeholder = "Phone Number"
-								onChange = { (event) => setPhoneNumber(event.target.value)}/>
+							<MuiPhoneNumber 
+							error={phone_number? false: true}
+							defaultCountry={'au'} onChange={setPhoneNumber}/>
 							</Col>
 						</Form.Group>
 
 						<Form.Group controlId="rights">
-						<Form.Label column sm={10}>Do you have the rights to work in {detail[1].location}?</Form.Label>
+						<Form.Label column sm={10}>*Do you have the rights to work in {detail[1].location}?</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
 								required
@@ -349,7 +351,7 @@ export default function JobApply() {
 									<ol>
 										{additional_questions.map((question,index) => (
 											<li>
-												<p>{question}</p>
+												<p>*{question}</p>
 												<TextField
 													required
 													id = {index}
@@ -368,7 +370,7 @@ export default function JobApply() {
 
 						<div style={{visibility: needDocs? 'visible': 'hidden'}}>
 							<Form.Group controlId="required_docs" >
-							<Form.Label column sm={10}>Please upload the following documents as a pdf.</Form.Label>
+							<Form.Label column sm={10}>*Please upload the following documents as a pdf.</Form.Label>
 								<Col sm={10}>
 									<ul>
 										{required_docs.map((document,index) => (
@@ -398,4 +400,5 @@ export default function JobApply() {
 			</Row>
 		</Grid>
 	))
+										
 }

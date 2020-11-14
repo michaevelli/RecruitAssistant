@@ -1,7 +1,8 @@
 import React, { useState,useLayoutEffect,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import {Link, Grid,Button, CircularProgress, Snackbar, IconButton, Divider, Typography} from "@material-ui/core";
-import {CloseIcon, PictureAsPdfIcon} from '@material-ui/icons/Close';
+import CloseIcon from '@material-ui/icons/Close';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 import {Col,Row,Alert,Card,Table} from 'react-bootstrap';
 import TitleBar from "./TitleBar.js";
 import SideMenu from "./SideMenu.js";
