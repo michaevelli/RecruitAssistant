@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField,Snackbar} from "@material-ui/core";
+import {IconButton,Grid,Button,TextField,Snackbar,CircularProgress} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
@@ -19,6 +19,7 @@ export const editofferurl="http://localhost:5000/editoffer"
 export default function EditOffer({match}) {
 	const offerID = match.params.offerID;
 	const jobID = match.params.jobID;
+	const [loading, setLoading] = useState(true);
 	const [recruiterID, setRecruiterID] = useState('');
 	const [jobseekerID,setJobSeekerID]=useState('');
 	const [jobAppID, setJobAppID] = useState('');
@@ -75,7 +76,7 @@ export default function EditOffer({match}) {
 				if (offer.additional_docs != null) {
 					setAdditionalDocs(offer.additional_docs)
 				}
-				console.log(offer.salary_type)
+				setLoading(false)
 				
 			}).catch((error) => {
 				console.log("error: ", error.response)
@@ -89,14 +90,9 @@ export default function EditOffer({match}) {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
-				// const recruiterID = sessionStorage.getItem("uid")			
-				// if (!response.success || response.userID != recruiterID) {
-				// 	history.push("/unauthorised");
-				// }
-				// check if correct user
-				// if (response.userID != recruiterID) {
-				// 	history.push("/unauthorised");
-				// }
+				if (!response.success || response.userInfo["type"] != 'recruiter') {
+					history.push("/unauthorised");
+				}
 			})
 	}
 	
@@ -118,17 +114,20 @@ export default function EditOffer({match}) {
 	const handleChangeDoc = (index,event) => {	
 		console.log(index)
 		var file=event.target.files[0]
-		var filename=event.target.files[0].name
-		var filetype= event.target.files[0].type
-		console.log(filetype)
-		if(filetype!="application/pdf"){
-			setMessage("Please upload a pdf")
-			setOpen(true)
-			return 0
+		if (file) {
+			var filename=event.target.files[0].name
+			var filetype= event.target.files[0].type
+			console.log(filetype)
+			if(filetype!="application/pdf"){
+				setMessage("Please upload a pdf")
+				setOpen(true)
+				return 0
+			}
+			const reader = new FileReader()
+			reader.onload = (e) => handleFileLoad(filename,index,e);
+			reader.readAsDataURL(file)
 		}
-		const reader = new FileReader()
-		reader.onload = (e) => handleFileLoad(filename,index,e);
-		reader.readAsDataURL(file)
+		
 	}
 
 	const handleFileLoad= (filename,index,event)=>{
@@ -205,7 +204,14 @@ export default function EditOffer({match}) {
 	}
 
 	
-	return (
+	return loading ? (
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
+	) : (
 		<Grid>
 			<Snackbar
 				anchorOrigin={{
@@ -226,14 +232,13 @@ export default function EditOffer({match}) {
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
 					<SideMenu random={[
-						{'text':'Job Applications','href': `/applications/${jobID}`,'active': true},
+						
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
+						{'text':title,'href': `/applications/${jobID}`,'active': true},
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 				
-				<Col sm="10" >
-					<a href={`/advertisement/${jobID}`} target="_blank" style={{textAlign: "center",margin:20 }}> View Original Job Advert</a>
-				
+				<Col sm="10" >				
 					<Typography variant="h4"  style={{color: 'black', textAlign: "center",margin:20 }}>
 						Edit Offer Letter
 					</Typography>
@@ -369,7 +374,7 @@ export default function EditOffer({match}) {
 						</Form.Group>
 
 						<Form.Group controlId="additionalDocs">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Additional Documents
 							</Form.Label>
 							<IconButton onClick={() => handleAddDoc()}>
@@ -380,6 +385,7 @@ export default function EditOffer({match}) {
 								<div key={index}>
 									<Form.File
 									key = {index}
+									label = {doc.filename}
 									accept="application/pdf"
 									onChange = {(e)=>handleChangeDoc(index,e)} 
 									/>

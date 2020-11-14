@@ -149,7 +149,7 @@ export default function InterviewPage({match}) {
 			<Typography variant='body1'>Date: {date}</Typography>
 			<Typography variant='body1'>Time: {time}</Typography>
 			<br/>
-			<Typography variant='body1'>{details != '' && ('Details:' + details)}</Typography>
+			<Typography variant='body1'>{details != '' && ('Details: ' + details)}</Typography>
 			<br/>{email != '' && <Divider/>}<br/>
 			<Typography variant='body1'>{email != '' && ('Feel free to contact your recruiter if you have any questions at ' + email)}</Typography>
 			<br/><Divider/><br/>

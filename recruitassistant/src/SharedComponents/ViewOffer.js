@@ -226,7 +226,6 @@ export default function ViewOffer({match}) {
 		console.log(history)
 		return (		
 			<SideMenu random={[
-				{'text':'Back','href':history.location.from,'active': false},
 				{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
 				{'text': offer.title,'href': '#','active': false,
 				'nested':[

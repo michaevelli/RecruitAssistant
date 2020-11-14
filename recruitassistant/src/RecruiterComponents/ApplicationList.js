@@ -334,22 +334,14 @@ export default function ApplicationList({match}) {
 		list[index] = temp
 		setApplications(list)
 	}
-	
-	
 
-	// const renderAppStatus = (status) => {
-	// 	if (status === "pending") {
-	// 		return <Card.Text>This application is pending review</Card.Text>
-	// 	} else if (status == "dismissed") {
-	// 		return <Card.Text>This application has been dismissed</Card.Text>
-	// 	} else if (status == "offer") {
-	// 		return <Card.Text>You have made an offer to this applicant</Card.Text>
-	// 	} else if (status == "interview") {
-	// 		return <Card.Text>You sent an interview invite to this applicant</Card.Text>
-	// 	} else {
-	// 		return <Card.Text>{status}</Card.Text>
-	// 	}
-	// }
+	const handleNavOffer = (appID) => {
+		history.push({
+			pathname: '/createoffer',
+			state: {jobAppID: appID,jobID: jobID}}
+		)
+	}
+	
 
 	const renderApplications = (status) => {
 		if (loadingApps) {
@@ -383,21 +375,17 @@ export default function ApplicationList({match}) {
 											</Col>
 											{!sendTop && (<Col xs={4}>
 												<div style={{display:'flex', justifyContent:'center', flexWrap: 'wrap'}}>
-													<Button disabled = {status === "open"} 
+													<Button disabled = {status === "open"}
+													color='primary'
 													variant="contained" 
-													style={{width:'80%', marginBottom:5, borderRadius:15, backgroundColor:'#348360', color:'white'}}
+													style={{width:'80%', marginBottom:5, borderRadius:15, color:'white'}}
 													onClick={() => {handleShow(app[0])}}> 
 															Interview
 													</Button><br/>
-													<Button variant="contained"  
-													style={{width:'80%', marginBottom:5, borderRadius:15, backgroundColor:'#348360'}}>
-														<Link style={{color: '#FFF'}} to={{
-															pathname: `/createoffer`,
-															state: {
-																jobAppID: app[0],
-																jobID: jobID}}}>
+													<Button variant="contained"
+													style={{width:'80%', marginBottom:5, borderRadius:15, backgroundColor:'#348360'}}
+													onClick={() => {handleNavOffer(app[0])}}>
 															Offer
-														</Link>
 													</Button><br/>
 													<Button style={{width:'80%', marginBottom:5, borderRadius:15}} 
 													variant="contained" 
@@ -636,9 +624,10 @@ export default function ApplicationList({match}) {
 								</Form>
 							</Col>
 							<Col xs={4}>
-								<Button disabled = {detail[1].status === "open"}
+								<Button disabled = {detail[1].status === "open" || selection === 0}
+								color='primary'
 								variant="contained" 
-								style={{borderRadius: 30, backgroundColor:"#1C5253", color:'white'}}
+								style={{borderRadius: 30}}
 								onClick={() =>{
 									if (sendTop){
 										postInterviews()
