@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { TextField, Button, CircularProgress, InputAdornment, Typography, IconButton, Snackbar } from "@material-ui/core";
+import React, { useState } from "react";
+import { TextField, Button, Typography, IconButton, Snackbar } from "@material-ui/core";
 import { Work, People, Close } from "@material-ui/icons";
 import {Container, Col, Row} from 'react-bootstrap';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import checkAuth from "../Authentication/Authenticate";
 import logo from '../SharedComponents/Picture2.png';
 
 export const submitSignUp="http://localhost:5000/signup"
@@ -78,7 +77,7 @@ function SignUp() {
 			<Row style={{height: '100vh'}}>
 				<Col xs={5} style={{display:'flex', justifyContent:'center', alignItems:'center',backgroundColor:'#348360'}}>
 					<Row style={{display:'flex', justifyContent:'center', color:'white'}}>
-						<img src={logo} style={{ width:'80%', height:'auto'}}/>
+						<img src={logo} style={{ width:'80%', height:'auto'}} alt="logo"/>
 						<br/>
 						<h4 style={{textAlign:'center', width:'100%', height:'auto'}}>
 							Connect with the right people.</h4>

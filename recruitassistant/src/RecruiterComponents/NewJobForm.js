@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField,InputAdornment,Snackbar} from "@material-ui/core";
+import {IconButton,Grid,Button,TextField,Snackbar} from "@material-ui/core";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -45,14 +45,14 @@ export default function NewJobForm() {
 
 	useEffect(() => {
 		auth();
-	}, []);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
 				// const recruiterID = sessionStorage.getItem("uid")			
-				if (!response.success || response.userInfo["type"] != "recruiter") {
+				if (!response.success || response.userInfo["type"] !== "recruiter") {
 					history.push("/unauthorised");
 				}
 				setLoading(false)
@@ -169,7 +169,7 @@ export default function NewJobForm() {
 		const form = event.currentTarget;
 		const correct_date=datevalidator()
 		//Closing dates will always be after today, hence status is always 'open' for a new job
-		if (form.checkValidity() === false || correct_date==false) {	
+		if (form.checkValidity() === false || correct_date===false) {	
 			event.stopPropagation();
 			setValidated(true);
 		}else{

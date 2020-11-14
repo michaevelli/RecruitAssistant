@@ -4,7 +4,7 @@ import {IconButton,Grid,Button,TextField,Snackbar,CircularProgress} from "@mater
 import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
-import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
+import {Form,InputGroup,Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -51,7 +51,7 @@ export default function EditOffer({match}) {
 	useEffect(() => {
 		auth();
 		getOfferInfo();
-	},[]);
+	},[]); // eslint-disable-line react-hooks/exhaustive-deps
 	
 	async function getOfferInfo() {
 		await axios.post(offerdetailsurl, {offerId: offerID})
@@ -90,7 +90,7 @@ export default function EditOffer({match}) {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
-				if (!response.success || response.userInfo["type"] != 'recruiter') {
+				if (!response.success || response.userInfo["type"] !== 'recruiter') {
 					history.push("/unauthorised");
 				}
 			})
@@ -118,7 +118,7 @@ export default function EditOffer({match}) {
 			var filename=event.target.files[0].name
 			var filetype= event.target.files[0].type
 			console.log(filetype)
-			if(filetype!="application/pdf"){
+			if(filetype!=="application/pdf"){
 				setMessage("Please upload a pdf")
 				setOpen(true)
 				return 0

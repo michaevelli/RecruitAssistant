@@ -19,7 +19,7 @@ function Login() {
 
 	useEffect(() => {
 		auth();
-	}, []);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -73,7 +73,7 @@ function Login() {
 			<Row style={{height: '100vh'}}>
 				<Col xs={5} style={{display:'flex', justifyContent:'center', alignItems:'center',backgroundColor:'#348360'}}>
 					<Row style={{display:'flex', justifyContent:'center', color:'white'}}>
-						<img src={logo} style={{ width:'80%', height:'auto'}}/>
+						<img src={logo} style={{ width:'80%', height:'auto'}} alt="logo"/>
 						<br/>
 						<h4 style={{textAlign:'center', width:'100%', height:'auto'}}>
 							Connect with the right people.</h4>

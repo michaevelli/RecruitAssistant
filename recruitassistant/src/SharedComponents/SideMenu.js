@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
-import { List, ListItem, ListItemText, ListItemIcon, Collapse, Divider } from '@material-ui/core';
+import { List, ListItem, ListItemText, ListItemIcon, Collapse } from '@material-ui/core';
 import { ExpandLess, ExpandMore, ExitToApp } from '@material-ui/icons';
 import { useHistory } from "react-router-dom";
 

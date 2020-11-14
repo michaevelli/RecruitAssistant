@@ -40,7 +40,7 @@ export default function JobSeekerDashboard() {
 	useEffect(() => {
 		auth();
 		getJobs();
-	}, []);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -169,7 +169,7 @@ export default function JobSeekerDashboard() {
 			<div style={{display:'flex',justifyContent:'center',marginTop:100}}>No results. Try another search?</div>
 			) : (selectedJobs.map((job) => (
 			<div><div style={{display: 'flex', justifyContent: 'center'}}>
-				<Card style={ job[1].status=='open'? 
+				<Card style={ job[1].status==='open'? 
 					{width:"80%", height:"200px"} : 
 					{backgroundColor:'lightgrey', opacity:"0.5", width:"80%", height:"200px"}} >
 					<Card.Body>
@@ -181,7 +181,7 @@ export default function JobSeekerDashboard() {
 							</Col>
 							<Col xs={4}>
 								<div style={{textAlign:'right'}}>
-									{job[1].status == "open" ? 
+									{job[1].status === "open" ? 
 											<Card.Text>Closing date: {job[1].closing_date}</Card.Text> :
 											<Card.Text>This job is closed</Card.Text>
 									}

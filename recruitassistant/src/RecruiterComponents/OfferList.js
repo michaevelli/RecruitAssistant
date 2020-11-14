@@ -38,14 +38,14 @@ export default function OfferList({match}) {
 		auth();
 		getJob();
 		getOffers();
-	}, [userID]);
+	}, [userID]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
 				setLoading(false)
-				if (!response.success || response.userInfo["type"] != "recruiter") {
+				if (!response.success || response.userInfo["type"] !== "recruiter") {
 					history.push("/unauthorised");
 				}
 				setUserID(response.userID)

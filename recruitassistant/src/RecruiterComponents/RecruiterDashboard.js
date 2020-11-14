@@ -1,16 +1,13 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Button, Grid, IconButton } from "@material-ui/core";
+import {Link, Button, Grid, CircularProgress, Typography } from "@material-ui/core";
 import {Col,Row,Card, Container} from 'react-bootstrap';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
-// import SendInterview from "./SendInterview.js";
 
 export const jobUrl="http://localhost:5000/jobadverts/"
 
@@ -24,15 +21,14 @@ export default function RecruiterDashboard() {
 	useEffect(() => {
 		auth();
 		getJobs();
-	}, [recruiterID]);
+	}, [recruiterID]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
 				setLoading(false)
-				// const recruiterID = sessionStorage.getItem("uid")			
-				if (!response.success || response.userInfo["type"] != "recruiter") {
+				if (!response.success || response.userInfo["type"] !== "recruiter") {
 					history.push("/unauthorised");
 				}
 			})
@@ -84,7 +80,7 @@ export default function RecruiterDashboard() {
 							</Col>
 							<Col xs={4}>
 								<div style={{textAlign:'right'}}>
-									{job[1].status == "open" ? 
+									{job[1].status === "open" ? 
 											<Card.Text>Closing date: {job[1].closing_date}</Card.Text> :
 											<Card.Text style={{color:'red'}}>This job is closed</Card.Text>
 									}

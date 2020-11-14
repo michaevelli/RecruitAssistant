@@ -1,8 +1,7 @@
 import React, {useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Grid,CircularProgress} from "@material-ui/core";
+import {Grid,CircularProgress, Typography} from "@material-ui/core";
 import {Col,Row,Card} from 'react-bootstrap';
-import {Typography,Box} from '@material-ui/core';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
@@ -12,7 +11,6 @@ import {
   BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid,
     PieChart, Pie, Legend, Tooltip,ResponsiveContainer
   } from 'recharts';
-import { SentimentSatisfiedAltSharp } from "@material-ui/icons";
 export const statsURL="http://localhost:5000/jobstats"
 
 export default function JobStatistics({match}) {
@@ -34,7 +32,7 @@ export default function JobStatistics({match}) {
 	useEffect(() => {
 		auth();
 		getJobStats();		
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -231,7 +229,7 @@ export default function JobStatistics({match}) {
             <Col sm={2}>
                 <SideMenu random={[
                    {'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-                   {'text': jobTitle!='' ? (jobTitle):('Job View'),'href': '#','active': false,
+                   {'text': jobTitle!=='' ? (jobTitle):('Job View'),'href': '#','active': false,
                    'nested':[
                      {'text':'Applications','href': `/applications/${jobID}`,'active': false},
                      {'text':'Interviews','href': `/interviews/${jobID}`,'active': false},

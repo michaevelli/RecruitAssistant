@@ -48,14 +48,14 @@ export default function JobApply() {
 		getName();
 		getJob();
 		checkJobApplied();	
-	}, []);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
 				// const jobseekerID = sessionStorage.getItem("uid")			
-				if (!response.success || response.userInfo["type"] != "jobseeker") {
+				if (!response.success || response.userInfo["type"] !== "jobseeker") {
 					history.push("/unauthorised");
 				}
 			})
@@ -220,7 +220,7 @@ export default function JobApply() {
 			var filename=event.target.files[0].name
 			var filetype= event.target.files[0].type
 			console.log(filetype)
-			if(filetype!="application/pdf"){
+			if(filetype!=="application/pdf"){
 				setMessage("Please upload a pdf")
 				setOpen(true)
 				return 0

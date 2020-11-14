@@ -1,20 +1,15 @@
 import React, { useState,useLayoutEffect,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Grid,Button, CircularProgress, Snackbar, IconButton, Divider} from "@material-ui/core";
-import CheckIcon from '@material-ui/icons/Check';
-import ClearIcon from '@material-ui/icons/Clear';
-import CloseIcon from '@material-ui/icons/Close';
-import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
+import {Link, Grid,Button, CircularProgress, Snackbar, IconButton, Divider, Typography} from "@material-ui/core";
+import {CloseIcon, PictureAsPdfIcon} from '@material-ui/icons/Close';
 import {Col,Row,Alert,Card,Table} from 'react-bootstrap';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import TitleBar from "./TitleBar.js";
 import SideMenu from "./SideMenu.js";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 import CounterOffer from "../JobSeekerComponents/CounterOffer";
-import { DesktopWindows } from "@material-ui/icons";
+
 export const offerdetailsurl="http://localhost:5000/getOfferDetails"
 export const accepturl = "http://localhost:5000/acceptoffer"
 export const declineurl = "http://localhost:5000/declineoffer"
@@ -40,11 +35,11 @@ export default function ViewOffer({match}) {
 	useEffect(() => {
 		auth();	
 		getOffer();
-	},[]);
+	},[]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useLayoutEffect(() => {
 		updateAlert()
-	},[offer,isRecruiter]);
+	},[offer,isRecruiter]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -53,7 +48,7 @@ export default function ViewOffer({match}) {
 				if (!response.success) {
 					history.push("/unauthorised");
 				}
-				if (response.userInfo["type"] == "recruiter") {
+				if (response.userInfo["type"] === "recruiter") {
 					setIsRecruiter(true)	
 				}
 			})

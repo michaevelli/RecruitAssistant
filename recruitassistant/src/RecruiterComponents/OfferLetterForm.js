@@ -1,12 +1,10 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField,FormGroup,FormControlLabel,Switch,Snackbar} from "@material-ui/core";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import {IconButton,Grid,Button,TextField,FormControlLabel,Switch,Snackbar,CircularProgress,Typography} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import {Form,InputGroup,Col,Row} from 'react-bootstrap';
-import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
@@ -58,8 +56,7 @@ export default function OfferLetterForm(props) {
 		auth();
 		getJobInfo(jobID);
 		getJobSeekerName(jobAppID);
-		
-	},[]);
+	},[]); // eslint-disable-line react-hooks/exhaustive-deps
 	
 	//Prefill fields with job ad info
 	async function getJobInfo(jobID) {
@@ -106,7 +103,7 @@ export default function OfferLetterForm(props) {
 			.then(function(response) {
 				console.log("auth success: ", response)
 				// const recruiterID = sessionStorage.getItem("uid")			
-				if (!response.success || response.userInfo["type"] != "recruiter") {
+				if (!response.success || response.userInfo["type"] !== "recruiter") {
 					history.push("/unauthorised");
 				}
 			})
@@ -133,7 +130,7 @@ export default function OfferLetterForm(props) {
 			var filename=event.target.files[0].name
 			var filetype= event.target.files[0].type
 			console.log(filetype)
-			if(filetype!="application/pdf"){
+			if(filetype!=="application/pdf"){
 				setMessage("Please upload a pdf")
 				setOpen(true)
 				return 0

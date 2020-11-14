@@ -1,19 +1,15 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Grid, Button, Divider} from "@material-ui/core";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import {Link, Grid, Divider, CircularProgress, Typography} from "@material-ui/core";
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 import {Col,Row} from 'react-bootstrap';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
-import { Check } from "@material-ui/icons";
 
 
 export const jobUrl="http://localhost:5000/retrieveapplication"
@@ -34,8 +30,7 @@ export default function ViewApplication() {
 	useEffect(() => {
 		auth();
 		getApplication();
-	   
-	}, []);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		console.log(applicationID)
@@ -43,9 +38,9 @@ export default function ViewApplication() {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
-				if (response.userInfo["type"] == "recruiter") {
+				if (response.userInfo["type"] === "recruiter") {
 					setUsertype("recruiter")
-				} else if (response.userInfo["type"] == "jobseeker") {
+				} else if (response.userInfo["type"] === "jobseeker") {
 					setUsertype("jobseeker")
 				}
 				if (!response.success) {
@@ -118,7 +113,7 @@ export default function ViewApplication() {
 			<Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
-					{usertype=="jobseeker"?
+					{usertype==="jobseeker"?
 					( <SideMenu random={[{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
 						{'text':'Your Applications','href': '/yourapplications', 'active': false},       
 						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>

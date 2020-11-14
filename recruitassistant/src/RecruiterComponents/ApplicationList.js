@@ -1,16 +1,12 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton, Button, Grid, Snackbar, TextField} from "@material-ui/core";
-//Card
+import {IconButton, Button, Grid, Snackbar, TextField, CircularProgress, Typography} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import {Form, Col, Row, Card, Modal} from 'react-bootstrap';
-import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import axios from "axios";
 import {useHistory, Link} from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
@@ -64,7 +60,7 @@ export default function ApplicationList({match}) {
 		auth();
 		getJob();
 		getApplications();
-	}, [recruiterID]);
+	}, [recruiterID]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -354,7 +350,7 @@ export default function ApplicationList({match}) {
 				</div>
 			)
 		}
-		if( applications.length==0){
+		if( applications.length===0){
 			return (
 				<div style={{display:'flex',justifyContent:'center',marginTop:100}}>
 					There are no pending applications. Check back soon!

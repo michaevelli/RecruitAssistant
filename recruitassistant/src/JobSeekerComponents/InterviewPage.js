@@ -38,11 +38,11 @@ export default function InterviewPage({match}) {
 	useEffect(() => {
 		auth();
 		getInterviewDetails();
-	},[]);
+	},[]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useLayoutEffect(() => {
 		updateAlert()
-	},[status, reason]);
+	},[status, reason]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	//update color/text of alert bar
 	const updateAlert = ()=>{
@@ -69,7 +69,7 @@ export default function InterviewPage({match}) {
 			.then(function(response) {
 				console.log("auth success: ", response)
 				// const recruiterID = sessionStorage.getItem("uid")			
-				if (!response.success || response.userInfo["type"] != "jobseeker") {
+				if (!response.success || response.userInfo["type"] !== "jobseeker") {
 					history.push("/unauthorised");
 				}
 			})
@@ -149,12 +149,12 @@ export default function InterviewPage({match}) {
 			<Typography variant='body1'>Date: {date}</Typography>
 			<Typography variant='body1'>Time: {time}</Typography>
 			<br/>
-			<Typography variant='body1'>{details != '' && ('Details: ' + details)}</Typography>
-			<br/>{email != '' && <Divider/>}<br/>
-			<Typography variant='body1'>{email != '' && ('Feel free to contact your recruiter if you have any questions at ' + email)}</Typography>
+			<Typography variant='body1'>{details !== '' && ('Details: ' + details)}</Typography>
+			<br/>{email !== '' && <Divider/>}<br/>
+			<Typography variant='body1'>{email !== '' && ('Feel free to contact your recruiter if you have any questions at ' + email)}</Typography>
 			<br/><Divider/><br/>
 			<Link href={joblink}>View original job posting</Link>
-			{status=="Pending" &&
+			{status==="Pending" &&
 			<Box style={{marginTop: 50}}>
 				<Button variant="contained"  color="secondary" style={{marginRight:30,backgroundColor: 'green'}} onClick={()=>handleResponse("Accepted")}>
 				Accept

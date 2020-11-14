@@ -1,21 +1,16 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Button, Grid, CircularProgress, Divider} from "@material-ui/core";
-import {Col,Row, Card, Table, ListGroup, ListGroupItem} from 'react-bootstrap';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import {Button, Grid, CircularProgress, Divider, Typography} from "@material-ui/core";
+import {Col,Row, Card, Table} from 'react-bootstrap';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 
 export const applicationUrl="http://localhost:5000/jobapplications"
 export const advertisementUrl="http://localhost:5000/advertisement"
 
 export default function Advertisement() {
-
-	const history = useHistory();
 	const [loading, setLoading] = useState(true);
 	const href = `${window.location.href}`.split("/")
 	const jobID = href[href.length - 1]
@@ -27,7 +22,7 @@ export default function Advertisement() {
 		auth();
 		getJob();
 		checkJobApplied();
-	}, []);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -139,7 +134,7 @@ export default function Advertisement() {
 									</Table>
 								</Card.Body>
 								{userType==='jobseeker' ? (
-									<Button disabled={applied || detail[1].status =='closed'} variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
+									<Button disabled={applied || detail[1].status ==='closed'} variant="contained" color="secondary" href={`/jobapply/${detail[0]}`} style={{margin: 40}}>
 										Apply Now
 									</Button>
 								) : ( userType==='public' && (
