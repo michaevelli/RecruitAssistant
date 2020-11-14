@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField,Snackbar} from "@material-ui/core";
+import {IconButton,Grid,Button,TextField,Snackbar,CircularProgress} from "@material-ui/core";
 import RemoveIcon from '@material-ui/icons/Remove';
 import CloseIcon from '@material-ui/icons/Close';
 import AddIcon from '@material-ui/icons/Add';
@@ -19,6 +19,7 @@ export default function EditJob({match}) {
 	const history = useHistory();
 	const today = new Date();
 	const jobID = match.params.jobID;
+	const [loading, setLoading] = useState(true);
 	const [recruiterID, setRecruiterID] = useState('');
 	const [datePosted, setDatePosted] = useState('');
 	const [open, setOpen] = useState(false)
@@ -79,6 +80,7 @@ export default function EditJob({match}) {
 				setAdditionalQuestions(job_data["additional_questions"] || []);
 				setResponsibilities(job_data["responsibilities"] || []);
 				setDatePosted(job_data["date_posted"]);
+				setLoading(false)
 			})
 	}
 
@@ -197,7 +199,14 @@ export default function EditJob({match}) {
 		}
 	}
 
-	return (
+	return loading ? (
+		<div style={{
+			position: 'absolute', left: '50%', top: '50%',
+			transform: 'translate(-50%, -50%)'
+			}}>
+			<CircularProgress/>
+		</div>
+	) : (
 		<Grid>
 			<Snackbar
 				anchorOrigin={{

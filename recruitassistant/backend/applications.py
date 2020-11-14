@@ -58,12 +58,10 @@ def check_applied():
 	try:
 		jobid = request.args.get('job_id')
 		jobseekerid = request.args.get('jobseeker_id')
-		jobseeker_applications=ref.child("jobApplications").order_by_child('jobseeker_id').equal_to(jobseekerid).get()
+		jobseeker_applications=ref.child("jobApplications").child(jobid).order_by_child('jobseeker_id').equal_to(jobseekerid).get()
 
-		for key,val in jobseeker_applications.items():
-			if val['job_id'] == jobid:
-				print("Has applied before")
-				return jsonify({'applied': True}),200
+		if len(jobseeker_applications) > 0:
+			return jsonify({'applied': True}),200
 		
 		#print("Hasn't applied before")
 		return jsonify({'applied': False}),200
@@ -109,7 +107,7 @@ def return_application():
 		print(e)
 		return jsonify({"message": str(e)}), 400
 
-# gets a sorted list of applications for a job
+# gets a sorted list of applications for a job (recruiter)
 @app.route('/applicationslist', methods=["GET"])
 def get_applications_for_job():
 	try:
@@ -121,7 +119,7 @@ def get_applications_for_job():
 			# sort on how many qualifications are met
 			sortedApps = sorted(val, reverse = True, key = lambda x :val.get(x).get('qualities_met'))
 			for appid in sortedApps:
-				#if val.get(appid).get('status') == "pending":
+				if val.get(appid).get('status') == "pending":
 			 		applications.append((appid, val.get(appid)))
 		
 
@@ -132,7 +130,7 @@ def get_applications_for_job():
 		return jsonify({"message": str(e)}), 400
 
 
-#TODO this function is really slow (on localhost:3000/offers applications tab)
+#get applications for job seeker
 @app.route('/pendingapplications', methods=['POST'])
 def getApplications():
 	try:

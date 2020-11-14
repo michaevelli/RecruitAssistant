@@ -2,7 +2,7 @@ import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import {IconButton,Grid,Button,TextField,FormGroup,FormControlLabel,Switch,Snackbar} from "@material-ui/core";
 import CircularProgress from '@material-ui/core/CircularProgress';
-import CloseIcon from '@material-ui/icons/Add';
+import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import {Form,InputGroup,Col,Row} from 'react-bootstrap';
@@ -244,9 +244,8 @@ export default function OfferLetterForm(props) {
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
 					<SideMenu random={[
-
-						{'text':'Back to Job Applications','href': `/applications/${jobID}`,'active': true},
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
+						{'text':title,'href': `/applications/${jobID}`,'active': true},
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 				
@@ -393,7 +392,7 @@ export default function OfferLetterForm(props) {
 						</Form.Group>
 
 						<Form.Group controlId="additionalDocs">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Additional Documents
 							</Form.Label>
 							<IconButton onClick={() => handleAddDoc()}>
