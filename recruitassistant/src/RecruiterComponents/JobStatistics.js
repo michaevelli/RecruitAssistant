@@ -20,8 +20,10 @@ export default function JobStatistics({match}) {
 	const [loading, setLoading] = useState(true);
   const jobID = match.params.jobID;
   const history = useHistory();
-  //are there any statistics for this job/any applications
+
+  //are there any statistics for this job/are there any applications
   const [stats, setStats]=useState(false)
+
   const [jobTitle, setJobTitle]=useState('')
   const [workingRights, setWorkingRights]=useState([])
   const [numCandidates, setNumCandidates]=useState(0)
@@ -46,8 +48,8 @@ export default function JobStatistics({match}) {
 				}
 			})
     }
-    const getJobStats = async () => {
 
+    const getJobStats = async () => {
       const url = `${statsURL}`
       console.log(url)
       await axios.get(url, {
@@ -60,19 +62,20 @@ export default function JobStatistics({match}) {
         if (stats){
           setStats(true)
         }
-        setWorkingRights([
-        {name: 'Yes', value: parseInt(stats.has_working_rights)},
-        {name: 'No', value: stats.num_candidates-parseInt(stats.has_working_rights)}
-       ])
-        
         setNumCandidates(stats.num_candidates)
         setNumOffers(stats.num_offers)
         setNumInterviews(stats.num_interviews)
         setJobTitle(stats.job_title)
+
+        //format data in a way that charts can display
+        setWorkingRights([
+        {name: 'Yes', value: parseInt(stats.has_working_rights)},
+        {name: 'No', value: stats.num_candidates-parseInt(stats.has_working_rights)}
+       ])
+         
         const dict = stats.qualifications;
         var r=[]
         for (const [key, value] of Object.entries(dict)) {
-          
           r.push({'name':key,'Number of Candidates':parseInt(value)})
         }
         setQualificationsInfo(r)
@@ -168,7 +171,7 @@ export default function JobStatistics({match}) {
             {numInterviews}
             </Typography>
             <Typography variant="h8" color="textSecondary" style={{marginLeft:20 ,marginBottom:20}}>
-            Interviews sent
+            Interviews Sent
             </Typography>
           </Card>
         
@@ -177,7 +180,7 @@ export default function JobStatistics({match}) {
             {numOffers}
             </Typography>
             <Typography variant="h8" color="textSecondary" style={{marginLeft:20 ,marginBottom:20}}>
-            Offers made
+            Offers Made
             </Typography>
           </Card>
           </div>
@@ -244,6 +247,7 @@ export default function JobStatistics({match}) {
             <Col sm={10}>
              
               {stats? renderStats(): (
+                
                 <div style={{display:'flex',justifyContent:'center',marginTop:100}}>
                   There are currently no applications or statistics for this job. Check back soon!
                 </div>

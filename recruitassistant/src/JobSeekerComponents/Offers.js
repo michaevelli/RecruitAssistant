@@ -116,7 +116,6 @@ export default function Offers() {
 				.then(function(response) {
 					console.log("application response:", response.data)
 					setApplications(response.data.applications)
-					
 				})
 				.catch(function(error) {
 					console.log("error in applications")
