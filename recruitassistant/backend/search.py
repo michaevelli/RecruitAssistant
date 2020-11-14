@@ -37,6 +37,10 @@ def search():
 				try:
 					for i in range(len(val["responsibilities"])):
 						searchtext = searchtext + " " + val["responsibilities"][i].lower()
+				except:
+					pass
+				
+				try:
 					for i in range(len(val["req_qualifications"])):
 						searchtext = searchtext + " " + val["req_qualifications"][i].lower()
 				except:
