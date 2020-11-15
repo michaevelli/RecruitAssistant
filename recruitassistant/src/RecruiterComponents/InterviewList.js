@@ -94,6 +94,7 @@ export default function InterviewList({match}) {
 			})
 	};
 
+	// gets a list of which applications have been offered
 	const getOffers = async () => {
 		const url = `${offerUrl}`
 		console.log(url)

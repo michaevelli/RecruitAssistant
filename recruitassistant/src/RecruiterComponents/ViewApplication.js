@@ -149,7 +149,7 @@ export default function ViewApplication() {
 						</Typography>
 						<br/>
 						<Typography variant='body1'>
-							{application.rights==='Yes'?<ClearIcon/>:<CheckIcon/>} Working rights in {job.location}
+							{application.rights==='Yes'?<CheckIcon/>:<ClearIcon/>} Working rights in {job.location}
 						</Typography>
 						{answers.length>0 && (<div><br/><Divider/><br/></div>)}
 						<Typography variant='body1'>{answers.length>0 && 'Responses to questions:'}</Typography>

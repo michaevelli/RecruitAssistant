@@ -234,7 +234,13 @@ export default function EditOffer({match}) {
 					<SideMenu random={[
 						
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-						{'text':title,'href': `/applications/${jobID}`,'active': true},
+						{'text': title,'href': '#','active': false,
+						'nested':[
+							{'text':'Applications','href': `/applications/${jobID}`,'active': false},
+							{'text':'Interviews','href': `/interviews/${jobID}`,'active': false},
+							{'text':'Offers','href': `/offers/${jobID}`,'active': true},
+							{'text': 'Statistics','href': `/jobstatistics/${jobID}`,'active': false},
+							]},
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 				</Col>
 				
