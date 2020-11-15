@@ -249,7 +249,7 @@ export default function JobSeekerDashboard() {
 						</Col>
 
 						<Col xs={12} style={{display: 'flex',flexWrap: 'wrap',justifyContent: "center"}}>
-							<Link  onClick={handleToggleFilters} aria-controls="filter-collapse" aria-expanded={open}>
+							<Link style={{cursor:'pointer'}} onClick={handleToggleFilters} aria-controls="filter-collapse" aria-expanded={open}>
 								Advanced Criteria
 							</Link>
 						</Col>

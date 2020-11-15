@@ -39,7 +39,7 @@ export default function RecruiterDashboard() {
 		console.log(url)
 		await axios.get(url)
 			.then(res => {
-				setJobs(res.data.jobs, [jobs])
+				setJobs(res.data.jobs)
 				setLoadingJobs(false)
 				console.log("response: ", res)
 			})
