@@ -64,8 +64,8 @@ export default function RecruiterDashboard() {
 						<h style={{fontWeight: 'bold'}}> How are the applicants ranked in candidate suitability to my job?</h>
                         <p> Applicants are ranked based off how many qualifications listed on the job advertisement they meet.
 							You can view more information such as their working rights or provided documentation by clicking on
-							"view application" next to the candidate's name. You can also reorder the ranking by clicking on the
-							arrow buttons beside each application card once the job has closed.
+							the candidate's name. You can also reorder the ranking by clicking on the arrow buttons beside each
+							application card once the job has closed.
                         </p>
 
                         <h style={{fontWeight: 'bold'}}>  Why can't I send interview invites? </h>

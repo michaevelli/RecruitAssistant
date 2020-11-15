@@ -22,3 +22,6 @@ Started Sprint 4 work. I was tasked with creating a notification system which co
 Week 8
 Continued Sprint 4 work and merged my notification system with existing functionalities. I ultimately decided to change some of my implementation for notifications after I was alerted by Calvin of a potentially easier way to monitor "seen" notifications. 
 We presented our project in Demo B, and completed our retrospective B shortly after.
+
+Week 9
+Implemented admin dashboard functionality with deleting jobs and users. Changed some implementation surrounding interviews. Fixed some minor issues related to search. Worked mostly on creating and completing the final report.
