@@ -24,7 +24,7 @@ export default function JobApply() {
 	const jobID = href[href.length - 1]
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
-	const [applied, setApplied] = useState([]);
+	const [applied, setApplied] = useState(false);
 	const [open, setOpen] = useState(false)
 	const [disable, setDisable] = useState(false)
 	const [message, setMessage] = useState('')

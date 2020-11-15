@@ -11,6 +11,12 @@ def remove_list(data_list, node):
         for i in data_list:
             db.child(node).child(i).remove()
 
+# removes applications from database
+def remove_app(data_list, job_id):
+    print(data_list)
+    if(data_list != []):
+        for i in data_list:
+            db.child('jobApplications').child(job_id).child(i).remove()
 
 # needs to delete associated offers/interviews/applications
 @app.route('/admin-delete-post', methods=["POST"])
@@ -61,7 +67,10 @@ def del_user():
             # remove interviews
             remove_list(ref.child('interviews').order_by_child('jobseeker_id').equal_to(user_id).get(), 'interviews')
             # remove application
-            remove_list(ref.child('jobApplications').order_by_child('jobseeker_id').equal_to(user_id).get(), 'jobApplications')
+            posts=ref.child("jobApplications").get()	
+            for jobID, appList in posts.items():
+                for appID, application in appList.items():
+                    remove_app(ref.child('jobApplications').child(jobID).order_by_child('jobseeker_id').equal_to(user_id).get(), jobID)
         elif(json_data["type"]=="recruiter"):
             # remove offers
             remove_list(ref.child('offer').order_by_child('recruiter_id').equal_to(user_id).get(),'offer')
