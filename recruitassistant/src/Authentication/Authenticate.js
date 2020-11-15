@@ -1,10 +1,6 @@
 import axios from "axios";
-import { useHistory } from "react-router-dom";
-import React, { useState } from "react";
-
 
 export const authUrl="http://localhost:5000/auth"
-
 
 export default async function checkAuth(token) {
 	var success = false;

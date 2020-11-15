@@ -16,6 +16,7 @@ from backend.init_app import app, ref, pb
 def print_date_time():
     print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
 
+#Automatically closes jobs whose closing date has been surpassed.
 def check_postings():
 	posts=ref.child("jobAdvert").get()
 	for key in posts.keys():
@@ -34,50 +35,6 @@ def check_postings():
 			print(key)
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=check_postings, trigger="interval", seconds=5)
+scheduler.add_job(func=check_postings, trigger="interval", seconds=60)
 scheduler.start()
 # atexit.register(lambda: scheduler.shutdown())
-
-# test
-@app.route('/time')
-def get_current_time():
-	data = {'time': 10000}
-	return jsonify(data)
-		
-
-@app.route('/jobadverts/open', methods=["GET"])
-def get_all_posts():
-	#gets all posts in the database
-	try:
-		posts=ref.child("jobAdvert").get()
-		
-		jobs=[]
-		for key,val in posts.items():
-			jobs.append((key,val))
-
-		#print(jobs)
-		return jsonify({'jobs': jobs}),200
- 
-	except Exception as e:
-		return jsonify({"message": str(e)}), 400
-
-@app.route('/jobadverts/<recruiterid>', methods=["GET"])
-def get_recruiter_posts(recruiterid):
-	#TODO:
-	#use recruiter id of logged in user
-	#figure out how to also sort results on closing date -> realtime db doesnt 
-	#support multiple where clauses unlike firebase cloud db
-	
-	try:
-		posts=ref.child("jobAdvert").order_by_child('recruiter_id').equal_to(recruiterid).get()
-
-		jobs=[]
-		for key,val in posts.items():
-			jobs.append((key,val))
-		
-		#print(jobs)
-		return jsonify({'jobs': jobs}),200
- 
-	except Exception as e:		
-		print(e)
-		return jsonify({"message": str(e)}), 400

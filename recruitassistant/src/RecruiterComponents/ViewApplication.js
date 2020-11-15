@@ -1,13 +1,10 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Grid, Button} from "@material-ui/core";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import {Link, Grid, Divider, CircularProgress, Typography} from "@material-ui/core";
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 import {Col,Row} from 'react-bootstrap';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
@@ -33,8 +30,7 @@ export default function ViewApplication() {
 	useEffect(() => {
 		auth();
 		getApplication();
-	   
-	}, []);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		console.log(applicationID)
@@ -42,9 +38,9 @@ export default function ViewApplication() {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
-				if (response.userInfo["type"] == "recruiter") {
+				if (response.userInfo["type"] === "recruiter") {
 					setUsertype("recruiter")
-				} else if (response.userInfo["type"] == "jobseeker") {
+				} else if (response.userInfo["type"] === "jobseeker") {
 					setUsertype("jobseeker")
 				}
 				if (!response.success) {
@@ -117,7 +113,7 @@ export default function ViewApplication() {
 			<Row noGutters fluid><TitleBar/></Row>
 			<Row noGutters style={{height:'100vh',paddingTop: 60}}>
 				<Col sm={2}>
-					{usertype=="jobseeker"?
+					{usertype==="jobseeker"?
 					( <SideMenu random={[{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': true},
 						{'text':'Your Applications','href': '/yourapplications', 'active': false},       
 						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
@@ -134,51 +130,43 @@ export default function ViewApplication() {
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>)
 					}
 				</Col >
-				<Col>
-					<Typography component="div" style={{color: 'black', margin: 50}}>
-						<Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
-							Applicant: {application.first_name} {application.last_name}
-						</Box>
-						<Box fontSize="h5.fontSize">
-							<b>Job:</b> {job.title}
-						</Box>
-						<br></br>
-						<Box fontSize="h6.fontSize">
-							<b>Phone Number:</b> {application.phone_number}
-						</Box>
-						<br></br>
-						<Box fontSize="h6.fontSize" component = "div" display = "inline">
-							<CheckIcon hidden = {application.rights === "No"}/>
-							<ClearIcon hidden = {application.rights === "Yes"}/>
-							{application.rights === "Yes" &&
-							<span> Has </span>}
-							{application.rights === "No" &&
-							<span> Doesn't have </span>}
-							rights to work in {job.location}
-						</Box>
-						<br></br>
-						<br></br>
-						<Box fontSize="h6.fontSize" lineHeight={2} visibility={qualifications.length === 0?"hidden":"visible"}>
-							<b>Qualifications:</b>
+				<Col sm ={6} style={{display:'flex', justifyContent:'center'}}>
+					<Typography component="div" style={{color: 'black', margin: 50, width:'80%'}}>
+						<Typography variant='h5'>{application.first_name} {application.last_name}</Typography>
+						<Typography variant='subtitle1'>Application for {job.title}</Typography>
+						<Typography variant='subtitle1'>Contact number: {application.phone_number}</Typography>
+						<br/><Divider/><br/>
+						<Typography variant='body1'>Qualifications ({application.qualities_met} of {qualifications.length}):</Typography>
+						<br/>
+						<Typography variant='body1'>
 							{qualifications.map((quality) => (
 								<ul>
 									<CheckIcon hidden = {!application.qualifications.includes(quality)}/>
 									<ClearIcon hidden = {application.qualifications.includes(quality)}/>
-									{quality}
+									&nbsp;&nbsp;&nbsp;{quality}
 								</ul>
 							))}
-						</Box>
-						<Box fontSize="h6.fontSize" lineHeight={2} visibility={answers.length === 0?"hidden":"visible"}>
-							<b>Responses:</b>
-							<ol> {answers.map((answer, index) => (
+						</Typography>
+						<br/>
+						<Typography variant='body1'>
+							{application.rights==='Yes'?<ClearIcon/>:<CheckIcon/>} Working rights in {job.location}
+						</Typography>
+						{answers.length>0 && (<div><br/><Divider/><br/></div>)}
+						<Typography variant='body1'>{answers.length>0 && 'Responses to questions:'}</Typography>
+						<br/>
+						<Typography variant='body1'>
+							<ol> 
+								{answers.map((answer, index) => (
 									<li><b>{job.additional_questions[index]}</b>
 									<p>{answer}</p>
 									</li>
-							))}
+								))}
 							</ol>
-						</Box>
-						<Box fontSize="h6.fontSize" lineHeight={2} component="div" visibility={documentsList.length === 0?"hidden":"visible"}>
-							<b>Documentation:</b>
+						</Typography>
+						{documentsList.length>0 && (<div><br/><Divider/><br/></div>)}
+						<Typography variant='body1'>{documentsList.length>0 && 'Submitted documents'}</Typography>
+						<br/>
+						<Typography variant='body1'>
 							{documentsList.map((document) => (
 								<ul>
 									<Link style={{ cursor: 'pointer'}} onClick={()=>downloadFile(document.src,document.filename)} target="_blank">
@@ -186,9 +174,8 @@ export default function ViewApplication() {
 									</Link>
 								</ul>
 							))}
-						</Box>
-					</Typography>
-					
+						</Typography>
+					</Typography>					
 				</Col>
 			</Row>
 		</Grid>

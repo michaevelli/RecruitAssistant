@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Slider, Grid, Button, TextField,FormControl,InputLabel,MenuItem,Select} from "@material-ui/core";
-// Card,CardContent,Button,CardActions
-import {Form,Container,Col,Row,Collapse, Card} from 'react-bootstrap';
-import Typography from '@material-ui/core/Typography';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Grid, Tab, Tabs, Typography, CircularProgress} from "@material-ui/core";
+import {Col,Row, Card} from 'react-bootstrap';
 import TabPanel from "./TabPanel.js"
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -43,14 +38,14 @@ export default function Offers() {
 		getOffers();
 		getInterviews();
 		getApplications();
-	}, [userID]);
+	}, [userID]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
 				setLoading(false)				
-				if (!response.success || response.userInfo["type"] != "jobseeker") {
+				if (!response.success || response.userInfo["type"] !== "jobseeker") {
 					return history.push("/unauthorised");
 				}
 				setUserID(response.userID)
@@ -116,12 +111,13 @@ export default function Offers() {
 				.then(function(response) {
 					console.log("application response:", response.data)
 					setApplications(response.data.applications)
-					setLoadingApps(false)
 				})
 				.catch(function(error) {
 					console.log("error in applications")
 					console.log(error.response)
 				})
+				//move outside of promise, to prevent endless loading symbol
+				setLoadingApps(false)
 	};
 	
 	// --- render posts ---
@@ -129,11 +125,11 @@ export default function Offers() {
 	const renderOfferStatus = (offer) => {
 		if (offer.status === "sent") {
 			return <Card.Text>Congratulations, you have a job offer!</Card.Text>
-		} else if (offer.status == "accepted") {
+		} else if (offer.status === "accepted") {
 			return <Card.Text>You have accepted this offer!</Card.Text>
-		} else if (offer.status == "declined") {
+		} else if (offer.status === "declined") {
 			return <Card.Text>You have declined this offer</Card.Text>
-		} else if (offer.status == "countered") {
+		} else if (offer.status === "countered") {
 			return <Card.Text>Your counter offer is pending review</Card.Text>
 		} else {
 			return <Card.Text>(old status field)</Card.Text>
@@ -161,7 +157,7 @@ export default function Offers() {
 								{renderOfferStatus(offer[1])}
 							</Col>
 							<Col style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
-								<Button onClick={() => {history.push("/offer/"+offer[0])}}>View Offer</Button>
+								<Link onClick={() => {history.push("/offer/"+offer[0])}}>View Offer</Link>
 							</Col>
 						</Row>
 					</Card.Body>
@@ -173,9 +169,9 @@ export default function Offers() {
 	const renderInterviewStatus = (interview) => {
 		if (interview.status === "Pending") {
 			return <Card.Text>You have an interview invite!</Card.Text>
-		} else if (interview.status == "Accepted") {
+		} else if (interview.status === "Accepted") {
 			return <Card.Text>You have an interview on {interview.interview_date} at {interview.interview_time} </Card.Text>
-		} else if (interview.status == "Declined") {
+		} else if (interview.status === "Declined") {
 			return <Card.Text>You declined this interview</Card.Text>
 		} else {
 			return <Card.Text>(old status field)</Card.Text>
@@ -203,7 +199,7 @@ export default function Offers() {
 								{renderInterviewStatus(interview[1])}
 							</Col>
 							<Col style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
-								<Button onClick={() => {history.push("/interview/"+interview[0])}}>View Interview</Button>
+								<Link onClick={() => {history.push("/interview/"+interview[0])}}>View Interview</Link>
 							</Col>
 						</Row>
 					</Card.Body>
@@ -215,11 +211,11 @@ export default function Offers() {
 	const renderAppStatus = (status) => {
 		if (status === "pending") {
 			return <Card.Text>Your application is being reviewed by the recruiter</Card.Text>
-		} else if (status == "dismissed") {
+		} else if (status === "dismissed") {
 			return <Card.Text>This application has been dismissed</Card.Text>
-		} else if (status == "offer") {
+		} else if (status === "offer") {
 			return <Card.Text>You have an offer for this application!</Card.Text>
-		} else if (status == "interview") {
+		} else if (status === "interview") {
 			return <Card.Text>You have an interview for this application!</Card.Text>
 		} else {
 			return <Card.Text>{status}</Card.Text>
@@ -247,9 +243,13 @@ export default function Offers() {
 								{renderAppStatus(application[1].status)}
 							</Col>
 							<Col style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
-								<Button onClick={() => {history.push("/viewapplication/"+application[2]+"/"+application[0])}}>View Application</Button>
+								
+								<Link onClick={() => {history.push("/viewapplication/"+application[2]+"/"+application[0])}}>View Application</Link>
+								
 								&nbsp;&nbsp;&nbsp;
-								<Button onClick={() => {history.push("/advertisement/"+application[2])}}>View Job</Button>
+								
+								<Link onClick={() => {history.push("/advertisement/"+application[2])}}>View Job</Link>
+								
 							</Col>
 						</Row>
 					</Card.Body>

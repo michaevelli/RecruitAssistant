@@ -5,13 +5,11 @@ import {Col,Row} from 'react-bootstrap';
 import Typography from '@material-ui/core/Typography';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
-import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 import Unauthorised from "../Authentication/Unauthorised";
 
 
 export default function JobSeekerFAQ() {
-	const history = useHistory();
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -23,7 +21,7 @@ export default function JobSeekerFAQ() {
 			.then(function(response) {
 				console.log("auth success: ", response)
 				setLoading(false)
-				if (!response.success || response.userInfo["type"] != "jobseeker") {
+				if (!response.success || response.userInfo["type"] !== "jobseeker") {
 					return <Unauthorised/>
 				}
 			})
@@ -51,7 +49,7 @@ export default function JobSeekerFAQ() {
 						
                         <h style={{fontWeight: 'bold'}}> How do I see the status of my applications?</h>
                         <p> On the Job Seeker Dashboard click 'My applications' to view all your past applications.
-							Click on the 'InterviewS' tab to see which jobs you have interview invites,
+							Click on the 'Interviews' tab to see which jobs you have interview invites,
 							and the 'Offers' tabs to view all received offers.
                         </p>
 

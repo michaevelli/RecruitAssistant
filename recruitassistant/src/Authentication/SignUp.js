@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { TextField, Button, CircularProgress, InputAdornment, Typography } from "@material-ui/core";
-import { Work, People } from "@material-ui/icons";
+import React, { useState } from "react";
+import { TextField, Button, Typography, IconButton, Snackbar } from "@material-ui/core";
+import { Work, People, Close } from "@material-ui/icons";
 import {Container, Col, Row} from 'react-bootstrap';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import checkAuth from "../Authentication/Authenticate";
 import logo from '../SharedComponents/Picture2.png';
 
 export const submitSignUp="http://localhost:5000/signup"
@@ -18,6 +17,8 @@ function SignUp() {
 	const [password, setPassword] = useState("");
 	const [repassword, setRepassword] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
+	const [open, setOpen] = useState(false)
+	const [disable, setDisable] = useState(false)
 
 	async function handleSubmit(e) {
 		e.preventDefault()
@@ -36,8 +37,8 @@ function SignUp() {
 		console.log(ndata)
 		axios.post(submitSignUp, ndata).then(function(response) {
 			console.log("response:", response)
-			alert("successfully created account")
-			history.push("/login")
+			setOpen(true)
+			setDisable(true)
 		})
 		.catch(function(error){
 			console.log("error:", error.response)
@@ -52,14 +53,34 @@ function SignUp() {
 		})
 	}
 
+	const handleClose = () => {
+		setOpen(false)
+		history.push("/login")
+	}
+
 	return (
 		<Container style={{backgroundColor:'white'}} fluid>
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'right',
+				}}
+				open={open}
+				autoHideDuration={5000}
+				onClose={() => handleClose()}
+				message="Account successfully created"
+				action={
+					<IconButton size="small" aria-label="close" color="inherit" onClick={() => handleClose()}>
+						<Close fontSize="small" />
+					</IconButton>
+				}/>
 			<Row style={{height: '100vh'}}>
-				<Col xs={5} style={{backgroundColor:'#348360'}}>
-					<Row style={{position:'absolute',left:'10%',top:'30%',color:'white'}}>
-						<img src={logo} style={{ width:500, height:125}}></img>
+				<Col xs={5} style={{display:'flex', justifyContent:'center', alignItems:'center',backgroundColor:'#348360'}}>
+					<Row style={{display:'flex', justifyContent:'center', color:'white'}}>
+						<img src={logo} style={{ width:'80%', height:'auto'}} alt="logo"/>
 						<br/>
-						<h3 style={{position:'absolute', top:100, left:100, width:400}}>Connect with the right people.</h3>
+						<h4 style={{textAlign:'center', width:'100%', height:'auto'}}>
+							Connect with the right people.</h4>
 					</Row>
 				</Col>
 				<Col xs={7} style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
@@ -94,11 +115,13 @@ function SignUp() {
 										variant='outlined'
 										value={first_name} 
 										placeholder="First Name"
+										style={{width:'50%'}}
 										onChange={e=>setFirstName(e.target.value)}/>
 									<TextField required
 										variant='outlined'
 										value={last_name} 
 										placeholder="Last Name"
+										style={{width:'50%'}}
 										onChange={e=>setLastName(e.target.value)}/>
 									<br/>
 									<TextField fullWidth required
@@ -123,7 +146,7 @@ function SignUp() {
 									<br/><br/>
 									<div id="error" style={{color: 'red'}}>{errorMessage}</div>
 									<br/>
-									<Button type="submit"variant="contained" 
+									<Button type="submit"variant="contained" disabled={disable}
 										style={{backgroundColor:'#348360', width:'40%', color:'white', borderRadius:30}}>
 										Sign Up
 									</Button>

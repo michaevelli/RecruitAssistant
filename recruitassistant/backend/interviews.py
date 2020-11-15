@@ -6,7 +6,8 @@ from firebase_admin import auth
 from datetime import date, datetime
 import uuid
 
-#TODO comment what is this function doing
+#Gets a list of interviews sent to a job seeker
+#only returns interviews whose date has not yet been surpassed
 @app.route('/interviewlist', methods=['POST'])
 def getInterviews():
 	try:

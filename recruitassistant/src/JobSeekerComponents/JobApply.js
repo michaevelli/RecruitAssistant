@@ -1,5 +1,4 @@
 import React, { useState,useEffect } from "react";
-import  'bootstrap/dist/css/bootstrap.css';
 import {Grid,Button,TextField,Snackbar,IconButton} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close'
 import {Form,Col,Row} from 'react-bootstrap';
@@ -8,13 +7,16 @@ import Box from '@material-ui/core/Box';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
+import MuiPhoneNumber from "material-ui-phone-number";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
+
+
 
 export const uploadUrl="http://localhost:5000/upload"
 export const applicationUrl="http://localhost:5000/jobapplications"
 export const advertisementUrl="http://localhost:5000/advertisement"
-
+export const userUrl="http://localhost:5000/user"
 export default function JobApply() {
 	const history = useHistory();
 	const jobseeker_id = sessionStorage.getItem("uid");
@@ -27,8 +29,8 @@ export default function JobApply() {
 	const [disable, setDisable] = useState(false)
 	const [message, setMessage] = useState('')
 	//form data
-	const [first_name,setFirstName] = useState('');
-	const [last_name, setLastName] = useState('');
+	const [firstName,setFirstName] = useState('');
+	const [lastName, setLastName] = useState('');
 	const [phone_number, setPhoneNumber] = useState('');
 	const [rights, setRights] = useState('');
 	const [qualification_list, setQualificationList] = useState([]);
@@ -45,16 +47,17 @@ export default function JobApply() {
 
 	useEffect(() => {
 		auth();
+		getName();
 		getJob();
-		checkJobApplied();
-	}, []);
+		checkJobApplied();	
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
 				// const jobseekerID = sessionStorage.getItem("uid")			
-				if (!response.success || response.userInfo["type"] != "jobseeker") {
+				if (!response.success || response.userInfo["type"] !== "jobseeker") {
 					history.push("/unauthorised");
 				}
 			})
@@ -109,6 +112,22 @@ export default function JobApply() {
 		})
 	};
 
+	//get the job seeker who is applying fullname, to prefill application
+	const getName = async()=>{
+		await axios.get(userUrl, {
+			params: {
+				jobseeker_id: jobseeker_id
+			},
+		})
+		.then(res => {
+			console.log(res)
+			setFirstName(res.data.user['first_name'])
+			setLastName(res.data.user['last_name'])
+		}).catch((error) => {
+			console.log("error: ", error.response)
+		})
+	}
+
 	const checkJobApplied = async () => {
 		const url = `${applicationUrl}`
 		console.log(url)
@@ -156,8 +175,8 @@ export default function JobApply() {
 			}
 		}
 		const data={
-			first_name: first_name,
-			last_name: last_name,
+			first_name: firstName,
+			last_name: lastName,
 			phone_number: phone_number,
 			rights: rights,
 			qualifications: final_qualifications,
@@ -167,7 +186,7 @@ export default function JobApply() {
 			job_id: jobID,
 			submitted_docs: additionalDocs
 		}
-		//console.log("data: ",data)
+		console.log("data: ",data)
 		await axios.post(url, data)
 			.then(res => {
 				//console.log("response: ", res)
@@ -186,7 +205,7 @@ export default function JobApply() {
 		event.preventDefault();
 		
 		const form = event.currentTarget;
-		if (form.checkValidity() === false) {	
+		if (form.checkValidity() === false || !phone_number ) {	
 			event.stopPropagation();
 			setValidated(true);
 		} else {
@@ -203,7 +222,7 @@ export default function JobApply() {
 			var filename=event.target.files[0].name
 			var filetype= event.target.files[0].type
 			console.log(filetype)
-			if(filetype!="application/pdf"){
+			if(filetype!=="application/pdf"){
 				setMessage("Please upload a pdf")
 				setOpen(true)
 				return 0
@@ -219,8 +238,9 @@ export default function JobApply() {
 		docs[index]={'req_document': document_name,'filename': filename, 'src': event.target.result}
 		setAdditionalDocs(docs)
 	}
-
-
+	
+								
+	
 	return job.map((detail) => (
 		<Grid>
 			<Snackbar
@@ -262,38 +282,39 @@ export default function JobApply() {
 
 					<Form noValidate validated={validated} onSubmit={handleSubmit} style={{marginLeft:'15%'}}>          
 						<Form.Group controlId="first_name">
-							<Form.Label column sm={10}>First Name</Form.Label>
+							<Form.Label column sm={10}>*First Name</Form.Label>
 							<Col sm={10}>
 								<Form.Control 
 									required
+									value={firstName}
 									placeholder = "First Name"
 									onChange = { (event) => setFirstName(event.target.value)} />
 							</Col>
 						</Form.Group>
 
 						<Form.Group controlId="last_name">
-							<Form.Label column sm={10}>Last Name</Form.Label>
+							<Form.Label column sm={10}>*Last Name</Form.Label>
 							<Col sm={10}>
 								<Form.Control
 								required
+								value={lastName}
 								placeholder = "Last Name"
 								onChange = { (event) => setLastName(event.target.value)}/>
 							</Col>
 						</Form.Group>
 
 						<Form.Group controlId="phone_number">
-							<Form.Label column sm={10}>Phone Number</Form.Label>
+
+							<Form.Label column sm={10}>*Phone Number</Form.Label>
 							<Col sm={10}>
-								<Form.Control 
-								required
-								type = "number"
-								placeholder = "Phone Number"
-								onChange = { (event) => setPhoneNumber(event.target.value)}/>
+							<MuiPhoneNumber 
+							error={phone_number? false: true}
+							defaultCountry={'au'} onChange={setPhoneNumber}/>
 							</Col>
 						</Form.Group>
 
 						<Form.Group controlId="rights">
-						<Form.Label column sm={10}>Do you have the rights to work in {detail[1].location}?</Form.Label>
+						<Form.Label column sm={10}>*Do you have the rights to work in {detail[1].location}?</Form.Label>
 							<Col sm={10}>
 								<Form.Control as="select" 
 								required
@@ -330,7 +351,7 @@ export default function JobApply() {
 									<ol>
 										{additional_questions.map((question,index) => (
 											<li>
-												<p>{question}</p>
+												<p>*{question}</p>
 												<TextField
 													required
 													id = {index}
@@ -349,7 +370,7 @@ export default function JobApply() {
 
 						<div style={{visibility: needDocs? 'visible': 'hidden'}}>
 							<Form.Group controlId="required_docs" >
-							<Form.Label column sm={10}>Please upload the following documents as a pdf.</Form.Label>
+							<Form.Label column sm={10}>*Please upload the following documents as a pdf.</Form.Label>
 								<Col sm={10}>
 									<ul>
 										{required_docs.map((document,index) => (
@@ -379,4 +400,5 @@ export default function JobApply() {
 			</Row>
 		</Grid>
 	))
+										
 }

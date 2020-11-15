@@ -55,8 +55,7 @@ export default function Home() {
 							</Button>
 						</div>
 						<div class="col-md-5">
-							<img class="img-fluid mx-auto" src={connections}
-							alt="Generic placeholder image"/>
+							<img class="img-fluid mx-auto" src={connections} alt="Connections"/>
 						</div>
 					</div>
 
@@ -75,7 +74,7 @@ export default function Home() {
 							</p>
 						</div>
 						<div class="col-md-5 order-md-1">
-							<img class="img-fluid mx-auto rounded" src={checklist} style={{width: 170, height:220}} alt="Generic placeholder image"/>
+							<img class="img-fluid mx-auto rounded" src={checklist} style={{width: 170, height:220}} alt="Checklist"/>
 						</div>
 					</div>
 
@@ -93,7 +92,7 @@ export default function Home() {
 							</p>
 						</div>
 						<div class="col-md-5">
-							<img class="img-fluid mx-auto" src={handshake2} style={{width: 240, height:220}} alt="Generic placeholder image"/>
+							<img class="img-fluid mx-auto" src={handshake2} style={{width: 240, height:220}} alt="Handshake"/>
 						</div>
 					</div>
 					

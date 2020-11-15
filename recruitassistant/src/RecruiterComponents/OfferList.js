@@ -38,14 +38,14 @@ export default function OfferList({match}) {
 		auth();
 		getJob();
 		getOffers();
-	}, [userID]);
+	}, [userID]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
 				setLoading(false)
-				if (!response.success || response.userInfo["type"] != "recruiter") {
+				if (!response.success || response.userInfo["type"] !== "recruiter") {
 					history.push("/unauthorised");
 				}
 				setUserID(response.userID)
@@ -114,7 +114,7 @@ export default function OfferList({match}) {
 					<Col sm="2">
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-						{'text': 'Job View','href': '#','active': false,
+						{'text': detail[1].title,'href': '#','active': false,
 						'nested':[
 							{'text':'Applications','href': `/applications/${jobID}`,'active': false},
 							{'text':'Interviews','href': `/interviews/${jobID}`,'active': false},

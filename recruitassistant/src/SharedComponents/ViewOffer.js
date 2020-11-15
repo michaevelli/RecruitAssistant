@@ -1,20 +1,16 @@
 import React, { useState,useLayoutEffect,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {Link, Grid,Button, CircularProgress, Snackbar, IconButton} from "@material-ui/core";
-import CheckIcon from '@material-ui/icons/Check';
-import ClearIcon from '@material-ui/icons/Clear';
+import {Link, Grid,Button, CircularProgress, Snackbar, IconButton, Divider, Typography} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
-import {Col,Row,Alert} from 'react-bootstrap';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import {Col,Row,Alert,Card,Table} from 'react-bootstrap';
 import TitleBar from "./TitleBar.js";
 import SideMenu from "./SideMenu.js";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import checkAuth from "../Authentication/Authenticate";
 import CounterOffer from "../JobSeekerComponents/CounterOffer";
-import { DesktopWindows } from "@material-ui/icons";
+
 export const offerdetailsurl="http://localhost:5000/getOfferDetails"
 export const accepturl = "http://localhost:5000/acceptoffer"
 export const declineurl = "http://localhost:5000/declineoffer"
@@ -40,11 +36,11 @@ export default function ViewOffer({match}) {
 	useEffect(() => {
 		auth();	
 		getOffer();
-	},[]);
+	},[]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useLayoutEffect(() => {
 		updateAlert()
-	},[offer,isRecruiter]);
+	},[offer,isRecruiter]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -53,7 +49,7 @@ export default function ViewOffer({match}) {
 				if (!response.success) {
 					history.push("/unauthorised");
 				}
-				if (response.userInfo["type"] == "recruiter") {
+				if (response.userInfo["type"] === "recruiter") {
 					setIsRecruiter(true)	
 				}
 			})
@@ -67,10 +63,13 @@ export default function ViewOffer({match}) {
 					console.log("response:", response.data)
 					/*initialise(response.data)*/
 					setOffer(response.data.offer)
-					setLoading(false)
+					
 				}).catch(function(error) {
 					console.log(error.response)
+					//page not found
+					history.push("/*")
 				})	
+				setLoading(false)
 
 	}
 	const updateAlert = ()=>{
@@ -110,16 +109,17 @@ export default function ViewOffer({match}) {
 			return null
 		} else {
 			return (
-				<Box fontSize="h6.fontSize" lineHeight={2}>
-					Documentation:
-						{offer.additional_docs.map((document) => (
+				<Typography variant='body1'>
+					<Divider/><br/>
+					Documents:
+					{offer.additional_docs.map((document) => (
 						<ul>
 							<Link style={{ cursor: 'pointer'}} onClick={()=>downloadFile(document.src,document.filename)} target="_blank">
 								<PictureAsPdfIcon color = "secondary"/>{document.filename}
 							</Link>
 						</ul>
 					))}
-				</Box>
+				</Typography>
 			)
 		}
 	}
@@ -127,7 +127,7 @@ export default function ViewOffer({match}) {
 	const renderAcceptButtons = () => {
 		
 		if (isRecruiter) {
-			if (offer.status == 'countered') {
+			if (offer.status === 'countered') {
 				return (
 					<div>
 						<p>Additional comments/counter offer from applicant:</p>
@@ -142,10 +142,10 @@ export default function ViewOffer({match}) {
 				)
 			}
 		} else {
-			 if (offer.status == 'sent') {
+			 if (offer.status === 'sent') {
 				return (
 					<div>
-						<Button variant="contained" color="secondary" onClick={handleAccept} style={{marginRight: 20}}>
+						<Button variant="contained" color="secondary" onClick={handleAccept} style={{marginRight:20}}>
 							Accept Offer
 						</Button>
 						<Button variant="contained" color="secondary" onClick={handleDecline} style={{margin: 20}}>
@@ -161,11 +161,11 @@ export default function ViewOffer({match}) {
 							Counter Offer
 						</Button>}
 						<div style={{display: counter_offer_shown}}>
-						<CounterOffer  offerID={offerId}/>
+							<br/><CounterOffer  offerID={offerId}/>
 						</div>
 					</div>
 				)
-			} else if (offer.status == 'countered') {
+			} else if (offer.status === 'countered') {
 				return (
 					<div>
 						<Typography variant="h6" gutterBottom>
@@ -220,6 +220,7 @@ export default function ViewOffer({match}) {
 	}
 	
 	const recruiterMenu = () => {
+		console.log(history)
 		return (		
 			<SideMenu random={[
 				{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
@@ -228,7 +229,7 @@ export default function ViewOffer({match}) {
 					{'text':'Applications','href': `/applications/${offer.job_id}`,'active': false},
 					{'text':'Interviews','href': `/interviews/${offer.job_id}`,'active': false},
 					{'text':'Offers','href': `/offers/${offer.job_id}`,'active': true},
-					{'text':'Statistics','href': `/jobstatistics/${offer.job_id}`,'active': false},
+					{'text': 'Statistics','href': `/jobstatistics/${offer.job_id}`,'active': false}
 					]},
 				{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 		);
@@ -272,58 +273,47 @@ export default function ViewOffer({match}) {
 					{ isRecruiter? recruiterMenu(): jobseekerMenu()}
 				</Col >
 				<Col>
-			
-				<Alert style={{visibility: (open? 'visible':'hidden'), margin:10}}  variant={variant} >
-					{desc}
-				</Alert>
-			
-						
-					<Typography component="div" style={{color: 'black', margin: 30}}>
-						<Box fontSize="h3.fontSize" >
-							Offer:  {offer.title}
-						</Box>
-						<Box fontSize="h6.fontSize">
-							Company:  {offer.company}
-						</Box>
-						<Box fontSize="h6.fontSize">
-							Date Posted:  {offer.date_posted}
-						</Box>
-						<br/><br/>
-						<Box fontSize="h7.fontSize" fontStyle="italic">
-							{renderDesc()}
-						</Box>
-						<br/><br/>
-						<Box fontSize="h6.fontSize">
-							Offer details:
-						</Box>
-						<br/>
-						
-						<Box fontSize="h8.fontSize">
-							<span style={{"font-weight": 'bold'}}>Job Type:</span> {offer.job_type}
-						</Box>
-						<Box fontSize="h8.fontSize">
-						<span style={{"font-weight": 'bold'}}>Location:</span> {offer.location}
-						</Box>
-						<Box fontSize="h8.fontSize">
-						<span style={{"font-weight": 'bold'}}>Salary:</span> {offer.salary} {offer.salary_type}
-						</Box>
-						<Box fontSize="h8.fontSize">
-						<span style={{"font-weight": 'bold'}}>Start Date:</span> {offer.start_date}
-						</Box>
-						<Box fontSize="h8.fontSize">
-						<span style={{"font-weight": 'bold'}}>End Date:</span> {offer.end_date}
-						</Box>
-						<Box fontSize="h8.fontSize">
-						<span style={{"font-weight": 'bold'}}>Days:</span> {offer.days}
-						</Box>
-						<Box fontSize="h8.fontSize">
-						<span style={{"font-weight": 'bold'}}>Hours:</span>	{offer.hours}
-						</Box>
-						<br/><br/>
-						{renderDocumentItems()}
-						{renderAcceptButtons()}
-					</Typography>
-					
+					<Row>
+						<Col xs={1}></Col>
+						<Col xs={6}>
+							<Alert style={{visibility: (open? 'visible':'hidden'), margin:10}}  variant={variant} >
+								{desc}
+							</Alert>
+							<Typography component="div" style={{color: 'black', margin: 50}}>
+								<Typography variant='h5'>{offer.title}</Typography>
+								<Typography variant='subtitle1'>{offer.company}</Typography>
+								<Typography variant='subtitle1'>Date Posted: {offer.date_posted}</Typography>
+								<br/>
+								<Divider/>
+								<br/>
+								<Typography variant='body1'>{renderDesc()}</Typography>
+								<br/>
+								{renderDocumentItems()}
+								<br/>
+							</Typography>
+							{renderAcceptButtons()}
+						</Col>
+						<Col xs={5} style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+							<Row style={{height:400,width:'80%',position:'absolute', top:80}}>
+								<Card border='success'style={{width:'100%'}}>
+									<Card.Body>
+										<Card.Title>Offer Details</Card.Title>
+										<Table borderless hover>
+											<tbody>
+												<tr><td>Location: </td><td>{offer.location}</td></tr>
+												<tr><td>Job Type: </td><td>{offer.job_type}</td></tr>
+												<tr><td>Salary: </td><td>${offer.salary} {offer.salary_type}</td></tr>
+												<tr><td>Start Date: </td><td>{offer.start_date}</td></tr>
+												<tr><td>End Date: </td><td>{offer.end_date}</td></tr>
+												<tr><td>Days: </td><td>{offer.days}</td></tr>
+												<tr><td>Hours: </td><td>{offer.hours}</td></tr>
+											</tbody>
+										</Table>
+									</Card.Body>
+								</Card>
+							</Row>
+						</Col>
+					</Row>
 				</Col>
 			</Row>
 		</Grid>

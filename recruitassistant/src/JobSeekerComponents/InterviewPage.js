@@ -1,7 +1,7 @@
 import React, { useState,useEffect,useLayoutEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {Grid,Button,TextField,Snackbar,IconButton} from "@material-ui/core";
+import {Grid,Button,TextField,Snackbar,IconButton,Divider} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close"
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
@@ -38,11 +38,11 @@ export default function InterviewPage({match}) {
 	useEffect(() => {
 		auth();
 		getInterviewDetails();
-	},[]);
+	},[]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useLayoutEffect(() => {
 		updateAlert()
-	},[status, reason]);
+	},[status, reason]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	//update color/text of alert bar
 	const updateAlert = ()=>{
@@ -69,81 +69,11 @@ export default function InterviewPage({match}) {
 			.then(function(response) {
 				console.log("auth success: ", response)
 				// const recruiterID = sessionStorage.getItem("uid")			
-				if (!response.success || response.userInfo["type"] != "jobseeker") {
+				if (!response.success || response.userInfo["type"] !== "jobseeker") {
 					history.push("/unauthorised");
 				}
 			})
 	}
-
-     
-    //if status is pending give option to accept/decline
-    //else simply show the date and time info
-    const interviewInfo = () => {
-        return (
-        <div>
-		<Snackbar
-			anchorOrigin={{
-				vertical: 'bottom',
-				horizontal: 'right',
-			}}
-			open={openError}
-			autoHideDuration={5000}
-			onClose={() => setOpenError(false)}
-			message="An error occurred, please try again"
-			action={
-				<IconButton size="small" aria-label="close" color="inherit" onClick={() => setOpenError(false)}>
-					<CloseIcon fontSize="small" />
-				</IconButton>
-			}
-		/>
-        <Alert style={{visibility: (open? 'visible':'hidden'), margin:10}}  variant={variant} >
-            {desc}
-        </Alert>
-        <Typography component="div" style={{color: 'black', margin: 30}}>
-    
-            <Box fontSize="h4.fontSize" >
-                Interview Details
-            </Box>
-            <br/>
-			
-            <br/>
-
-            <Box fontSize="h5.fontSize">
-                <span style={{fontWeight: "bold"}}>Date:</span> {date}
-            </Box>
-            <br/>
-            <Box fontSize="h5.fontSize">
-                <span style={{fontWeight: "bold"}}>Time:</span> {time}
-            </Box>
-			<br />
-			<Box fontSize="h5.fontSize">
-                <span style={{fontWeight: "bold"}}>Details:</span> {details}
-            </Box>
-
-			<br/>
-			<br/>
-			<br/>
-			<Box fontSize="h7.fontSize" visibility={email === ''?"hidden":"visible"}>
-				<span style={{fontWeight: "bold"}}>Recruiter Email:</span> {email}
-            </Box>
-
-            <br/>
-			<Box fontSize="h7.fontSize">
-				<Link href={joblink}>Job Advertisement</Link>
-            </Box>
-            {status=="Pending" &&
-            <Box style={{marginTop: 50}}>
-                <Button variant="contained"  color="secondary" style={{marginRight:30,backgroundColor: 'green'}} onClick={()=>handleResponse("Accepted")}>
-                Accept
-                </Button>
-                <Button variant="contained" color="secondary" onClick={()=>setShow(show==='none'? 'block': 'none')}>
-                Decline
-                </Button>
-            </Box>
-            }
-        </Typography>
-        </div> )
-    }
 
 	const getInterviewDetails = async () => {
 		await axios.get(`${interviewURL}/${interviewID}`)
@@ -157,10 +87,12 @@ export default function InterviewPage({match}) {
 			setDetails(interview_data["interview_details"] || '');
 			setlink('http://localhost:3000/advertisement/' + interview_data['job_id']);
 			setEmail(interview_data['recruiter_email']|| '')
-			setLoading(false)
+			
 		}).catch((error) => {
 			console.log("error: ", error.response)
+			history.push('/*')
 		})	
+		setLoading(false)
 	}
 
    
@@ -179,15 +111,67 @@ export default function InterviewPage({match}) {
 		})
 		.catch((error) => {
 			console.log("error: ", error.response)
-			alert("An error occured, please try again")
+			setOpenError(true)
 		})	
 		
+	}
+
+	//if status is pending give option to accept/decline
+	//else simply show the date and time info
+	const renderInterviewInfo = () => {
+		return (
+		<div>
+		<Snackbar
+			anchorOrigin={{
+				vertical: 'bottom',
+				horizontal: 'right',
+			}}
+			open={openError}
+			autoHideDuration={5000}
+			onClose={() => setOpenError(false)}
+			message="An error occurred, please try again"
+			action={
+				<IconButton size="small" aria-label="close" color="inherit" onClick={() => setOpenError(false)}>
+					<CloseIcon fontSize="small" />
+				</IconButton>
+			}
+		/>
+		<Alert style={{visibility: (open? 'visible':'hidden'), margin:10}}  variant={variant} >
+			{desc}
+		</Alert>
+		<Typography component="div" style={{color: 'black', margin: 50, textAlign:'center'}}>
+			<Typography variant='h5'>Interview Details</Typography>
+			<br/>
+			<Divider/>
+			<br/>
+			<Typography variant='body1'>Congratulations! You have received an interview invite:</Typography>
+			<br/>
+			<Typography variant='body1'>Date: {date}</Typography>
+			<Typography variant='body1'>Time: {time}</Typography>
+			<br/>
+			<Typography variant='body1'>{details !== '' && ('Details: ' + details)}</Typography>
+			<br/>{email !== '' && <Divider/>}<br/>
+			<Typography variant='body1'>{email !== '' && ('Feel free to contact your recruiter if you have any questions at ' + email)}</Typography>
+			<br/><Divider/><br/>
+			<Link href={joblink}>View original job posting</Link>
+			{status==="Pending" &&
+			<Box style={{marginTop: 50}}>
+				<Button variant="contained"  color="secondary" style={{marginRight:30,backgroundColor: 'green'}} onClick={()=>handleResponse("Accepted")}>
+				Accept
+				</Button>
+				<Button variant="contained" color="secondary" onClick={()=>setShow(show==='none'? 'block': 'none')}>
+				Decline
+				</Button>
+			</Box>
+			}
+		</Typography>
+		</div> )
 	}
 	
 	//field showing up when declined
 	const renderDecline = () => {
 		return (
-			<div style={{display: show, color: 'black', margin: 50}}>
+			<div style={{display: show, color: 'black', margin: 50, textAlign:'center'}}>
 				<p>Optionally provide a reason (up to 70 characters) for declining and confirm you want to decline the interview.</p>
 				<div>
 					<TextField
@@ -220,11 +204,11 @@ export default function InterviewPage({match}) {
 				<Col sm={2}>
 					<SideMenu random={[
 						{'text':'Job Seeker Dashboard','href': '/jobseekerdashboard', 'active': false},
-						{'text':'Your Applications','href': '/yourapplications', 'active': false},         
+						{'text':'Your Applications','href': '/yourapplications', 'active': true},         
 						{'text':'FAQ','href':'/jobseekerFAQ','active': false}]}/>
 				</Col >
-				<Col>	
-				{interviewInfo()}
+				<Col sm={9}>	
+				{renderInterviewInfo()}
 				{renderDecline()}
 				</Col>
 			</Row>

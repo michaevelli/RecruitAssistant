@@ -37,17 +37,21 @@ def search():
 				try:
 					for i in range(len(val["responsibilities"])):
 						searchtext = searchtext + " " + val["responsibilities"][i].lower()
+				except:
+					pass
+				
+				try:
 					for i in range(len(val["req_qualifications"])):
 						searchtext = searchtext + " " + val["req_qualifications"][i].lower()
 				except:
 					pass
 				searchtext = re.sub(re.compile("\W"), " ", searchtext)
-				searchtext = ' '.join([w for w in searchtext.split() if len(w)>3])
+				searchtext = ' '.join([w for w in searchtext.split() if len(w)>2])
 				
 				searchqueries = search.lower()
 				searchqueries = re.sub(re.compile("\W"), " ", searchqueries)
 				for word in searchqueries.split():
-					if len(word) <= 3:
+					if len(word) <= 2:
 						continue
 					if word in searchtext:
 						jobs.append((key, val))

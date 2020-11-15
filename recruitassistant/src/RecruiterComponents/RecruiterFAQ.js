@@ -18,7 +18,7 @@ export default function RecruiterDashboard() {
 
 	useEffect(() => {
 		auth();
-	}, [recruiterID]);
+	}, [recruiterID]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -26,7 +26,7 @@ export default function RecruiterDashboard() {
 				console.log("auth success: ", response)
 				setLoading(false)
 				// const recruiterID = sessionStorage.getItem("uid")			
-				if (!response.success || response.userInfo["type"] != "recruiter") {
+				if (!response.success || response.userInfo["type"] !== "recruiter") {
 					history.push("/unauthorised");
 				}
 			})

@@ -1,24 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
-import { Divider, Grid, Menu, MenuItem, Typography } from "@material-ui/core";
+import { Divider, Menu, MenuItem, Typography, CircularProgress, Badge, Link, withStyles } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
 import CancelIcon from '@material-ui/icons/Cancel';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import Link from '@material-ui/core/Link';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import {Card, Container,Col,Row,} from 'react-bootstrap';
-import { useHistory } from "react-router-dom";
+import {Card,Col,Row,} from 'react-bootstrap';
 import axios from "axios";
-
-// const useStyles = makeStyles((theme) => ({
-//   paper: {
-//     backgroundColor: theme.palette.background.paper,
-//     border: '2px solid #000',
-//     boxShadow: theme.shadows[5],
-//     padding: theme.spacing(2, 4, 3),
-//   },
-// }));
 
 const StyledBadge = withStyles((theme) => ({
   badge: {
@@ -30,11 +17,11 @@ const StyledBadge = withStyles((theme) => ({
 }))(Badge);
 
 export default function Notifications() {
-  const history = useHistory();
   const [notif, setNotif] = useState([])
   const [notifLength, setLength] = useState(0)
   const [open, setOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null);
+  const [loading, setLoading] = useState(true)
 
   const checkUrl = "http://localhost:5000/checknotif"
   const delUrl = "http://localhost:5000/remnotif"
@@ -48,7 +35,7 @@ export default function Notifications() {
         getData()
       }, 300000);
       return () => clearInterval(interval);
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // setting which data to retrieve
   const getData = async() => {
@@ -59,6 +46,7 @@ export default function Notifications() {
     await axios.post(checkUrl, data)
 			.then(res => {
         handleData(res.data.data)
+        setLoading(false)
         // setNotif(res.data.data)
 			})
 			.catch((error) => {
@@ -72,7 +60,7 @@ export default function Notifications() {
     var count = 0
     if(data != null){
       for(var i = 0; i < data.length; i++){
-        if(data[i][1]["seen"] != true){
+        if(data[i][1]["seen"] !== true){
           count++;
         }
       }
@@ -103,6 +91,7 @@ export default function Notifications() {
   }
 
   const deleteNotif = async(id) => {
+    setLoading(true)
     const data={
       id : id,
       uid: sessionStorage.getItem("uid"),
@@ -122,7 +111,7 @@ export default function Notifications() {
     setOpen(true)
     setAnchorEl(event.currentTarget);
     var list_seen = []
-    notif.map((data) => {
+    notif.forEach((data) => {
       list_seen.push(data[0])
     });
     // record in db which notifications have been viewed
@@ -136,49 +125,49 @@ export default function Notifications() {
   }
 
   const renderNotifText = (type, url) => {
-    if (type == "offer update") {
+    if (type === "offer update") {
       return (
         <Typography color="textSecondary">
           Your <Link href={url}>job offer</Link> has been updated!
         </Typography>
       )
-    } else if (type == "accepted offer") {
+    } else if (type === "accepted offer") {
       return (
         <Typography color="textSecondary">
           Your <Link href={url}>job offer</Link> has been accepted!
         </Typography>
       )
-    } else if (type == "counter offer") {
+    } else if (type === "counter offer") {
       return (
         <Typography color="textSecondary">
           Your job offer has received a <Link href={url}>counter offer</Link>
         </Typography>
       )
-    } else if (type == "interview") {
+    } else if (type === "interview") {
       return (
         <Typography color="textSecondary">
           You have a new <Link href={url}>interview</Link>!
         </Typography>
       )
-    } else if (type == "accepted interview") {
+    } else if (type === "accepted interview") {
       return (
         <Typography color="textSecondary">
           Your <Link href={url}>interview</Link> has been accepted!
         </Typography>
       )
-    } else if (type == "declined interview") {
+    } else if (type === "declined interview") {
       return (
         <Typography color="textSecondary">
           Your <Link href={url}>interview</Link> has been declined
         </Typography>
       )
-    } else if (type == "declined offer") {
+    } else if (type === "declined offer") {
       return (
         <Typography color="textSecondary">
           Your <Link href={url}>job offer</Link> has been declined
         </Typography>
       )
-    } else if (type == "rejected offer") {
+    } else if (type === "rejected offer") {
       return (
         <Typography color="textSecondary">
           Your <Link href={url}>job offer</Link> has been rejected
@@ -196,7 +185,18 @@ export default function Notifications() {
 
 
   const renderNotif = () => {
-    if(notif.length == 0){
+    if(loading){
+      return ( 
+        <MenuItem style={{display:'flex', justifyContent:'center', height:200}}>
+          <div style={{
+            position: 'absolute', left: '50%', top: '50%',
+            transform: 'translate(-50%, -50%)'
+            }}>
+            <CircularProgress/>
+          </div>
+        </MenuItem>
+      )
+    } else if(notif.length === 0){
       return ( 
         <MenuItem style={{display:'flex', justifyContent:'center'}}>
           <Typography color="textSecondary">
@@ -210,21 +210,19 @@ export default function Notifications() {
         <div>
         <MenuItem style={data[1].seen ? {backgroundColor:'lightgrey', opacity:"0.7", cursor: 'default'} : {cursor: 'default'}} divider>
           <Card.Body>
-            {/* <Grid> */}
-              <Row>
-                <Col xs={10}>
-                  {renderNotifText(data[1].type, data[1].url)}
-                  <Typography color="textSecondary">
-                    {data[1].date_time}
-                  </Typography>
-                </Col>
-                <Col xs={2}>
-                  <IconButton aria-label="delete" onClick={() => {deleteNotif(data[0])}}>
-                    <CancelIcon />
-                  </IconButton>
-                </Col>
-              </Row>
-            {/* </Grid> */}
+            <Row>
+              <Col xs={10} style={{whiteSpace:'initial'}}>
+                {renderNotifText(data[1].type, data[1].url)}
+                <Typography color="textSecondary">
+                  {data[1].date_time}
+                </Typography>
+              </Col>
+              <Col xs={2}>
+                <IconButton aria-label="delete" onClick={() => {deleteNotif(data[0])}}>
+                  <CancelIcon />
+                </IconButton>
+              </Col>
+            </Row>
           </Card.Body>
         </MenuItem>
         <Divider/>

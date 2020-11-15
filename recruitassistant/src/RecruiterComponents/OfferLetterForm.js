@@ -1,12 +1,10 @@
 import React, { useState,useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.css';
-import {IconButton,Grid,Button,TextField,FormGroup,FormControlLabel,Switch,Snackbar} from "@material-ui/core";
-import CircularProgress from '@material-ui/core/CircularProgress';
-import CloseIcon from '@material-ui/icons/Add';
+import {IconButton,Grid,Button,TextField,FormControlLabel,Switch,Snackbar,CircularProgress,Typography} from "@material-ui/core";
+import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
-import {Form,Container,InputGroup,Col,Row} from 'react-bootstrap';
-import Typography from '@material-ui/core/Typography';
+import {Form,InputGroup,Col,Row} from 'react-bootstrap';
 import TitleBar from "../SharedComponents/TitleBar.js";
 import SideMenu from "../SharedComponents/SideMenu.js";
 import axios from "axios";
@@ -58,8 +56,7 @@ export default function OfferLetterForm(props) {
 		auth();
 		getJobInfo(jobID);
 		getJobSeekerName(jobAppID);
-		
-	},[]);
+	},[]); // eslint-disable-line react-hooks/exhaustive-deps
 	
 	//Prefill fields with job ad info
 	async function getJobInfo(jobID) {
@@ -106,7 +103,7 @@ export default function OfferLetterForm(props) {
 			.then(function(response) {
 				console.log("auth success: ", response)
 				// const recruiterID = sessionStorage.getItem("uid")			
-				if (!response.success || response.userInfo["type"] != "recruiter") {
+				if (!response.success || response.userInfo["type"] !== "recruiter") {
 					history.push("/unauthorised");
 				}
 			})
@@ -133,7 +130,7 @@ export default function OfferLetterForm(props) {
 			var filename=event.target.files[0].name
 			var filetype= event.target.files[0].type
 			console.log(filetype)
-			if(filetype!="application/pdf"){
+			if(filetype!=="application/pdf"){
 				setMessage("Please upload a pdf")
 				setOpen(true)
 				return 0
@@ -244,8 +241,6 @@ export default function OfferLetterForm(props) {
 			<Row noGutters style={{height:'100%',paddingTop: 60}}>
 				<Col sm="2">
 					<SideMenu random={[
-
-						{'text':'Back to Job Applications','href': `/applications/${jobID}`,'active': true},
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
 						{'text':title,'href': `/applications/${jobID}`,'active': true},
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
@@ -394,7 +389,7 @@ export default function OfferLetterForm(props) {
 						</Form.Group>
 
 						<Form.Group controlId="additionalDocs">
-							<Form.Label column sm={2}>
+							<Form.Label column sm={4}>
 							Additional Documents
 							</Form.Label>
 							<IconButton onClick={() => handleAddDoc()}>

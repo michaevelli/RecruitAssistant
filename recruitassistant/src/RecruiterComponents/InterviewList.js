@@ -47,14 +47,14 @@ export default function InterviewList({match}) {
 		getJob();
 		getInterviews();
 		getOffers();
-	}, [recruiterID]);
+	}, [recruiterID]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
 				setLoading(false)
-				if (!response.success || response.userInfo["type"] != "recruiter") {
+				if (!response.success || response.userInfo["type"] !== "recruiter") {
 					history.push("/unauthorised");
 				}
 			})
@@ -148,7 +148,7 @@ export default function InterviewList({match}) {
 					<Col sm="2">
 					<SideMenu random={[
 						{'text':'Recruiter Dashboard','href': '/recruiterdashboard','active': false},
-						{'text': 'Job View','href': '#','active': false,
+						{'text': detail[1].title,'href': '#','active': false,
 						'nested':[
 							{'text':'Applications','href': `/applications/${jobID}`,'active': false},
 							{'text':'Interviews','href': `/interviews/${jobID}`,'active': true},

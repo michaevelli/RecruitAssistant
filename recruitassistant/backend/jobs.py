@@ -1,8 +1,8 @@
+##API methods related to job advertisements
 from flask import Flask, request, jsonify
 from .init_app import app, ref
 import uuid
 from datetime import date, datetime
-
 
 # create new job in database
 @app.route('/jobadverts', methods=["POST"])
@@ -40,6 +40,39 @@ def post_new_job():
 	except Exception as e:		
 		return jsonify({"message": str(e)}), 400
 
+#get all job adverts in the database
+@app.route('/jobadverts/open', methods=["GET"] )
+def get_all_posts():
+	try:
+		posts=ref.child("jobAdvert").get()
+		
+		jobs=[]
+		for key,val in posts.items():
+			jobs.append((key,val))
+
+		#print(jobs)
+		return jsonify({'jobs': jobs}),200
+ 
+	except Exception as e:
+		return jsonify({"message": str(e)}), 400
+
+#get job advertisements posted by a recruiter
+@app.route('/jobadverts/<recruiterid>', methods=["GET"])
+def get_recruiter_posts(recruiterid):
+	try:
+		posts=ref.child("jobAdvert").order_by_child('recruiter_id').equal_to(recruiterid).get()
+
+		jobs=[]
+		for key,val in posts.items():
+			jobs.append((key,val))
+		
+		#print(jobs)
+		return jsonify({'jobs': jobs}),200
+ 
+	except Exception as e:		
+		print(e)
+		return jsonify({"message": str(e)}), 400
+
 # edit existing job in database
 @app.route('/editjob', methods=["POST"])
 def edit_job():
@@ -73,7 +106,7 @@ def edit_job():
 		print(e)	
 		return jsonify({"message": str(e)}), 400
 
-# get job info given job id
+# get job advert info for one specific job
 @app.route('/advertisement', methods=["GET"])
 def get_job_for_page():
 	try:
