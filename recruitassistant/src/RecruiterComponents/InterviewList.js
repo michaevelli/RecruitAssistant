@@ -30,7 +30,6 @@ export default function InterviewList({match}) {
 		)},
 		{ field: 'datetime', headerName: 'Date & Time', type: 'dateTime', width: 150 },
 		{ field: 'status', headerName: 'Status', width: 100 },
-		{ field: 'reason', headerName: 'Reason', width: 405, sortable: false },
 		{ field: 'offer', headerName: 'Make Offer', sortable: false, width: 104,
 			renderCell: (row) => (offered.includes(row.data.appID)?(
 				<span>Offered</span>
@@ -39,7 +38,8 @@ export default function InterviewList({match}) {
 					Offer
 				</Link>
 			))
-		}
+		},
+		{ field: 'reason', headerName: 'Reason', width: 600, sortable: false, resizable: true,}
 	];
 
 	useEffect(() => {
@@ -169,7 +169,7 @@ export default function InterviewList({match}) {
 						</Typography>
 						<Row>
 							<div style={{ height: 600, width: '100%', marginLeft: 100 }}>
-								<DataGrid rows={renderInterviews()} columns={columns} disableColumnResize={true} disableSelectionOnClick={true} pageSize={10}/>
+								<DataGrid rows={renderInterviews()} columns={columns} disableSelectionOnClick={true} pageSize={10}/>
 							</div>
 						</Row>
 					</Col>
