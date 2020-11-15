@@ -118,7 +118,7 @@ export default function JobStatistics({match}) {
             dataKey="Number of Candidates"
             >
               <CartesianGrid  />
-              <XAxis  tick={false} dataKey="name" label={{ value: 'Hover to view Qualification',position: "insideBottom", dy: 10}} />
+              <XAxis  tick={false} dataKey="name" label={{ value: 'Hover to view Qualification',position: "insideBottom"}} />
               <YAxis 
                 label={{ value: "Number of Applicants", angle: -90}} 
                 allowDecimals={false} />
@@ -163,7 +163,7 @@ export default function JobStatistics({match}) {
             dataKey="Number of Applicants"
             >
               <CartesianGrid  />
-              <XAxis dataKey="Qualifications" label={{ value: 'Qualifications Met',position: "insideBottom", dy: 10}} />
+              <XAxis dataKey="Qualifications" label={{ value: 'Qualifications Met',position: "insideBottom", dy: 8}} />
               <YAxis 
                 label={{ value: "Number of Applicants", angle: -90}} 
                 allowDecimals={false} />
