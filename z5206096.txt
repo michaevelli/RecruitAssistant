@@ -21,3 +21,6 @@ Finished the recruiter list of interviews and offers sent as well as individual 
 
 Week 8
 Integrated all the code with everyone else's sections and finished the sprint to demo during the lab. During the lab, we also reflected on the sprint and conducted the sprint retrospective to evaluate how effective last retrospective's to-tries were and set new to-tries for the upcoming sprints. Our team also started sprint planning for the last sprint and assigned the last stories and tasks to members, making sure that everything is wrapped up and finished which includes touching up on front-end design. I was tasked with filtering open and closed jobs in the search page and the leftover optional reason for interview declining from the last sprint.
+
+Week 9
+Completed the final sprint and conducted multiple code reviews to modify UI and make sure all the functionalities were implemented correctly. The database we were using used too much data which went over our allowed free limit so we had to set up a new database. There were a few bugs and minor inconsistencies that we found and had to change. After we had finished the main stories left in the sprint, Calvin, Becca and I worked on modifying and fixing the code while Brendon and Michael worked on the project report. Once all the coding was satisfactory, we all worked on the project report.
