@@ -108,7 +108,35 @@ export default function JobStatistics({match}) {
            </ResponsiveContainer>
         );
       }
-      
+      const qualificationsBar = ()=>{
+        return qualificationsInfo.length===0? 
+        (<p>No required qualifications were specified for this job.</p>):
+        (
+          <ResponsiveContainer width="99%" aspect={2}>
+            <BarChart
+            data={qualificationsInfo}
+            dataKey="Number of Candidates"
+            >
+              <CartesianGrid  />
+              <XAxis  tick={false} dataKey="name" label={{ value: 'Hover to view Qualification',position: "insideBottom"}} />
+              <YAxis 
+                label={{ value: "Number of Applicants", angle: -90}} 
+                allowDecimals={false} />
+              <Tooltip/>
+              <Bar dataKey='Number of Candidates' >
+              {
+              qualificationsInfo.map((entry, index) => <Cell  name={entry['name']} fill={COLORS[(index+2) % COLORS.length]}/>)
+              }
+              </Bar>
+             
+              
+            </BarChart>
+          </ResponsiveContainer>
+
+        )
+      }
+
+      //No longer used
       const qualificationsPie = ()=>{
         return qualificationsInfo.length===0? 
         (<p>No required qualifications were specified for this job.</p>):
@@ -135,7 +163,7 @@ export default function JobStatistics({match}) {
             dataKey="Number of Applicants"
             >
               <CartesianGrid  />
-              <XAxis dataKey="Qualifications" label={{ value: 'Qualifications Met',position: "insideBottom", dy: 10}} />
+              <XAxis dataKey="Qualifications" label={{ value: 'Qualifications Met',position: "insideBottom", dy: 8}} />
               <YAxis 
                 label={{ value: "Number of Applicants", angle: -90}} 
                 allowDecimals={false} />
@@ -201,7 +229,7 @@ export default function JobStatistics({match}) {
           <Card style={{marginRight:30}}>
             <Card.Header as="h5">Qualifications Breakdown</Card.Header>
             <Card.Body>
-            {qualificationsPie()}
+            {qualificationsBar()}
             </Card.Body>
           </Card>
         </Col>

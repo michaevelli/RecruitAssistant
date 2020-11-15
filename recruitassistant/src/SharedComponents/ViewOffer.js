@@ -80,7 +80,7 @@ export default function ViewOffer({match}) {
 		else if(offer.status==='declined'){
 			console.log(isRecruiter)
 			setVariant('dark')
-			setDesc(isRecruiter?"The candidate has declined this offer.":"You have declined this offer.")
+			setDesc(isRecruiter?"This offer has been declined.":"You have declined this offer.")
 		}
 		else if(offer.status==='countered'){
 			setVariant('primary')
@@ -105,7 +105,7 @@ export default function ViewOffer({match}) {
 
 	// --- render components dynamically ---
 	const renderDocumentItems = () => {
-		if (offer.additional_docs == null) {
+		if (offer.additional_docs.length  ===0) {
 			return null
 		} else {
 			return (
@@ -167,7 +167,7 @@ export default function ViewOffer({match}) {
 				)
 			} else if (offer.status === 'countered') {
 				return (
-					<div>
+					<div style={{margin:40}}>
 						<Typography variant="h6" gutterBottom>
 							Your counter offer:</Typography>
 						{offer.counter_offer}

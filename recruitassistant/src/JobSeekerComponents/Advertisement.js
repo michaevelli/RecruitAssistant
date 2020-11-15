@@ -123,9 +123,9 @@ export default function Advertisement() {
 							<Card border='success'style={{width:'100%'}}>
 								<Card.Body>
 									<Card.Title>Job Details</Card.Title>
-									<Table borderless hover>
+									<Table borderless hover  style={{tableLayout: 'fixed'}}>
 										<tbody>
-											<tr><td>Location: </td><td>{detail[1].location}</td></tr>
+											<tr><td>Location: </td><td style={{wordWrap: 'break-word'}}>{detail[1].location}</td></tr>
 											<tr><td>Job Type: </td><td>{detail[1].job_type}</td></tr>
 											<tr><td>Renumeration: </td><td>${detail[1].salary_pa}</td></tr>
 											<tr><td>Experience: </td><td>{detail[1].experience_level}</td></tr>
