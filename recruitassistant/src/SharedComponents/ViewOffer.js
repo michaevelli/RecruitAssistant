@@ -228,6 +228,7 @@ export default function ViewOffer({match}) {
 					{'text':'Applications','href': `/applications/${offer.job_id}`,'active': false},
 					{'text':'Interviews','href': `/interviews/${offer.job_id}`,'active': false},
 					{'text':'Offers','href': `/offers/${offer.job_id}`,'active': true},
+					{'text':'Statistics','href': `/jobstatistics/${offer.job_id}`,'active': false},
 					]},
 				{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>
 		);

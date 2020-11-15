@@ -129,6 +129,7 @@ export default function ViewApplication() {
 							{'text':'Applications','href': `/applications/${jobID}`,'active': true},
 							{'text':'Interviews','href': `/interviews/${jobID}`,'active': false},
 							{'text':'Offers','href': `/offers/${jobID}`,'active': false},
+							{'text': 'Statistics','href': `/jobstatistics/${jobID}`,'active': false},
 							]},
 						{'text':'FAQ','href':'/recruiterFAQ','active': false}]}/>)
 					}

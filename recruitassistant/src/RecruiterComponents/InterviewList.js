@@ -12,12 +12,14 @@ import checkAuth from "../Authentication/Authenticate";
 
 export const advertisementUrl="http://localhost:5000/advertisement"
 export const interviewUrl="http://localhost:5000/interviewslist"
+export const offerUrl="http://localhost:5000/offerslist"
 
 export default function InterviewList({match}) {
 	const jobID = match.params.jobID;
 	const recruiterID = sessionStorage.getItem("uid")
 	const history = useHistory();
 	const [loading, setLoading] = useState(true);
+	const [offered, setOffered] = useState([])
 	const [interviews, setInterviews] = useState([])
 	const [job, setJob] = useState([])
 
@@ -28,13 +30,15 @@ export default function InterviewList({match}) {
 		)},
 		{ field: 'datetime', headerName: 'Date & Time', type: 'dateTime', width: 150 },
 		{ field: 'status', headerName: 'Status', width: 100 },
-		{ field: 'reason', headerName: 'Reason', width: 470, resizable: true, sortable: false },
-		{ field: 'offer', headerName: 'Make Offer', sortable: false, width: 400,
-			renderCell: (row) => (
+		{ field: 'reason', headerName: 'Reason', width: 405, sortable: false },
+		{ field: 'offer', headerName: 'Make Offer', sortable: false, width: 104,
+			renderCell: (row) => (offered.includes(row.data.appID)?(
+				<span>Offered</span>
+			) : (
 				<Link to={{pathname: `/createoffer`, state:{jobAppID: row.data.appID, jobID: jobID}}}>
 					Offer
 				</Link>
-			)
+			))
 		}
 	];
 
@@ -42,6 +46,7 @@ export default function InterviewList({match}) {
 		auth();
 		getJob();
 		getInterviews();
+		getOffers();
 	}, [recruiterID]);
 
 	const auth = async () => {
@@ -83,6 +88,27 @@ export default function InterviewList({match}) {
 			.then(res => {
 				setInterviews(res.data.interviews)
 				console.log("response: ", res)
+			})
+			.catch((error) => {
+				console.log("error: ", error.response)
+			})
+	};
+
+	const getOffers = async () => {
+		const url = `${offerUrl}`
+		console.log(url)
+		await axios.get(url, {
+			params: {
+				job_id: jobID
+			},
+		})
+			.then(res => {
+				const offeredJobseekers = []
+				for (var i = 0; i < res.data.offers.length; i++) {
+					offeredJobseekers.push(res.data.offers[i][1].application_id)
+				}
+				setOffered(offeredJobseekers)
+				console.log("response: ", offeredJobseekers)
 			})
 			.catch((error) => {
 				console.log("error: ", error.response)
