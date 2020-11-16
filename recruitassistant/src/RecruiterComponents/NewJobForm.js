@@ -22,6 +22,7 @@ export default function NewJobForm() {
 
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
+	const [submitted, setSubmitted] = useState(false)
 	const [open, setOpen] = useState(false)
 	const [disable, setDisable] = useState(false)
 	const [message, setMessage] = useState('')
@@ -166,6 +167,7 @@ export default function NewJobForm() {
 
     const handleSubmit= async (event) =>{	
 		event.preventDefault();
+		setSubmitted(true)
 		const form = event.currentTarget;
 		const correct_date=datevalidator()
 		//Closing dates will always be after today, hence status is always 'open' for a new job
@@ -277,7 +279,9 @@ export default function NewJobForm() {
 									/>
 									<IconButton onClick={() => handleRemoveResponsibility(index)}>
 										<RemoveIcon />
-									</IconButton></li>
+									</IconButton>
+									{submitted && responsibilities[index] === ''?(<span style={{color:"red"}}>Please fill in empty field</span>):(<div></div>)}
+									</li>
 								</ul>
 							))}
 							</Col>					
@@ -384,7 +388,9 @@ export default function NewJobForm() {
 									/>
 									<IconButton onClick={() => handleRemoveQuality(index)}>
 										<RemoveIcon />
-									</IconButton></li>
+									</IconButton>
+									{submitted && qualifications[index] === ''?(<span style={{color:"red"}}>Please fill in empty field</span>):(<div></div>)}
+									</li>
 								</ul>
 							))}
 							</Col>					
@@ -412,7 +418,9 @@ export default function NewJobForm() {
 									/>
 									<IconButton onClick={() => handleRemoveDoc(index)}>
 										<RemoveIcon />
-									</IconButton></li>
+									</IconButton>
+									{submitted && requiredDocs[index] === ''?(<span style={{color:"red"}}>Please fill in empty field</span>):(<div></div>)}
+									</li>
 								</ul>
 							))}
 							</Col>					
@@ -440,7 +448,8 @@ export default function NewJobForm() {
 									/>
 									<IconButton onClick={() => handleRemoveQuestion(index)}>
 										<RemoveIcon />
-									</IconButton></li>
+									</IconButton>
+									{submitted && additionalQuestions[index] === ''?(<span style={{color:"red"}}>Please fill in empty field</span>):(<div></div>)}</li>
 								</div>
 							))}
 							</ol>

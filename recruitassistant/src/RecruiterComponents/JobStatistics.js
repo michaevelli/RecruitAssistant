@@ -137,23 +137,23 @@ export default function JobStatistics({match}) {
       }
 
       //No longer used
-      const qualificationsPie = ()=>{
-        return qualificationsInfo.length===0? 
-        (<p>No required qualifications were specified for this job.</p>):
-        (
-          <ResponsiveContainer width="100%" aspect={2}>
-            <PieChart title='yyee'>
-              <Pie data={qualificationsInfo}  dataKey="Number of Candidates"  >
-              {
-              qualificationsInfo.map((entry, index) => <Cell fill={COLORS[(index+2) % COLORS.length]}/>)
-              }
-              </Pie>
-              <Tooltip formatter={(label) => (label/numCandidates)*100 + "% of applicants"}/>
-              <Legend />
-          </PieChart>
-         </ResponsiveContainer>
-        )
-      }
+      // const qualificationsPie = ()=>{
+      //   return qualificationsInfo.length===0? 
+      //   (<p>No required qualifications were specified for this job.</p>):
+      //   (
+      //     <ResponsiveContainer width="100%" aspect={2}>
+      //       <PieChart title='yyee'>
+      //         <Pie data={qualificationsInfo}  dataKey="Number of Candidates"  >
+      //         {
+      //         qualificationsInfo.map((entry, index) => <Cell fill={COLORS[(index+2) % COLORS.length]}/>)
+      //         }
+      //         </Pie>
+      //         <Tooltip formatter={(label) => (label/numCandidates)*100 + "% of applicants"}/>
+      //         <Legend />
+      //     </PieChart>
+      //    </ResponsiveContainer>
+      //   )
+      // }
 
       const numberQualificationsBar = ()=>{
         return ( 

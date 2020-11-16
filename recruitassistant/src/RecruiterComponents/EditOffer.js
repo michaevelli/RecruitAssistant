@@ -29,6 +29,7 @@ export default function EditOffer({match}) {
 	const t  = new Date();
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
+	const [submitted, setSubmitted] = useState(false)
 	const [open, setOpen] = useState(false)
 	const [disable, setDisable] = useState(false)
 	const [message, setMessage] = useState('')
@@ -126,6 +127,10 @@ export default function EditOffer({match}) {
 			const reader = new FileReader()
 			reader.onload = (e) => handleFileLoad(filename,index,e);
 			reader.readAsDataURL(file)
+		} else {
+			var docs = [...additionalDocs]
+			docs[index] = {'filename': '', 'src': undefined}
+			setAdditionalDocs(docs)
 		}
 		
 	}
@@ -192,6 +197,7 @@ export default function EditOffer({match}) {
    
 	const handleSubmit= async (event) =>{	
 		event.preventDefault();
+		setSubmitted(true)
 		const form = event.currentTarget;
 		if (form.checkValidity() === false) {	
 			event.stopPropagation();
@@ -390,12 +396,13 @@ export default function EditOffer({match}) {
 							{additionalDocs.map((doc, index) => (
 								<div key={index}>
 									<Form.File
+									required = {(additionalDocs[index] === '' || additionalDocs[index]["filename"] === '' || typeof additionalDocs[index] === "undefined")}
 									key = {index}
 									label = {doc.filename}
 									accept="application/pdf"
 									onChange = {(e)=>handleChangeDoc(index,e)} 
 									/>
-								
+									{submitted && (additionalDocs[index] === '' || additionalDocs[index]["filename"] === '' || typeof additionalDocs[index] === "undefined")?(<span style={{color:"red"}}>Please upload a pdf file</span>):(<div></div>)}
 								</div>
 							))}	
 

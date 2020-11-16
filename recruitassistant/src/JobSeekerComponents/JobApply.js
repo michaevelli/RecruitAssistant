@@ -23,6 +23,7 @@ export default function JobApply() {
 	const href = `${window.location.href}`.split("/")
 	const jobID = href[href.length - 1]
 	//Used for form validation
+	const [submitted, setSubmitted] = useState(false);
 	const [validated, setValidated] = useState(false);
 	const [applied, setApplied] = useState(false);
 	const [open, setOpen] = useState(false)
@@ -34,7 +35,7 @@ export default function JobApply() {
 	const [phone_number, setPhoneNumber] = useState('');
 	const [rights, setRights] = useState('');
 	const [qualification_list, setQualificationList] = useState([]);
-	const [answers, setAnswer] = useState([])
+	const [answers, setAnswers] = useState([])
 	//which required qualifications the user
 	const [additional_questions, setAdditionalQuestions] = useState([]);
 	const [required_docs, setRequiredDocs] = useState([]);
@@ -155,7 +156,7 @@ export default function JobApply() {
 	const handleChangeAnswer = (index, answer) => {
 		const answer_list = [...answers]
 		answer_list[index] = answer
-		setAnswer(answer_list)
+		setAnswers(answer_list)
 	}
 
 	const handleClose = () => {
@@ -203,7 +204,7 @@ export default function JobApply() {
 
 	const handleSubmit= async (event) =>{	
 		event.preventDefault();
-		
+		setSubmitted(true)
 		const form = event.currentTarget;
 		if (form.checkValidity() === false || !phone_number ) {	
 			event.stopPropagation();
@@ -230,6 +231,10 @@ export default function JobApply() {
 			const reader = new FileReader()
 			reader.onload = (e) => handleFileLoad(filename,document_name,index,e);
 			reader.readAsDataURL(file)
+		} else {
+			var docs = [...additionalDocs]
+			docs[index] = undefined
+			setAdditionalDocs(docs)
 		}
 	}
 	
@@ -357,9 +362,11 @@ export default function JobApply() {
 													id = {index}
 													name = {question}
 													style = {{width: 745, marginBottom: 20}}
+													value = {answers[index]}
 													variant="outlined"
 													placeholder = "Answer"
 													onChange = {(e)=>handleChangeAnswer(index,e.target.value)}/>
+												{submitted && (answers[index] === '' || typeof answers[index] === "undefined")?(<div style={{color:"red"}}>Please answer the question</div>):(<div></div>)}
 												<br></br>
 											</li>
 										))}
@@ -382,12 +389,10 @@ export default function JobApply() {
 													label = {document}
 													accept = "application/pdf"
 													onChange = {(e)=>handleChangeDoc(index,document,e)}/> 
+											{submitted && (additionalDocs[index] === '' || typeof additionalDocs[index] === "undefined")?(<span style={{color:"red"}}>Please upload a pdf file</span>):(<div></div>)}
 											</li>
 										))}
 									</ul>
-									<Form.Control.Feedback type="invalid">
-										Please upload all files as pdf
-									</Form.Control.Feedback>
 								</Col>
 							</Form.Group>
 						</div>

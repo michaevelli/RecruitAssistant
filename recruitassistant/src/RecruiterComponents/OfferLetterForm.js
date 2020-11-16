@@ -29,6 +29,7 @@ export default function OfferLetterForm(props) {
 
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
+	const [submitted, setSubmitted] = useState(false)
 	const [open, setOpen] = useState(false)
 	const [disable, setDisable] = useState(false)
 	const [message, setMessage] = useState('')
@@ -138,8 +139,11 @@ export default function OfferLetterForm(props) {
 			const reader = new FileReader()
 			reader.onload = (e) => handleFileLoad(filename,index,e);
 			reader.readAsDataURL(file)
+		} else {
+			var docs = [...additionalDocs]
+			docs[index] = undefined
+			setAdditionalDocs(docs)
 		}
-		
 	}
 
 	const handleFileLoad= (filename,index,event)=>{
@@ -201,6 +205,7 @@ export default function OfferLetterForm(props) {
    
 	const handleSubmit= async (event) =>{	
 		event.preventDefault();
+		setSubmitted(true)
 		const form = event.currentTarget;
 		if (form.checkValidity() === false) {	
 			event.stopPropagation();
@@ -405,11 +410,12 @@ export default function OfferLetterForm(props) {
 							{additionalDocs.map((doc, index) => (
 								<div key={index}>
 									<Form.File
+									required
 									key = {index}
 									accept="application/pdf"
 									onChange = {(e)=>handleChangeDoc(index,e)} 
 									/>
-								
+									{submitted && (additionalDocs[index] === '' || typeof additionalDocs[index] === "undefined")?(<span style={{color:"red"}}>Please upload a pdf file</span>):(<div></div>)}
 								</div>
 							))}	
 

@@ -28,6 +28,7 @@ export default function EditJob({match}) {
 
 	//Used for form validation
 	const [validated, setValidated] = useState(false);
+	const [submitted, setSubmitted] = useState(false);
 	//form data
 	const [title,setTitle] = useState('');
 	const [company,setCompany] = useState('');
@@ -188,6 +189,7 @@ export default function EditJob({match}) {
 	
 	const handleSubmit= async (event) =>{	
 		event.preventDefault();
+		setSubmitted(true)
 		const form = event.currentTarget;
 		if (form.checkValidity() === false) {	
 			event.stopPropagation();
@@ -322,7 +324,9 @@ export default function EditJob({match}) {
 									/>
 									<IconButton onClick={() => handleRemoveResponsibility(index)}>
 										<RemoveIcon />
-									</IconButton></li>
+									</IconButton>
+									{submitted && responsibilities[index] === ''?(<span style={{color:"red"}}>Please fill in empty field</span>):(<div></div>)}
+									</li>
 								</ul>
 							))}
 							</Col>					
@@ -386,9 +390,6 @@ export default function EditJob({match}) {
 								</InputGroup>
 							</Col>
 						</Form.Group>
-
-						
-						
 							
 						<Form.Group controlId="qualifications">
 							<Form.Label column sm={4}>
@@ -412,7 +413,9 @@ export default function EditJob({match}) {
 									/>
 									<IconButton onClick={() => handleRemoveQuality(index)}>
 										<RemoveIcon />
-									</IconButton></li>
+									</IconButton>
+									{submitted && qualifications[index] === ''?(<span style={{color:"red"}}>Please fill in empty field</span>):(<div></div>)}
+									</li>
 								</ul>
 							))}
 							</Col>					
@@ -440,7 +443,9 @@ export default function EditJob({match}) {
 									/>
 									<IconButton onClick={() => handleRemoveDoc(index)}>
 										<RemoveIcon />
-									</IconButton></li>
+									</IconButton>
+									{submitted && requiredDocs[index] === ''?(<span style={{color:"red"}}>Please fill in empty field</span>):(<div></div>)}
+									</li>
 								</ul>
 							))}
 							</Col>					
@@ -468,7 +473,9 @@ export default function EditJob({match}) {
 									/>
 									<IconButton onClick={() => handleRemoveQuestion(index)}>
 										<RemoveIcon />
-									</IconButton></li>
+									</IconButton>
+									{submitted && additionalQuestions[index] === ''?(<span style={{color:"red"}}>Please fill in empty field</span>):(<div></div>)}
+									</li>
 								</div>
 							))}
 							</ol>

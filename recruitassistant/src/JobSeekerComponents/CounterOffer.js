@@ -52,7 +52,8 @@ export default function CounterOffer(params) {
 				<h4>Additional comments or counter offers</h4>
 				<Form.Group controlId="description">
 					<Col sm={10}>
-						<Form.Control as="textarea" rows="10" 
+						<Form.Control as="textarea" rows="10"
+							required
 							onChange={(e) => setCounterOffer(e.target.value)}/>
 					</Col>
 				</Form.Group>
