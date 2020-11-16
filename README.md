@@ -6,7 +6,7 @@ To run: Open two terminals in the recruitassistant directory, one for frontend a
 
 <b>Frontend: </b> <br/>cd recruitassistant<br/> npm install<br/> npm start<br/>
 
-<b>Backend:</b> <br/>cd recruitassistant<br/> python3 -m venv env<br/> source env/bin/activate<br/> pip3 install wheels<br/> pip3 install -r requirements.txt <br/>
+<b>Backend:</b> <br/>cd recruitassistant<br/> python3 -m venv env<br/> source env/bin/activate<br/> pip3 install wheel<br/> pip3 install -r requirements.txt <br/>
 python3 -m flask run<br/>
-
+Note: Ensure port 5000 is free on your machine- our backend runs on this port!
 This project was bootstrapped with Create React App.
