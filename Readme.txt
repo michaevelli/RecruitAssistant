@@ -18,4 +18,6 @@ pip3 install wheel
 pip3 install -r requirements.txt
 python3 -m flask run
 
+GitHub repo URL: https://github.com/unsw-cse-capstone-project/capstone-project-comp3900-h11a-sigsegv
+This project was submitted on time.
 This project was bootstrapped with Create React App.
