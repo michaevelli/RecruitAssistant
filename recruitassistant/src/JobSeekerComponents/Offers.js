@@ -106,25 +106,6 @@ export default function Offers() {
 				})
 	};
 
-	const getApplications = async () => {
-		const url = `${applicationUrl}`
-			
-			const ndata = {
-				token: window.localStorage.getItem("token")
-			}
-			
-			axios.post(url, ndata)
-				.then(function(response) {
-					console.log("application response:", response.data)
-					setApplications(response.data.applications)
-				})
-				.catch(function(error) {
-					console.log("error in applications")
-					console.log(error.response)
-				})
-				//move outside of promise, to prevent endless loading symbol
-				setLoadingApps(false)
-	};
 	
 	// --- render posts ---
 

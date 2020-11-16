@@ -149,7 +149,7 @@ export default function ViewOffer({match}) {
 						<Button variant="contained" color="secondary" onClick={handleAccept} style={{marginRight:20}}>
 							Accept Offer
 						</Button>
-						<Button variant="contained" color="secondary" onClick={handleDecline} style={{margin: 20}}>
+						<Button variant="contained" color="secondary" onClick={handleDecline}>
 							Decline Offer
 						</Button>
 

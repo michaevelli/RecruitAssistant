@@ -38,6 +38,7 @@ export default function JobStatistics({match}) {
         job_id: jobID
       },
     }).then(res => {
+      //Get job statistics from backend
       const stats=res.data.stats
       if (stats){setStats('true')} else {setStats('false')}
       setNumCandidates(stats.num_candidates)
@@ -85,51 +86,7 @@ export default function JobStatistics({match}) {
 			})
     }
 
-    const getJobStats = async () => {
-      const url = `${statsURL}`
-      console.log(url)
-      await axios.get(url, {
-          params: {
-            job_id: jobID
-          },
-      })
-			.then(res => {
-        const stats=res.data.stats
-        if (stats){
-          setStats(true)
-        }
-        setNumCandidates(stats.num_candidates)
-        setNumOffers(stats.num_offers)
-        setNumInterviews(stats.num_interviews)
-        setJobTitle(stats.job_title)
-
-        //format data in a way that charts can display
-        setWorkingRights([
-        {name: 'Yes', value: parseInt(stats.has_working_rights)},
-        {name: 'No', value: stats.num_candidates-parseInt(stats.has_working_rights)}
-       ])
-         
-        const dict = stats.qualifications;
-        var r=[]
-        for (const [key, value] of Object.entries(dict)) {
-          r.push({'name':key,'Number of Candidates':parseInt(value)})
-        }
-        setQualificationsInfo(r)
-        
-        var q=[]
-        const max=stats.max_qualities_met
-        for(var i=0; i<=max; i++){
-          q.push({'Qualifications': `${i}/${max}`, 'Number of Applicants': parseInt(stats.num_qualities_met[i]) || 0 })
-        }
-        console.log(q)
-        setNumQualifications(q)
-        setLoading(false)
-        
-			})
-			.catch((error) => {
-				console.log("error: ", error.response)
-			})
-    }
+   
  
     const WorkingRights = ()=>{      
           return (
