@@ -21,3 +21,6 @@ Worked on counter-offer functionality as well as accept/decline buttons for both
 
 Week 8
 Merged code with others and minor ui updates and bug fixes in preparation for the second progressive demo. Contributed to the Retrospective B and also planned the next sprint and delegated tasks. Worked on UI updates as well as refresh tokens to prevent unwanted session expiry. Helped diagnose excessive firebase download issue in team meetings.
+
+Week 9
+The last sprint has relatively few Jira user stories, but lots to do in bug fixes and ui updates. This included updating the ui for posts for jobs, applications, etc as well as the side menu and titlebar. I changed the ui of the notifications menu to make it more consistent and compact. I also updated the ui for the login/signup flow, as well as for display pages which showed details like view job, view application, view offer.
