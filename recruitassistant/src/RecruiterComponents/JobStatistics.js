@@ -20,7 +20,7 @@ export default function JobStatistics({match}) {
   const history = useHistory();
 
   //are there any statistics for this job/are there any applications
-  const [stats, setStats]=useState(false)
+  const [stats, setStats]=useState('loading')
 
   const [jobTitle, setJobTitle]=useState('')
   const [workingRights, setWorkingRights]=useState([])
@@ -32,9 +32,47 @@ export default function JobStatistics({match}) {
 
 
 	useEffect(() => {
-		auth();
-		getJobStats();		
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    auth();
+    axios.get(statsURL, {
+      params: {
+        job_id: jobID
+      },
+    }).then(res => {
+      const stats=res.data.stats
+      if (stats){setStats('true')} else {setStats('false')}
+      setNumCandidates(stats.num_candidates)
+      setNumOffers(stats.num_offers)
+      setNumInterviews(stats.num_interviews)
+      setJobTitle(stats.job_title)
+
+      //format data in a way that charts can display
+      setWorkingRights([
+        {name: 'Yes', value: parseInt(stats.has_working_rights)},
+        {name: 'No', value: stats.num_candidates-parseInt(stats.has_working_rights)}
+      ])
+      
+      const dict = stats.qualifications;
+      var r=[]
+      for (const [key, value] of Object.entries(dict)) {
+        r.push({'name':key,'Number of Candidates':parseInt(value)})
+      }
+      setQualificationsInfo(r)
+      
+      var q=[]
+      const max=stats.max_qualities_met
+      for(var i=0; i<=max; i++){
+        q.push({'Qualifications': `${i}/${max}`, 'Number of Applicants': parseInt(stats.num_qualities_met[i]) || 0 })
+      }
+      console.log(q)
+      setNumQualifications(q)
+      setLoading(false)
+      
+    })
+    .catch((error) => {
+      console.log("error: ", error.response)
+    })
+		// getJobStats();		
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const auth = async () => {
 		await checkAuth(window.localStorage.getItem("token"))
@@ -253,12 +291,18 @@ export default function JobStatistics({match}) {
             
             <Col sm={10}>
              
-              {stats? renderStats(): (
-                
+              {stats==='loading'? (
+                <div style={{
+                  position: 'absolute', left: '50%', top: '50%',
+                  transform: 'translate(-50%, -50%)'
+                  }}>
+                  <CircularProgress/>
+                </div>
+              ) : ( stats==='true'? renderStats(): (
                 <div style={{display:'flex',justifyContent:'center',marginTop:100}}>
                   There are currently no applications or statistics for this job. Check back soon!
                 </div>
-              )}
+              ))}
               
           </Col>
         </Row>

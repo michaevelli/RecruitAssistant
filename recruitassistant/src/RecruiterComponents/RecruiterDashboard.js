@@ -15,12 +15,22 @@ export default function RecruiterDashboard() {
 	const recruiterID = sessionStorage.getItem("uid")
 	const history = useHistory();
 	const [loading, setLoading] = useState(true);
-	const [loadingJobs, setLoadingJobs] = useState(true);
-	const [jobs, setJobs] = useState([])
+	// const [loadingJobs, setLoadingJobs] = useState(true);
+	const [jobs, setJobs] = useState(['loading'])
 
 	useEffect(() => {
 		auth();
-		getJobs();
+		if (recruiterID != null) {
+			axios.get(jobUrl+recruiterID)
+			.then(res => {
+				setJobs(res.data.jobs)
+				// setLoadingJobs(false)
+				console.log("response: ", res)
+			})
+			.catch((error) => {
+				console.log("error: ", error.response)
+			})
+		}
 	}, [recruiterID]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
@@ -34,19 +44,19 @@ export default function RecruiterDashboard() {
 			})
 	}
 
-	const getJobs = async () => {
-		const url = `${jobUrl}${recruiterID}`
-		console.log(url)
-		await axios.get(url)
-			.then(res => {
-				setJobs(res.data.jobs)
-				setLoadingJobs(false)
-				console.log("response: ", res)
-			})
-			.catch((error) => {
-				console.log("error: ", error.response)
-			})
-	};
+	// const getJobs = async () => {
+	// 	const url = `${jobUrl}${recruiterID}`
+	// 	console.log(url)
+	// 	await axios.get(url)
+	// 		.then(res => {
+	// 			setJobs(res.data.jobs)
+	// 			// setLoadingJobs(false)
+	// 			console.log("response: ", res)
+	// 		})
+	// 		.catch((error) => {
+	// 			console.log("error: ", error.response)
+	// 		})
+	// };
 
 	function truncateText(text) {
 		if (text.length > 180) {
@@ -56,7 +66,7 @@ export default function RecruiterDashboard() {
 	}
 
 	const renderJobs = () => {
-		return loadingJobs ? (
+		return jobs[0]==='loading' ? (
 			<div style={{
 				position: 'absolute', left: '50%', top: '50%',
 				transform: 'translate(-50%, -50%)'

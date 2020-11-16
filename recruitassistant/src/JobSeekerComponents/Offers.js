@@ -23,7 +23,7 @@ export default function Offers() {
 	const [loading_apps, setLoadingApps] = useState(true)
 	const [offers, setOffers]=useState([])
 	const [interviews, setInterviews]=useState([])
-	const [applications, setApplications]=useState([])
+	const [applications, setApplications]=useState(['loading'])
 	const [userID, setUserID] = useState('');
 	
 	//controls which tab is selected (tabs are labelled 0,1,2 from left to right)
@@ -37,7 +37,17 @@ export default function Offers() {
 		auth();
 		getOffers();
 		getInterviews();
-		getApplications();
+		// getApplications();
+		axios.post(applicationUrl, {token: window.localStorage.getItem("token")})
+			.then(function(response) {
+				console.log("application response:", response.data)
+				setApplications(response.data.applications)
+			})
+			.catch(function(error) {
+				console.log("error in applications")
+				console.log(error.response)
+			})
+		setLoadingApps(false)
 	}, [userID]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const auth = async () => {
@@ -49,10 +59,6 @@ export default function Offers() {
 					return history.push("/unauthorised");
 				}
 				setUserID(response.userID)
-				// if (response.userID != getOffers()) {
-				// 	return history.push("/unauthorised");
-				// }
-				// setUserID(response.userID, getOffers()); 
 			})
 	}
 
@@ -72,13 +78,13 @@ export default function Offers() {
 					console.log("response:", response.data)
 					setOffers(response.data.offers)
 					console.log(response.data.offers)
-					return response.data.offers[1].jobseeker_id
+					// return response.data.offers[1].jobseeker_id
 				})
 				.catch(function(error) {
 					console.log(error.response)
 				})
 		}
-		return null
+		// return null
 		
 	};
 
@@ -223,7 +229,7 @@ export default function Offers() {
 	}
 
 	const renderApplications = () => {
-		return loading_apps===true? (
+		return applications[0]==='loading'? (
 			<div style={{
 				position: 'absolute', left: '50%', top: '50%',
 				transform: 'translate(-50%, -50%)'
