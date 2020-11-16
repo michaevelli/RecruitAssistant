@@ -28,7 +28,7 @@ export default function Advertisement() {
 		await checkAuth(window.localStorage.getItem("token"))
 			.then(function(response) {
 				console.log("auth success: ", response)
-				setLoading(false)
+				
 				//Public users, recruiters, and job seekers should be able to view an advert
 				if (!response.success) {
 					window.sessionStorage.clear()
@@ -119,13 +119,13 @@ export default function Advertisement() {
 						
 					</Col>
 					<Col xs={5} style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
-						<Row style={{height:400,width:'60%',position:'absolute', top:80}}>
+						<Row style={{height:450,width:'80%',position:'absolute', top:80}}>
 							<Card border='success'style={{width:'100%'}}>
 								<Card.Body>
 									<Card.Title>Job Details</Card.Title>
 									<Table borderless hover  style={{tableLayout: 'fixed'}}>
 										<tbody>
-											<tr><td>Location: </td><td style={{wordWrap: 'break-word'}}>{detail[1].location}</td></tr>
+											<tr><td>Location: </td><td>{detail[1].location}</td></tr>
 											<tr><td>Job Type: </td><td>{detail[1].job_type}</td></tr>
 											<tr><td>Renumeration: </td><td>${detail[1].salary_pa}</td></tr>
 											<tr><td>Experience: </td><td>{detail[1].experience_level}</td></tr>

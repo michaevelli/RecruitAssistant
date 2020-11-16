@@ -52,6 +52,7 @@ export default function ViewOffer({match}) {
 				if (response.userInfo["type"] === "recruiter") {
 					setIsRecruiter(true)	
 				}
+				setLoading(false)
 			})
 	}
 	const getOffer = async () => {
@@ -64,12 +65,12 @@ export default function ViewOffer({match}) {
 					/*initialise(response.data)*/
 					setOffer(response.data.offer)
 					
+					
 				}).catch(function(error) {
 					console.log(error.response)
 					//page not found
 					history.push("/*")
-				})	
-				setLoading(false)
+				})				
 
 	}
 	const updateAlert = ()=>{
@@ -105,7 +106,7 @@ export default function ViewOffer({match}) {
 
 	// --- render components dynamically ---
 	const renderDocumentItems = () => {
-		if (offer.additional_docs.length  ===0) {
+		if (offer.additional_docs === undefined) {
 			return null
 		} else {
 			return (
