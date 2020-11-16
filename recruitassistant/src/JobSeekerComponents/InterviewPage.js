@@ -98,6 +98,7 @@ export default function InterviewPage({match}) {
    
 	//response can be "Accepted" or "Declined"
 	const handleResponse = async (response) => {
+		setLoading(true)
 		//update interview status
 		var givenreason = reason
 		if (response === "Accepted") {
@@ -108,6 +109,7 @@ export default function InterviewPage({match}) {
 		.then(res => {
 			console.log("response: ", res)
 			window.location.reload()
+			setLoading(false)
 		})
 		.catch((error) => {
 			console.log("error: ", error.response)

@@ -313,7 +313,7 @@ export default function EditJob({match}) {
 							<Col sm={10}>
 							{responsibilities.map((r, index) => (
 								<ul key={index}>
-									<li><TextField 
+									<li><TextField style={{width:'90%'}}
 									required
 									name="Responsibility"
 									variant="outlined"
@@ -402,7 +402,7 @@ export default function EditJob({match}) {
 							<Col sm={10}>
 							{qualifications.map((q, index) => (
 								<ul key={index}>
-									<li><TextField
+									<li><TextField style={{width:'90%'}}
 									required
 									name="Quality"
 									variant="outlined"
@@ -432,7 +432,7 @@ export default function EditJob({match}) {
 							<Col sm={10}>
 							{requiredDocs.map((doc, index) => (
 								<ul key={index}>
-									<li><TextField 
+									<li><TextField style={{width:'90%'}}
 									required
 									name="Document"
 									variant="outlined"
@@ -462,7 +462,7 @@ export default function EditJob({match}) {
 							<Col sm={10}>
 							<ol> {additionalQuestions.map((question, index) => (
 								<div key={index}>
-									<li><TextField 
+									<li><TextField style={{width:'90%'}}
 									required
 									name="Question"
 									variant="outlined"

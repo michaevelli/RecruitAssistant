@@ -118,7 +118,7 @@ export default function JobStatistics({match}) {
             dataKey="Number of Candidates"
             >
               <CartesianGrid  />
-              <XAxis  tick={false} dataKey="name" label={{ value: 'Hover to view Qualification',position: "insideBottom", dy: 10}} />
+              <XAxis  tick={false} dataKey="name" label={{ value: 'Hover to view Qualification',position: "insideBottom"}} />
               <YAxis 
                 label={{ value: "Number of Applicants", angle: -90}} 
                 allowDecimals={false} />
@@ -136,25 +136,6 @@ export default function JobStatistics({match}) {
         )
       }
 
-      //No longer used
-      // const qualificationsPie = ()=>{
-      //   return qualificationsInfo.length===0? 
-      //   (<p>No required qualifications were specified for this job.</p>):
-      //   (
-      //     <ResponsiveContainer width="100%" aspect={2}>
-      //       <PieChart title='yyee'>
-      //         <Pie data={qualificationsInfo}  dataKey="Number of Candidates"  >
-      //         {
-      //         qualificationsInfo.map((entry, index) => <Cell fill={COLORS[(index+2) % COLORS.length]}/>)
-      //         }
-      //         </Pie>
-      //         <Tooltip formatter={(label) => (label/numCandidates)*100 + "% of applicants"}/>
-      //         <Legend />
-      //     </PieChart>
-      //    </ResponsiveContainer>
-      //   )
-      // }
-
       const numberQualificationsBar = ()=>{
         return ( 
           <ResponsiveContainer width="99%" aspect={2}>
@@ -163,7 +144,7 @@ export default function JobStatistics({match}) {
             dataKey="Number of Applicants"
             >
               <CartesianGrid  />
-              <XAxis dataKey="Qualifications" label={{ value: 'Qualifications Met',position: "insideBottom", dy: 10}} />
+              <XAxis dataKey="Qualifications" label={{ value: 'Qualifications Met',position: "insideBottom", dy: 8}} />
               <YAxis 
                 label={{ value: "Number of Applicants", angle: -90}} 
                 allowDecimals={false} />

@@ -147,7 +147,7 @@ export default function ViewApplication() {
 								</ul>
 							))}
 						</Typography>
-						<br/>
+						<br/><Divider/><br/>
 						<Typography variant='body1'>
 							{application.rights==='Yes'?<CheckIcon/>:<ClearIcon/>} Working rights in {job.location}
 						</Typography>
